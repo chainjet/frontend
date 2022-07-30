@@ -1,0 +1,28 @@
+
+.diamond {
+  position: relative;
+  height: 120px;
+  width: 120px;
+  line-height: 120px;
+  text-align: center;
+
+  &::before {
+    position: absolute;
+    content: '';
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    transform: rotateX(45deg) rotateZ(45deg);
+    border: 1px solid #f0f0f0;
+    background: white;
+  }
+
+  .diamond-inner {
+    position: relative;
+    display: inline-block;
+
+    > div {
+      height: 32px;
+    }
+  }
+}

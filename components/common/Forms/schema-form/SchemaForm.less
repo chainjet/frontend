@@ -1,0 +1,20 @@
+.rjsf #root {
+  // Add container to objects and arrays
+  .form-group.field.field-object,
+  .form-group.field.field-array {
+    border: solid #f0f0f0 1px;
+    padding: 8px;
+    margin-bottom: 24px;
+  }
+
+  // Add background to objects with additionalProperties
+  .ant-form-item-control .form-group.field .form-additional {
+    &:first-child {
+      margin-left: 4px;
+    }
+
+    padding: 12px 12px 0;
+    margin: 4px 0 8px;
+    background-color: #f9f9f9;
+  }
+}
