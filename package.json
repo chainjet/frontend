@@ -8,7 +8,14 @@
     "build": "yarn link-types && next build",
     "start": "next start",
     "type-check": "tsc",
+    "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
     "test": "jest"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write"
+    ],
+    "*.{md,css}": "prettier --write"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
@@ -70,20 +77,14 @@
     "@types/react": "^16.9.36",
     "@types/react-ga": "^2.3.0",
     "@types/react-icons": "^3.0.0",
-    "@typescript-eslint/eslint-plugin": "^4.2.0",
-    "@typescript-eslint/parser": "^4.2.0",
     "babel-jest": "^26.3.0",
     "cross-env": "^7.0.2",
-    "eslint": "^7.10.0",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-config-standard-with-typescript": "^19.0.1",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
+    "eslint": "^8.20.0",
+    "eslint-config-next": "^12.2.3",
     "express": "^4.17.1",
     "http-proxy-middleware": "^1.0.5",
     "jest": "^26.4.2",
-    "standard": "^14.3.4",
+    "prettier": "^2.7.1",
     "typescript": "3.8.3"
   },
   "graphql": "../backend/generated/schema.graphql",
@@ -92,5 +93,21 @@
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/tests/__mocks__/fileMock.js",
       "\\.(css|less)$": "<rootDir>/tests/__mocks__/styleMock.js"
     }
-  }
+  },
+  "next-unused": {
+    "debug": true,
+    "include": [
+      "src"
+    ],
+    "exclude": [],
+    "entrypoints": [
+      "src/pages"
+    ]
+  },
+  "browserslist": [
+    ">0.3%",
+    "not ie 11",
+    "not dead",
+    "not op_mini all"
+  ]
 }
