@@ -1,19 +1,22 @@
-import React from 'react'
-import { Loading } from '../../../common/RequestStates/Loading'
 import { gql } from '@apollo/client'
+import { isAddress } from '@ethersproject/address'
+import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
-import { RequestError } from '../../../common/RequestStates/RequestError'
-import { SchemaForm } from '../../../common/Forms/schema-form/SchemaForm'
-import { useGetIntegrationTriggerById } from '../../../../src/services/IntegrationTriggerHooks'
-import { IntegrationTrigger } from '../../../../graphql'
-import { isEmptyObj } from '../../../../src/utils/object.utils'
+import { useEffect, useState } from 'react'
 import { jsonSchemaDefinitions } from '../../../../src/json-schema/jsonSchemaDefinitions'
+import { useGetIntegrationTriggerById } from '../../../../src/services/IntegrationTriggerHooks'
+import { useLazyGetContractSchema } from '../../../../src/services/SmartContractHooks'
 import { retrocycle } from '../../../../src/utils/json.utils'
+import { isEmptyObj } from '../../../../src/utils/object.utils'
+import { SchemaForm } from '../../../common/Forms/schema-form/SchemaForm'
+import { DisplayError } from '../../../common/RequestStates/DisplayError'
+import { Loading } from '../../../common/RequestStates/Loading'
+import { RequestError } from '../../../common/RequestStates/RequestError'
 
 type TriggerInputs = Record<string, any>
 
 interface Props {
-  trigger: IntegrationTrigger
+  triggerId: string
   initialInputs: TriggerInputs
   extraSchemaProps?: JSONSchema7
   onSubmitOperationInputs: (inputs: TriggerInputs) => any
@@ -28,13 +31,49 @@ const triggerInputsFormFragment = gql`
   }
 `
 
-export function TriggerInputsForm (props: Props) {
-  const { trigger, extraSchemaProps, onSubmitOperationInputs } = props
+export function TriggerInputsForm(props: Props) {
+  const { triggerId, extraSchemaProps, onSubmitOperationInputs, initialInputs } = props
   const { data, loading, error } = useGetIntegrationTriggerById(triggerInputsFormFragment, {
     variables: {
-      id: trigger.id
-    }
+      id: triggerId,
+    },
   })
+  const [getContractSchema, { data: contractSchemaData, loading: contractSchemaLoading, error: contractSchemaError }] =
+    useLazyGetContractSchema()
+  const [inputs, setInputs] = useState(initialInputs)
+
+  const integrationTrigger = data?.integrationTrigger
+
+  useEffect(() => {
+    // Initialize chainjet_schedule if it's not defined
+    if (integrationTrigger && !integrationTrigger.instant) {
+      if (isEmptyObj(inputs?.chainjet_schedule || {})) {
+        setInputs({
+          ...inputs,
+          chainjet_schedule: {
+            frequency: 'interval',
+            interval: 300,
+          },
+        })
+      }
+    }
+
+    if (
+      integrationTrigger?.key === 'newEvent' &&
+      inputs.network &&
+      isAddress(inputs.address) &&
+      (!contractSchemaData ||
+        (contractSchemaData.chainId !== inputs.network && contractSchemaData.address !== inputs.address))
+    ) {
+      getContractSchema({
+        variables: {
+          chainId: inputs.network,
+          address: inputs.address,
+          type: 'events',
+        },
+      })
+    }
+  }, [inputs, integrationTrigger])
 
   if (loading) {
     return <Loading />
@@ -50,22 +89,21 @@ export function TriggerInputsForm (props: Props) {
       required: [...(extraSchemaProps.required ?? []), ...(schema.required ?? [])],
       properties: {
         ...extraSchemaProps.properties,
-        ...(schema.properties ?? {})
+        ...(schema.properties ?? {}),
       },
     }
   }
 
-  let initialInputs = props.initialInputs
   if (!data.integrationTrigger.instant) {
     schema = {
       ...schema,
       properties: {
         chainjet_schedule: {
-          $ref: '#/definitions/chainjet_schedule'
+          $ref: '#/definitions/chainjet_schedule',
         },
         ...(schema.properties ?? {}),
       },
-      required: ['chainjet_schedule', ...(schema.required ?? [])]
+      required: ['chainjet_schedule', ...(schema.required ?? [])],
     }
 
     // Uses a different title for the Schedule Trigger and the trigger scheduling options
@@ -76,20 +114,32 @@ export function TriggerInputsForm (props: Props) {
     } else {
       jsonSchemaDefinitions.chainjet_schedule.properties.frequency.title = 'Check trigger'
     }
+  }
 
-    // Initialize chainjet_schedule if it's not defined
-    if (isEmptyObj(initialInputs?.chainjet_schedule || {})) {
-      initialInputs = initialInputs || {}
-      initialInputs.chainjet_schedule = {
-        frequency: 'interval',
-        interval: 300
-      }
+  // TODO hack for Smart Contracts integration
+  //      there should be a property in the integration to define this requirement
+  const onChange = (data: Record<string, any>) => {
+    if (
+      data.network &&
+      isAddress(data.address) &&
+      (data.network !== inputs.network || data.address !== inputs.address)
+    ) {
+      setInputs({
+        ...inputs,
+        ...data,
+      })
     }
   }
 
+  if (contractSchemaData?.contractSchema?.schema) {
+    schema = deepmerge(schema, contractSchemaData.contractSchema.schema ?? {})
+  }
+
   return (
-    <SchemaForm schema={schema}
-      initialInputs={initialInputs}
-      onSubmit={onSubmitOperationInputs} />
+    <>
+      <SchemaForm schema={schema} initialInputs={inputs} onSubmit={onSubmitOperationInputs} onChange={onChange} />
+      {contractSchemaLoading && <Loading />}
+      {contractSchemaError && <DisplayError error={contractSchemaError} />}
+    </>
   )
 }

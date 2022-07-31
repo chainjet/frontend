@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
 import { Divider, Drawer, Steps } from 'antd'
 import { JSONSchema7 } from 'json-schema'
-import { SelectIntegration } from './steps/SelectIntegration'
-import { SelectCredentials } from './steps/SelectCredentials'
-import { SelectWorkflowTrigger } from './steps/SelectWorkflowTrigger'
-import { SelectWorkflowAction } from './steps/SelectWorkflowAction'
-import { TriggerInputsForm } from './steps/TriggerInputsForm'
-import { ActionInputsForm } from './steps/ActionInputsForm'
+import { useState } from 'react'
 import { Integration, IntegrationAction, IntegrationTrigger } from '../../../graphql'
+import { ActionInputsForm } from './steps/ActionInputsForm'
+import { SelectCredentials } from './steps/SelectCredentials'
+import { SelectIntegration } from './steps/SelectIntegration'
+import { SelectWorkflowAction } from './steps/SelectWorkflowAction'
+import { SelectWorkflowTrigger } from './steps/SelectWorkflowTrigger'
+import { TriggerInputsForm } from './steps/TriggerInputsForm'
 
 type TriggerProps = {
   nodeType: 'trigger'
@@ -37,7 +37,7 @@ type Props<T extends IntegrationTrigger | IntegrationAction> = (TriggerProps | A
   onCancel: () => void
 }
 
-export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAction> (props: Props<T>) {
+export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAction>(props: Props<T>) {
   const {
     title,
     visible,
@@ -46,7 +46,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
     initialCredentialId,
     overrideStep,
     extraSchemaProps,
-    onSubmitInputs
+    onSubmitInputs,
   } = props
   const [currentStep, setCurrentStep] = useState(initialNodeInputs ? 3 : 0)
   const [selectedIntegration, setSelectedIntegration] = useState<Integration | undefined>()
@@ -83,7 +83,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
     switch (stepIndex) {
       // Select Integration
       case 0:
-        return <SelectIntegration onIntegrationSelect={onIntegrationSelected} nodeType={props.nodeType}/>
+        return <SelectIntegration onIntegrationSelect={onIntegrationSelected} nodeType={props.nodeType} />
 
       // Select Operation
       case 1:
@@ -91,13 +91,21 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
           return renderCurrentStep(0)
         }
         if (props.nodeType === 'trigger') {
-          return <SelectWorkflowTrigger integration={selectedIntegration}
-                                        onTriggerSelected={trigger => onWorkflowStepSelected(trigger as T)}/>
+          return (
+            <SelectWorkflowTrigger
+              integration={selectedIntegration}
+              onTriggerSelected={(trigger) => onWorkflowStepSelected(trigger as T)}
+            />
+          )
         } else {
-          return <SelectWorkflowAction integration={selectedIntegration}
-                                       onOperationSelected={action => onWorkflowStepSelected(action as T)}/>
+          return (
+            <SelectWorkflowAction
+              integration={selectedIntegration}
+              onOperationSelected={(action) => onWorkflowStepSelected(action as T)}
+            />
+          )
         }
-      
+
       // Select Credentials
       case 2:
         if (!selectedIntegration) {
@@ -106,8 +114,12 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
         if (selectedNode?.skipAuth) {
           return renderCurrentStep(3)
         }
-        return <SelectCredentials integrationAccount={selectedIntegration.integrationAccount!}
-                                  onCredentialsSelected={onCredentialsSelected}/>
+        return (
+          <SelectCredentials
+            integrationAccount={selectedIntegration.integrationAccount!}
+            onCredentialsSelected={onCredentialsSelected}
+          />
+        )
 
       // Select Inputs
       case 3:
@@ -115,22 +127,26 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
           return renderCurrentStep(1)
         }
         if (props.nodeType === 'trigger') {
-          return <TriggerInputsForm trigger={selectedNode as IntegrationTrigger}
-                                    initialInputs={initialNodeInputs || {}}
-                                    extraSchemaProps={extraSchemaProps}
-                                    onSubmitOperationInputs={
-                                      inputs => onSubmitInputs(inputs, selectedNode, selectedCredentialID)
-                                    }/>
+          return (
+            <TriggerInputsForm
+              triggerId={selectedNode.id}
+              initialInputs={initialNodeInputs || {}}
+              extraSchemaProps={extraSchemaProps}
+              onSubmitOperationInputs={(inputs) => onSubmitInputs(inputs, selectedNode, selectedCredentialID)}
+            />
+          )
         } else {
-          return <ActionInputsForm integrationAction={selectedNode as IntegrationAction}
-                                   workflowTriggerId={props.workflowTriggerId}
-                                   parentActionIds={props.parentActionIds}
-                                   accountCredentialId={selectedCredentialID}
-                                   initialInputs={initialNodeInputs || {}}
-                                   extraSchemaProps={extraSchemaProps}
-                                   onSubmitActionInputs={
-                                     inputs => onSubmitInputs(inputs, selectedNode, selectedCredentialID)
-                                   }/>
+          return (
+            <ActionInputsForm
+              integrationActionId={selectedNode.id}
+              workflowTriggerId={props.workflowTriggerId}
+              parentActionIds={props.parentActionIds}
+              accountCredentialId={selectedCredentialID}
+              initialInputs={initialNodeInputs || {}}
+              extraSchemaProps={extraSchemaProps}
+              onSubmitActionInputs={(inputs) => onSubmitInputs(inputs, selectedNode, selectedCredentialID)}
+            />
+          )
         }
       default:
         return <></>
@@ -147,16 +163,15 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
       width={window.innerWidth}
     >
       <Steps size="small" current={currentStep}>
-        <Steps.Step title="Select Integration" description=""/>
-        <Steps.Step title="Select Operation" description=""/>
-        <Steps.Step title="Select Account" description=""/>
-        <Steps.Step title="Set Inputs" description=""/>
+        <Steps.Step title="Select Integration" description="" />
+        <Steps.Step title="Select Operation" description="" />
+        <Steps.Step title="Select Account" description="" />
+        <Steps.Step title="Set Inputs" description="" />
       </Steps>
 
-      <Divider/>
+      <Divider />
 
       {renderCurrentStep(currentStep)}
-
     </Drawer>
   )
 }

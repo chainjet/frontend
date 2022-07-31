@@ -1,8 +1,8 @@
 import { gql, useLazyQuery } from '@apollo/client'
 
 const GET_CONTRACT_SCHEMA = gql`
-  query ContractSchema($chainId: Int!, $address: String!) {
-    contractSchema(chainId: $chainId, address: $address) {
+  query ContractSchema($chainId: Int!, $address: String!, $type: String!) {
+    contractSchema(chainId: $chainId, address: $address, type: $type) {
       id
       chainId
       address
