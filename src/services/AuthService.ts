@@ -1,7 +1,6 @@
 import { NextPageContext } from 'next'
 import { parseCookies } from 'nookies'
 import { User } from '../../graphql'
-import { isBrowser } from '../utils/environment'
 
 export const TOKEN_COOKIE_NAME = 'cj-token'
 export const USER_COOKIE_NAME = 'cj-user'
@@ -10,7 +9,7 @@ export class AuthService {
   readonly endpoint: string
 
   constructor(readonly ctx?: NextPageContext) {
-    this.endpoint = isBrowser ? '' : process.env.ENDPOINT!
+    this.endpoint = process.env.NEXT_PUBLIC_API_ENDPOINT!
   }
 
   getCookies() {

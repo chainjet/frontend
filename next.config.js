@@ -10,7 +10,6 @@ const themeVariables = lessToJS(fs.readFileSync(path.resolve(__dirname, './asset
 
 module.exports = withLess({
   env: {
-    ENDPOINT: process.env.ENDPOINT,
     GA_TRACKING_CODE: process.env.GA_TRACKING_CODE,
     SLACK_APP_ID: process.env.SLACK_APP_ID,
     CRISP_WEBSITE_ID: process.env.CRISP_WEBSITE_ID,

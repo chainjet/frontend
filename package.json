@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "link-types": "rm -f graphql.ts && cp ../backend/generated/graphql.ts graphql.ts",
-    "dev": "yarn link-types && cross-env NODE_ENV=development PORT=3000 node server.js",
+    "dev": "yarn link-types && next dev",
     "build": "next build",
     "start": "next start",
     "type-check": "tsc",

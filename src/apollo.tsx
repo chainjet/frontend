@@ -1,18 +1,17 @@
-import React from 'react'
-import Head from 'next/head'
 import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache, NormalizedCacheObject } from '@apollo/react-hooks'
 import fetch from 'isomorphic-unfetch'
 import { NextPageContext } from 'next'
+import Head from 'next/head'
 import { destroyCookie, parseCookies, setCookie } from 'nookies'
+import PageLayout from '../components/common/PageLayout/PageLayout'
+import ViewerContextProvider from '../components/providers/ViewerContextProvider'
+import { User } from '../graphql'
 import { AuthService, TOKEN_COOKIE_NAME, USER_COOKIE_NAME } from './services/AuthService'
 import { UserTokens } from './typings/UserTokens'
-import ViewerContextProvider from '../components/providers/ViewerContextProvider'
-import PageLayout from '../components/common/PageLayout/PageLayout'
-import { User } from '../graphql'
 
 let globalApolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
-export function refreshApolloClient () {
+export function refreshApolloClient() {
   globalApolloClient = null
 }
 
@@ -30,22 +29,14 @@ interface WithApolloProps {
  * to a next.js PageTree. Use it by wrapping
  * your PageComponent via HOC pattern.
  */
-export function withApollo (PageComponent: any, { useLayout = true, ssr = true } = {}) {
-  const WithApollo = ({
-    apolloClient,
-    apolloState,
-    tokens,
-    viewer,
-    ...pageProps
-  }: WithApolloProps) => {
+export function withApollo(PageComponent: any, { useLayout = true, ssr = true } = {}) {
+  const WithApollo = ({ apolloClient, apolloState, tokens, viewer, ...pageProps }: WithApolloProps) => {
     const client = apolloClient || initApolloClient(apolloState, tokens)
     const pageComponent = <PageComponent {...pageProps} />
     return (
       <ViewerContextProvider viewer={viewer}>
         <ApolloProvider client={client}>
-          {
-            viewer && useLayout ? <PageLayout>{pageComponent}</PageLayout> : pageComponent
-          }
+          {viewer && useLayout ? <PageLayout>{pageComponent}</PageLayout> : pageComponent}
         </ApolloProvider>
       </ViewerContextProvider>
     )
@@ -73,7 +64,11 @@ export function withApollo (PageComponent: any, { useLayout = true, ssr = true }
         try {
           tokens = JSON.parse(tokensJson)
         } catch {}
-        if (tokens && tokens.refreshToken && (!tokens.accessTokenExpiration || tokens.accessTokenExpiration < new Date().getTime())) {
+        if (
+          tokens &&
+          tokens.refreshToken &&
+          (!tokens.accessTokenExpiration || tokens.accessTokenExpiration < new Date().getTime())
+        ) {
           if (viewer) {
             await refreshCredentials(ctx, viewer.username, tokens)
             tokens = JSON.parse(tokensJson)
@@ -110,9 +105,8 @@ export function withApollo (PageComponent: any, { useLayout = true, ssr = true }
                   ...pageProps,
                   apolloClient,
                 }}
-              />
+              />,
             )
-
           } catch (error) {
             // Prevent Apollo Client GraphQL errors from crashing SSR.
             // Handle them in components via the data.error prop:
@@ -145,7 +139,7 @@ export function withApollo (PageComponent: any, { useLayout = true, ssr = true }
  * Always creates a new apollo client on the server
  * Creates or reuses apollo client in the browser.
  */
-export function initApolloClient (initialState: NormalizedCacheObject = {}, tokens?: UserTokens) {
+export function initApolloClient(initialState: NormalizedCacheObject = {}, tokens?: UserTokens) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
   if (typeof window === 'undefined') {
@@ -163,18 +157,16 @@ export function initApolloClient (initialState: NormalizedCacheObject = {}, toke
 /**
  * Creates and configures the ApolloClient
  */
-function createApolloClient (initialState: NormalizedCacheObject = {}, tokens?: UserTokens) {
+function createApolloClient(initialState: NormalizedCacheObject = {}, tokens?: UserTokens) {
   const headers: { [key: string]: string } = {}
   if (tokens) {
     headers.Authorization = `Bearer ${tokens.accessToken}`
   }
 
-  const endpoint = typeof window === 'undefined' ? process.env.ENDPOINT! : ''
-
   return new ApolloClient({
     ssrMode: typeof window === 'undefined', // Disables forceFetch on the server (so queries are only run once)
     link: new HttpLink({
-      uri: `${endpoint}/graphql`, // Server URL (must be absolute)
+      uri: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/graphql`, // Server URL (must be absolute)
       credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
       fetch,
       headers,
@@ -186,14 +178,14 @@ function createApolloClient (initialState: NormalizedCacheObject = {}, tokens?: 
             return node.username || node.id
         }
         return node.id
-      }
+      },
     }).restore(initialState),
   })
 }
 
-async function refreshCredentials (ctx: ApolloPageContext, username: string, tokens: UserTokens) {
-  const endpoint = typeof window === 'undefined' ? process.env.ENDPOINT! : ''
-  const res = await fetch(`${endpoint}/api/v1/auth/token`, { // TODO
+async function refreshCredentials(ctx: ApolloPageContext, username: string, tokens: UserTokens) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/auth/token`, {
+    // TODO
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -202,15 +194,20 @@ async function refreshCredentials (ctx: ApolloPageContext, username: string, tok
     body: JSON.stringify({
       username,
       refreshToken: tokens.refreshToken,
-    })
+    }),
   })
 
   if (res.status >= 200 && res.status < 300) {
-    setCookie(ctx, TOKEN_COOKIE_NAME, JSON.stringify({
-      ...tokens,
-      ...(await res.json()),
-      __typename: undefined,
-    }), {})
+    setCookie(
+      ctx,
+      TOKEN_COOKIE_NAME,
+      JSON.stringify({
+        ...tokens,
+        ...(await res.json()),
+        __typename: undefined,
+      }),
+      {},
+    )
   } else if (res.status === 401) {
     // invalid refresh token, remove all cookies
     destroyCookie(ctx, USER_COOKIE_NAME)
