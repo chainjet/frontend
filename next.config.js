@@ -6,9 +6,7 @@ const path = require('path')
 require('dotenv').config()
 
 // Where your antd-custom.less file lives
-const themeVariables = lessToJS(
-  fs.readFileSync(path.resolve(__dirname, './assets/antd-custom.less'), 'utf8')
-)
+const themeVariables = lessToJS(fs.readFileSync(path.resolve(__dirname, './assets/antd-custom.less'), 'utf8'))
 
 module.exports = withLess({
   env: {
@@ -48,13 +46,6 @@ module.exports = withLess({
         test: antStyles,
         use: 'null-loader',
       })
-    }
-
-    // Support symlinks for ./graphql.ts (symlink to ./backend/generated/graphql.ts)
-    // Needed to include ts Enums from ./graphql.ts
-    config.resolve = {
-      ...(config.resolve || {}),
-      symlinks: false,
     }
 
     return config

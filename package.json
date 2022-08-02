@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "link-types": "rm -f graphql.ts && ln -s ../backend/generated/graphql.ts graphql.ts",
+    "link-types": "rm -f graphql.ts && cp ../backend/generated/graphql.ts graphql.ts",
     "dev": "yarn link-types && cross-env NODE_ENV=development PORT=3000 node server.js",
-    "build": "yarn link-types && next build",
+    "build": "next build",
     "start": "next start",
     "type-check": "tsc",
     "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
