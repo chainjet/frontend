@@ -8,27 +8,27 @@ describe('Schema Utils', () => {
         properties: {
           foo: {
             type: 'string',
-            'x-hidden': true
+            'x-hidden': true,
           },
           bar: {
             type: 'string',
-            'x-hidden': false
+            'x-hidden': false,
           },
           baz: {
-            type: 'string'
-          }
-        }
+            type: 'string',
+          },
+        },
       } as JSONSchema7
       expect(removeHiddenProperties(schema)).toEqual({
         properties: {
           bar: {
             type: 'string',
-            'x-hidden': false
+            'x-hidden': false,
           },
           baz: {
-            type: 'string'
-          }
-        }
+            type: 'string',
+          },
+        },
       })
     })
   })
@@ -39,15 +39,15 @@ describe('Schema Utils', () => {
         properties: {
           key1: { type: 'array' },
           key2: { type: 'array', items: { type: 'boolean' } },
-          key3: { type: 'string' }
-        }
+          key3: { type: 'string' },
+        },
       }
       expect(fixArraysWithoutItems(schema)).toEqual({
         properties: {
           key1: { type: 'array', items: { type: 'string' } },
           key2: { type: 'array', items: { type: 'boolean' } },
-          key3: { type: 'string' }
-        }
+          key3: { type: 'string' },
+        },
       })
     })
   })
@@ -56,10 +56,10 @@ describe('Schema Utils', () => {
     it('should return the UI Schema from a single property', () => {
       const schema = {
         type: 'string',
-        'x-ui:autofocus': true
+        'x-ui:autofocus': true,
       }
       expect(extractUISchema(schema as JSONSchema7)).toEqual({
-        'ui:autofocus': true
+        'ui:autofocus': true,
       })
     })
 
@@ -69,14 +69,14 @@ describe('Schema Utils', () => {
         properties: {
           test: {
             title: 'Test',
-            'x-ui:help': 'Test'
-          }
-        }
+            'x-ui:help': 'Test',
+          },
+        },
       }
       expect(extractUISchema(schema as JSONSchema7)).toEqual({
         test: {
-          'ui:help': 'Test'
-        }
+          'ui:help': 'Test',
+        },
       })
     })
 
@@ -86,23 +86,23 @@ describe('Schema Utils', () => {
         items: [
           {
             type: 'string',
-            'x-ui:help': 'Test'
+            'x-ui:help': 'Test',
           },
           {
             type: 'boolean',
-            'x-ui:widget': 'radio'
-          }
-        ]
+            'x-ui:widget': 'radio',
+          },
+        ],
       }
       expect(extractUISchema(schema as JSONSchema7)).toEqual({
         items: [
           {
-            'ui:help': 'Test'
+            'ui:help': 'Test',
           },
           {
-            'ui:widget': 'radio'
-          }
-        ]
+            'ui:widget': 'radio',
+          },
+        ],
       })
     })
 
@@ -111,13 +111,13 @@ describe('Schema Utils', () => {
         type: 'array',
         items: {
           type: 'string',
-          'x-ui:help': 'Test'
-        }
+          'x-ui:help': 'Test',
+        },
       }
       expect(extractUISchema(schema as JSONSchema7)).toEqual({
         items: {
-          'ui:help': 'Test'
-        }
+          'ui:help': 'Test',
+        },
       })
     })
 
@@ -126,16 +126,16 @@ describe('Schema Utils', () => {
         oneOf: [
           {
             title: 'Test',
-            'x-ui:help': 'Test'
-          }
-        ]
+            'x-ui:help': 'Test',
+          },
+        ],
       }
       expect(extractUISchema(schema as JSONSchema7)).toEqual({
         oneOf: [
           {
-            'ui:help': 'Test'
-          }
-        ]
+            'ui:help': 'Test',
+          },
+        ],
       })
     })
 
@@ -144,16 +144,16 @@ describe('Schema Utils', () => {
         anyOf: [
           {
             title: 'Test',
-            'x-ui:help': 'Test'
-          }
-        ]
+            'x-ui:help': 'Test',
+          },
+        ],
       }
       expect(extractUISchema(schema as JSONSchema7)).toEqual({
         anyOf: [
           {
-            'ui:help': 'Test'
-          }
-        ]
+            'ui:help': 'Test',
+          },
+        ],
       })
     })
 
@@ -162,16 +162,16 @@ describe('Schema Utils', () => {
         allOf: [
           {
             title: 'Test',
-            'x-ui:help': 'Test'
-          }
-        ]
+            'x-ui:help': 'Test',
+          },
+        ],
       }
       expect(extractUISchema(schema as JSONSchema7)).toEqual({
         allOf: [
           {
-            'ui:help': 'Test'
-          }
-        ]
+            'ui:help': 'Test',
+          },
+        ],
       })
     })
   })

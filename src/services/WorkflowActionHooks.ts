@@ -8,13 +8,13 @@ import {
   WorkflowAction,
   WorkflowActionConnection,
   WorkflowActionFilter,
-  WorkflowActionSort
+  WorkflowActionSort,
 } from '../../graphql'
 import { QueryById, QueryMany } from '../typings/GraphQL'
 
-export function useGetWorkflowActionById (
+export function useGetWorkflowActionById(
   fragment: DocumentNode,
-  options: QueryHookOptions<{ workflowAction: WorkflowAction }, QueryById>
+  options: QueryHookOptions<{ workflowAction: WorkflowAction }, QueryById>,
 ) {
   const query = getEntityQuery({
     entityName: 'workflowAction',
@@ -24,9 +24,12 @@ export function useGetWorkflowActionById (
   return useQuery<{ workflowAction: WorkflowAction }, QueryById>(query, options)
 }
 
-export function useGetWorkflowsActions (
+export function useGetWorkflowsActions(
   fragment: DocumentNode,
-  options: QueryHookOptions<{ workflowActions: WorkflowActionConnection }, QueryMany<WorkflowActionFilter, WorkflowActionSort>>
+  options: QueryHookOptions<
+    { workflowActions: WorkflowActionConnection },
+    QueryMany<WorkflowActionFilter, WorkflowActionSort>
+  >,
 ) {
   const query = getListEntitiesQuery({
     entityName: 'workflowAction',
@@ -34,13 +37,16 @@ export function useGetWorkflowsActions (
     fragment,
     options,
   })
-  return useQuery<{ workflowActions: WorkflowActionConnection }, QueryMany<WorkflowActionFilter, WorkflowActionSort>>(query, options)
+  return useQuery<{ workflowActions: WorkflowActionConnection }, QueryMany<WorkflowActionFilter, WorkflowActionSort>>(
+    query,
+    options,
+  )
 }
 
-export function useCreateOneWorkflowAction () {
+export function useCreateOneWorkflowAction() {
   const mutation = gql`
     mutation ($input: CreateOneWorkflowActionInput!) {
-      createOneWorkflowAction (input: $input) {
+      createOneWorkflowAction(input: $input) {
         id
       }
     }
@@ -48,11 +54,11 @@ export function useCreateOneWorkflowAction () {
   return useMutation<{ createOneWorkflowAction: WorkflowAction }, { input: CreateOneWorkflowActionInput }>(mutation)
 }
 
-export function useUpdateOneWorkflowAction () {
+export function useUpdateOneWorkflowAction() {
   // return updated fields in order to update apollo cache
   const mutation = gql`
     mutation ($input: UpdateOneWorkflowActionInput!) {
-      updateOneWorkflowAction (input: $input) {
+      updateOneWorkflowAction(input: $input) {
         id
         inputs
         credentials {
@@ -64,10 +70,10 @@ export function useUpdateOneWorkflowAction () {
   return useMutation<{ updateOneWorkflowAction: WorkflowAction }, { input: UpdateOneWorkflowActionInput }>(mutation)
 }
 
-export function useDeleteOneWorkflowAction () {
+export function useDeleteOneWorkflowAction() {
   const mutation = gql`
     mutation ($input: DeleteOneInput!) {
-      deleteOneWorkflowAction (input: $input) {
+      deleteOneWorkflowAction(input: $input) {
         id
       }
     }
@@ -79,6 +85,6 @@ export function useDeleteOneWorkflowAction () {
           id: data.deleteOneWorkflowAction.id,
         })
       }
-    }
+    },
   })
 }

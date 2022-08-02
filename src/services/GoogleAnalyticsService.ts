@@ -3,14 +3,14 @@ import ReactGA, { EventArgs } from 'react-ga'
 export const GoogleAnalyticsService = {
   _initialized: false,
 
-  _initialize () {
+  _initialize() {
     ReactGA.initialize(process.env.GA_TRACKING_CODE || 'UA-000000-01', {
-      debug: false
+      debug: false,
     })
     this._initialized = true
   },
 
-  trackPage (page: string) {
+  trackPage(page: string) {
     if (!this._initialized) {
       this._initialize()
     }
@@ -22,11 +22,11 @@ export const GoogleAnalyticsService = {
     }, 0)
   },
 
-  sendEvent (event: EventArgs) {
+  sendEvent(event: EventArgs) {
     if (!this._initialized) {
       this._initialize()
     }
 
     ReactGA.event(event)
-  }
+  },
 }

@@ -3,12 +3,15 @@ import { QueryHookOptions } from '@apollo/client/react/types/types'
 import { getFragmentFirstName } from '../utils/graphql.utils'
 import { capitalize } from '../utils/strings'
 
-export function getEntityQuery ({ entityName, key = 'id', fragment }: {
-  entityName: string,
-  key: string,
-  fragment: DocumentNode,
-},
-) {
+export function getEntityQuery({
+  entityName,
+  key = 'id',
+  fragment,
+}: {
+  entityName: string
+  key: string
+  fragment: DocumentNode
+}) {
   const fragmentName = getFragmentFirstName(fragment)
   if (!fragmentName) {
     throw new Error('At least one fragment must be provided')
@@ -23,11 +26,16 @@ export function getEntityQuery ({ entityName, key = 'id', fragment }: {
   `
 }
 
-export function getListEntitiesQuery ({ entityName, pluralEntityName, fragment, options }: {
-  entityName: string,
-  pluralEntityName: string,
-  fragment: DocumentNode,
-  options: QueryHookOptions,
+export function getListEntitiesQuery({
+  entityName,
+  pluralEntityName,
+  fragment,
+  options,
+}: {
+  entityName: string
+  pluralEntityName: string
+  fragment: DocumentNode
+  options: QueryHookOptions
 }) {
   const fragmentName = getFragmentFirstName(fragment)
   if (!fragmentName) {
@@ -39,8 +47,12 @@ export function getListEntitiesQuery ({ entityName, pluralEntityName, fragment, 
   const search = typeof options?.variables?.search !== 'undefined'
   const paging = typeof options?.variables?.paging !== 'undefined'
   return graphqlTag`
-    query ($filter: ${filterType} ${sorting ? ', $sorting: ' + sortType : ''} ${search ? ', $search: String' : ''} ${paging ? ', $paging: CursorPaging' : ''}) {
-      ${pluralEntityName} (filter: $filter ${sorting ? ', sorting: $sorting' : ''} ${search ? ', search: $search' : ''} ${paging ? ', paging: $paging' : ''}) {
+    query ($filter: ${filterType} ${sorting ? ', $sorting: ' + sortType : ''} ${search ? ', $search: String' : ''} ${
+    paging ? ', $paging: CursorPaging' : ''
+  }) {
+      ${pluralEntityName} (filter: $filter ${sorting ? ', sorting: $sorting' : ''} ${
+    search ? ', search: $search' : ''
+  } ${paging ? ', paging: $paging' : ''}) {
         edges {
           node {
             ${'...' + fragmentName}

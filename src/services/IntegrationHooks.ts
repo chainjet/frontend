@@ -4,9 +4,9 @@ import { Integration, IntegrationConnection, IntegrationFilter, IntegrationSort 
 import { QueryById, QueryMany } from '../typings/GraphQL'
 import { getEntityQuery, getListEntitiesQuery } from './GraphQLHooks'
 
-export function useGetIntegrationIntegrationById (
+export function useGetIntegrationIntegrationById(
   fragment: DocumentNode,
-  options: QueryHookOptions<{ integration: Integration }, QueryById>
+  options: QueryHookOptions<{ integration: Integration }, QueryById>,
 ) {
   const query = getEntityQuery({
     entityName: 'integration',
@@ -16,9 +16,9 @@ export function useGetIntegrationIntegrationById (
   return useQuery<{ integration: Integration }, QueryById>(query, options)
 }
 
-export function useGetIntegrations (
+export function useGetIntegrations(
   fragment: DocumentNode,
-  options: QueryHookOptions<{ integrations: IntegrationConnection }, QueryMany<IntegrationFilter, IntegrationSort>>
+  options: QueryHookOptions<{ integrations: IntegrationConnection }, QueryMany<IntegrationFilter, IntegrationSort>>,
 ) {
   const query = getListEntitiesQuery({
     entityName: 'integration',
@@ -26,5 +26,8 @@ export function useGetIntegrations (
     fragment,
     options,
   })
-  return useQuery<{ integrations: IntegrationConnection }, QueryMany<IntegrationFilter, IntegrationSort>>(query, options)
+  return useQuery<{ integrations: IntegrationConnection }, QueryMany<IntegrationFilter, IntegrationSort>>(
+    query,
+    options,
+  )
 }

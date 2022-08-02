@@ -1,12 +1,12 @@
-import { QueryHookOptions, useQuery } from "@apollo/client"
-import { DocumentNode } from "graphql"
-import { WorkflowRun, WorkflowRunConnection, WorkflowRunFilter, WorkflowRunSort } from "../../graphql"
-import { QueryById, QueryMany } from "../typings/GraphQL"
-import { getEntityQuery, getListEntitiesQuery } from "./GraphQLHooks"
+import { QueryHookOptions, useQuery } from '@apollo/client'
+import { DocumentNode } from 'graphql'
+import { WorkflowRun, WorkflowRunConnection, WorkflowRunFilter, WorkflowRunSort } from '../../graphql'
+import { QueryById, QueryMany } from '../typings/GraphQL'
+import { getEntityQuery, getListEntitiesQuery } from './GraphQLHooks'
 
-export function useGetWorkflowRunById (
+export function useGetWorkflowRunById(
   fragment: DocumentNode,
-  options: QueryHookOptions<{ workflowRun: WorkflowRun }, QueryById>
+  options: QueryHookOptions<{ workflowRun: WorkflowRun }, QueryById>,
 ) {
   const query = getEntityQuery({
     entityName: 'workflowRun',
@@ -16,9 +16,9 @@ export function useGetWorkflowRunById (
   return useQuery<{ workflowRun: WorkflowRun }, QueryById>(query, options)
 }
 
-export function useGetWorkflowRuns (
+export function useGetWorkflowRuns(
   fragment: DocumentNode,
-  options: QueryHookOptions<{ workflowRuns: WorkflowRunConnection }, QueryMany<WorkflowRunFilter, WorkflowRunSort>>
+  options: QueryHookOptions<{ workflowRuns: WorkflowRunConnection }, QueryMany<WorkflowRunFilter, WorkflowRunSort>>,
 ) {
   const query = getListEntitiesQuery({
     entityName: 'workflowRun',
@@ -26,5 +26,8 @@ export function useGetWorkflowRuns (
     fragment,
     options,
   })
-  return useQuery<{ workflowRuns: WorkflowRunConnection }, QueryMany<WorkflowRunFilter, WorkflowRunSort>>(query, options)
+  return useQuery<{ workflowRuns: WorkflowRunConnection }, QueryMany<WorkflowRunFilter, WorkflowRunSort>>(
+    query,
+    options,
+  )
 }

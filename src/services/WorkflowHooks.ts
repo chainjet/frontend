@@ -7,14 +7,14 @@ import {
   Workflow,
   WorkflowConnection,
   WorkflowFilter,
-  WorkflowSort
+  WorkflowSort,
 } from '../../graphql'
 import { QueryMany } from '../typings/GraphQL'
 import { getListEntitiesQuery } from './GraphQLHooks'
 
-export function useGetWorkflows (
+export function useGetWorkflows(
   fragment: DocumentNode,
-  options: QueryHookOptions<{ workflows: WorkflowConnection }, QueryMany<WorkflowFilter, WorkflowSort>>
+  options: QueryHookOptions<{ workflows: WorkflowConnection }, QueryMany<WorkflowFilter, WorkflowSort>>,
 ) {
   const query = getListEntitiesQuery({
     entityName: 'workflow',
@@ -25,10 +25,10 @@ export function useGetWorkflows (
   return useQuery<{ workflows: WorkflowConnection }, QueryMany<WorkflowFilter, WorkflowSort>>(query, options)
 }
 
-export function useCreateOneWorkflow () {
+export function useCreateOneWorkflow() {
   const mutation = gql`
     mutation ($input: CreateOneWorkflowInput!) {
-      createOneWorkflow (input: $input) {
+      createOneWorkflow(input: $input) {
         id
         slug
       }
@@ -37,10 +37,10 @@ export function useCreateOneWorkflow () {
   return useMutation<{ createOneWorkflow: Workflow }, { input: CreateOneWorkflowInput }>(mutation)
 }
 
-export function useUpdateOneWorkflow () {
+export function useUpdateOneWorkflow() {
   const mutation = gql`
     mutation ($input: UpdateOneWorkflowInput!) {
-      updateOneWorkflow (input: $input) {
+      updateOneWorkflow(input: $input) {
         id
         slug
         name
@@ -51,10 +51,10 @@ export function useUpdateOneWorkflow () {
   return useMutation<{ updateOneWorkflow: Workflow }, { input: UpdateOneWorkflowInput }>(mutation)
 }
 
-export function useDeleteOneWorkflow () {
+export function useDeleteOneWorkflow() {
   const mutation = gql`
     mutation ($input: DeleteOneInput!) {
-      deleteOneWorkflow (input: $input) {
+      deleteOneWorkflow(input: $input) {
         id
       }
     }
@@ -66,6 +66,6 @@ export function useDeleteOneWorkflow () {
           id: data.deleteOneWorkflow.id,
         })
       }
-    }
+    },
   })
 }

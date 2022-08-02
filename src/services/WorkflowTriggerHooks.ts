@@ -7,14 +7,14 @@ import {
   WorkflowTrigger,
   WorkflowTriggerConnection,
   WorkflowTriggerFilter,
-  WorkflowTriggerSort
+  WorkflowTriggerSort,
 } from '../../graphql'
 import { QueryById, QueryMany } from '../typings/GraphQL'
 import { getEntityQuery, getListEntitiesQuery } from './GraphQLHooks'
 
-export function useGetWorkflowTriggerById (
+export function useGetWorkflowTriggerById(
   fragment: DocumentNode,
-  options: QueryHookOptions<{ workflowTrigger: WorkflowTrigger }, QueryById>
+  options: QueryHookOptions<{ workflowTrigger: WorkflowTrigger }, QueryById>,
 ) {
   const query = getEntityQuery({
     entityName: 'workflowTrigger',
@@ -24,9 +24,12 @@ export function useGetWorkflowTriggerById (
   return useQuery<{ workflowTrigger: WorkflowTrigger }, QueryById>(query, options)
 }
 
-export function useGetWorkflowsTriggers (
+export function useGetWorkflowsTriggers(
   fragment: DocumentNode,
-  options: QueryHookOptions<{ workflowTriggers: WorkflowTriggerConnection }, QueryMany<WorkflowTriggerFilter, WorkflowTriggerSort>>
+  options: QueryHookOptions<
+    { workflowTriggers: WorkflowTriggerConnection },
+    QueryMany<WorkflowTriggerFilter, WorkflowTriggerSort>
+  >,
 ) {
   const query = getListEntitiesQuery({
     entityName: 'workflowTrigger',
@@ -34,13 +37,16 @@ export function useGetWorkflowsTriggers (
     fragment,
     options,
   })
-  return useQuery<{ workflowTriggers: WorkflowTriggerConnection }, QueryMany<WorkflowTriggerFilter, WorkflowTriggerSort>>(query, options)
+  return useQuery<
+    { workflowTriggers: WorkflowTriggerConnection },
+    QueryMany<WorkflowTriggerFilter, WorkflowTriggerSort>
+  >(query, options)
 }
 
-export function useCreateOneWorkflowTrigger () {
+export function useCreateOneWorkflowTrigger() {
   const mutation = gql`
     mutation ($input: CreateOneWorkflowTriggerInput!) {
-      createOneWorkflowTrigger (input: $input) {
+      createOneWorkflowTrigger(input: $input) {
         id
         hookId
       }
@@ -49,11 +55,11 @@ export function useCreateOneWorkflowTrigger () {
   return useMutation<{ createOneWorkflowTrigger: WorkflowTrigger }, { input: CreateOneWorkflowTriggerInput }>(mutation)
 }
 
-export function useUpdateOneWorkflowTrigger () {
+export function useUpdateOneWorkflowTrigger() {
   // return updated fields in order to update apollo cache
   const mutation = gql`
     mutation ($input: UpdateOneWorkflowTriggerInput!) {
-      updateOneWorkflowTrigger (input: $input) {
+      updateOneWorkflowTrigger(input: $input) {
         id
         inputs
         credentials {
@@ -68,10 +74,10 @@ export function useUpdateOneWorkflowTrigger () {
   return useMutation<{ updateOneWorkflowTrigger: WorkflowTrigger }, { input: UpdateOneWorkflowTriggerInput }>(mutation)
 }
 
-export function useDeleteOneWorkflowTrigger () {
+export function useDeleteOneWorkflowTrigger() {
   const mutation = gql`
     mutation ($input: DeleteOneInput!) {
-      deleteOneWorkflowTrigger (input: $input) {
+      deleteOneWorkflowTrigger(input: $input) {
         id
       }
     }
@@ -83,11 +89,11 @@ export function useDeleteOneWorkflowTrigger () {
           id: data.deleteOneWorkflowTrigger.id,
         })
       }
-    }
+    },
   })
 }
 
-export function useCheckWorkflowTrigger () {
+export function useCheckWorkflowTrigger() {
   const mutation = gql`
     mutation ($id: String!) {
       checkWorkflowTrigger(id: $id) {

@@ -7,14 +7,14 @@ import {
   ProjectConnection,
   ProjectFilter,
   ProjectSort,
-  UpdateOneProjectInput
+  UpdateOneProjectInput,
 } from '../../graphql'
 import { QueryMany } from '../typings/GraphQL'
 import { getListEntitiesQuery } from './GraphQLHooks'
 
-export function useGetProjects (
+export function useGetProjects(
   fragment: DocumentNode,
-  options: QueryHookOptions<{ projects: ProjectConnection }, QueryMany<ProjectFilter, ProjectSort>> = {}
+  options: QueryHookOptions<{ projects: ProjectConnection }, QueryMany<ProjectFilter, ProjectSort>> = {},
 ) {
   const query = getListEntitiesQuery({
     entityName: 'project',
@@ -25,10 +25,10 @@ export function useGetProjects (
   return useQuery<{ projects: ProjectConnection }, QueryMany<ProjectFilter, ProjectSort>>(query, options)
 }
 
-export function useCreateOneProject () {
+export function useCreateOneProject() {
   const mutation = gql`
     mutation ($input: CreateOneProjectInput!) {
-      createOneProject (input: $input) {
+      createOneProject(input: $input) {
         id
         slug
       }
@@ -37,10 +37,10 @@ export function useCreateOneProject () {
   return useMutation<{ createOneProject: Project }, { input: CreateOneProjectInput }>(mutation)
 }
 
-export function useUpdateOneProject () {
+export function useUpdateOneProject() {
   const mutation = gql`
     mutation ($input: UpdateOneProjectInput!) {
-      updateOneProject (input: $input) {
+      updateOneProject(input: $input) {
         id
         slug
         name
@@ -50,10 +50,10 @@ export function useUpdateOneProject () {
   return useMutation<{ updateOneProject: Project }, { input: UpdateOneProjectInput }>(mutation)
 }
 
-export function useDeleteOneProject () {
+export function useDeleteOneProject() {
   const mutation = gql`
     mutation ($input: DeleteOneInput!) {
-      deleteOneProject (input: $input) {
+      deleteOneProject(input: $input) {
         id
       }
     }
@@ -65,7 +65,6 @@ export function useDeleteOneProject () {
           id: data.deleteOneProject.id,
         })
       }
-    }
+    },
   })
 }
-

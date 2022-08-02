@@ -1,10 +1,10 @@
-import { gql, QueryHookOptions, useQuery } from "@apollo/client"
-import { IntegrationCategory } from "../../graphql"
+import { gql, QueryHookOptions, useQuery } from '@apollo/client'
+import { IntegrationCategory } from '../../graphql'
 
-export function useGetIntegrationCategory (options: QueryHookOptions<{}>) {
+export function useGetIntegrationCategory(options: QueryHookOptions<{}>) {
   const query = gql`
-    query IntegrationCategory ($id: String!) {
-      integrationCategory (id: $id) {
+    query IntegrationCategory($id: String!) {
+      integrationCategory(id: $id) {
         id
         name
       }
@@ -13,7 +13,7 @@ export function useGetIntegrationCategory (options: QueryHookOptions<{}>) {
   return useQuery<{ integrationCategory: IntegrationCategory }>(query, options)
 }
 
-export function useGetIntegrationCategories (options: QueryHookOptions<{}>) {
+export function useGetIntegrationCategories(options: QueryHookOptions<{}>) {
   const query = gql`
     {
       integrationCategories {

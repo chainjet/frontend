@@ -10,4 +10,3 @@ export type QueryMany<FILTER, SORTING> = {
   sorting?: SORTING[]
   search?: string
 }
-

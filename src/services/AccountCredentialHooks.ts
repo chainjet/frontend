@@ -7,14 +7,14 @@ import {
   AccountCredentialSort,
   CreateOneAccountCredentialInput,
   DeleteOneInput,
-  UpdateOneAccountCredentialInput
+  UpdateOneAccountCredentialInput,
 } from '../../graphql'
 import { QueryById, QueryMany } from '../typings/GraphQL'
 import { getEntityQuery, getListEntitiesQuery } from './GraphQLHooks'
 
-export function useGetAccountCredentialById (
+export function useGetAccountCredentialById(
   fragment: DocumentNode,
-  options: QueryHookOptions<{ accountCredential: AccountCredential }, QueryById>
+  options: QueryHookOptions<{ accountCredential: AccountCredential }, QueryById>,
 ) {
   const query = getEntityQuery({
     entityName: 'accountCredential',
@@ -24,10 +24,12 @@ export function useGetAccountCredentialById (
   return useQuery<{ accountCredential: AccountCredential }, QueryById>(query, options)
 }
 
-export function useGetAccountCredentials (
+export function useGetAccountCredentials(
   fragment: DocumentNode,
-  options: QueryHookOptions<{ accountCredentials: AccountCredentialConnection },
-    QueryMany<AccountCredentialFilter, AccountCredentialSort>>
+  options: QueryHookOptions<
+    { accountCredentials: AccountCredentialConnection },
+    QueryMany<AccountCredentialFilter, AccountCredentialSort>
+  >,
 ) {
   const query = getListEntitiesQuery({
     entityName: 'accountCredential',
@@ -35,37 +37,42 @@ export function useGetAccountCredentials (
     fragment,
     options,
   })
-  return useQuery<{ accountCredentials: AccountCredentialConnection },
-    QueryMany<AccountCredentialFilter, AccountCredentialSort>>(query, options)
+  return useQuery<
+    { accountCredentials: AccountCredentialConnection },
+    QueryMany<AccountCredentialFilter, AccountCredentialSort>
+  >(query, options)
 }
 
-export function useCreateOneAccountCredential () {
+export function useCreateOneAccountCredential() {
   const mutation = gql`
     mutation ($input: CreateOneAccountCredentialInput!) {
-      createOneAccountCredential (input: $input) {
+      createOneAccountCredential(input: $input) {
         id
       }
     }
   `
-  return useMutation<{ createOneAccountCredential: AccountCredential }, { input: CreateOneAccountCredentialInput }>(mutation)
+  return useMutation<{ createOneAccountCredential: AccountCredential }, { input: CreateOneAccountCredentialInput }>(
+    mutation,
+  )
 }
 
-export function useUpdateOneAccountCredential () {
+export function useUpdateOneAccountCredential() {
   const mutation = gql`
     mutation ($input: UpdateOneAccountCredentialInput!) {
-      updateOneAccountCredential (input: $input) {
+      updateOneAccountCredential(input: $input) {
         id
       }
     }
   `
-  return useMutation<{ updateOneAccountCredential: AccountCredential },
-    { input: UpdateOneAccountCredentialInput }>(mutation)
+  return useMutation<{ updateOneAccountCredential: AccountCredential }, { input: UpdateOneAccountCredentialInput }>(
+    mutation,
+  )
 }
 
-export function useDeleteOneAccountCredential () {
+export function useDeleteOneAccountCredential() {
   const mutation = gql`
     mutation ($input: DeleteOneInput!) {
-      deleteOneAccountCredential (input: $input) {
+      deleteOneAccountCredential(input: $input) {
         id
       }
     }
@@ -77,6 +84,6 @@ export function useDeleteOneAccountCredential () {
           id: data.deleteOneAccountCredential.id,
         })
       }
-    }
+    },
   })
 }

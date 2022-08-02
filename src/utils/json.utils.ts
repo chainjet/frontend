@@ -2,7 +2,7 @@
 
 // Normally schemas will be decycled on the server and retrocycled on the client.
 
-export function retrocycle ($: unknown, refKey = '__ref__'): unknown {
+export function retrocycle($: unknown, refKey = '__ref__'): unknown {
   // Restore an object that was reduced by decycle. Members whose values are
   // objects of the form
   //      {__ref__: PATH}
@@ -23,7 +23,7 @@ export function retrocycle ($: unknown, refKey = '__ref__'): unknown {
   // produces an array containing a single element which is the array itself.
 
   const px = /^\$(?:\[(?:\d+|"(?:[^\\"\u0000-\u001f]|\\(?:[\\"\/bfnrt]|u[0-9a-zA-Z]{4}))*")\])*$/
-  ;(function rez (value: unknown) {
+  ;(function rez(value: unknown) {
     // The rez function walks recursively through the object looking for __ref__
     // properties. When it finds one that has a value that is a path, then it
     // replaces the __ref__ object with a reference to the value that is found by
