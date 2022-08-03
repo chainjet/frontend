@@ -3,7 +3,13 @@ import { useGetIntegrations } from '../../../../src/services/IntegrationHooks'
 import { gql } from '@apollo/client'
 import { Button, Card, Col, Input, List, message, Row, Typography } from 'antd'
 import { SelectCredentials } from './SelectCredentials'
-import { Integration, IntegrationCategory, IntegrationConnection, IntegrationSortFields, SortDirection } from '../../../../graphql'
+import {
+  Integration,
+  IntegrationCategory,
+  IntegrationConnection,
+  IntegrationSortFields,
+  SortDirection,
+} from '../../../../graphql'
 import { IntegrationAvatar } from '../../../integrations/IntegrationAvatar'
 import { IntegrationFilters } from '../../../integrations/IntegrationFilters'
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
@@ -39,7 +45,8 @@ const selectIntegrationFragment = gql`
 `
 
 export const SelectIntegration = (props: Props) => {
-  const { nodeType, initialCategory, onIntegrationSelect, onCategoryChange, useIntegrationLink, useCategoryLink } = props
+  const { nodeType, initialCategory, onIntegrationSelect, onCategoryChange, useIntegrationLink, useCategoryLink } =
+    props
   const [search, setSearch] = useState('')
   const [categorySelected, setCategorySelected] = useState<IntegrationCategory | null>(initialCategory ?? null)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -49,35 +56,25 @@ export const SelectIntegration = (props: Props) => {
   const queryVars = {
     filter: {
       deprecated: {
-        is: false
+        is: false,
       },
-      ...(
-        nodeType 
-          ? {
-              [nodeType === 'trigger' ? 'numberOfTriggers' : 'numberOfActions']: {
-                gt: 0
-              }
-            }
-          : {}
-      ),
-      ...(
-        categorySelected?.id
-          ? { integrationCategories: { eq: categorySelected.id } }
-          : {}
-      ),
+      ...(nodeType
+        ? {
+            [nodeType === 'trigger' ? 'numberOfTriggers' : 'numberOfActions']: {
+              gt: 0,
+            },
+          }
+        : {}),
+      ...(categorySelected?.id ? { integrationCategories: { eq: categorySelected.id } } : {}),
     },
     search,
     paging: {
-      first: 120
+      first: 120,
     },
-    ...(
-      search
-        ? {}
-        : { sorting: [{ field: IntegrationSortFields.name, direction: SortDirection.ASC }] }
-    )
+    ...(search ? {} : { sorting: [{ field: IntegrationSortFields.name, direction: SortDirection.ASC }] }),
   }
   const { data, loading, error, fetchMore } = useGetIntegrations(selectIntegrationFragment, {
-    variables: queryVars
+    variables: queryVars,
   })
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,22 +98,22 @@ export const SelectIntegration = (props: Props) => {
           ...queryVars,
           paging: {
             ...queryVars.paging,
-            after: data?.integrations?.pageInfo.endCursor
-          }
+            after: data?.integrations?.pageInfo.endCursor,
+          },
         },
         updateQuery: (previousResult: { integrations: IntegrationConnection }, { fetchMoreResult }) => {
           const newEdges = fetchMoreResult?.integrations.edges
           const pageInfo = fetchMoreResult?.integrations.pageInfo
           return pageInfo && newEdges?.length
             ? {
-              integrations: {
+                integrations: {
                   ...previousResult.integrations,
                   edges: [...previousResult.integrations.edges, ...newEdges],
-                  pageInfo
-                }
+                  pageInfo,
+                },
               }
             : previousResult
-        }
+        },
       })
       setLoadingMore(false)
     }
@@ -126,36 +123,36 @@ export const SelectIntegration = (props: Props) => {
     return <>Unexpected error, please try again.</>
   }
 
-  const integrations = data?.integrations?.edges?.map(edge => edge.node) || []
+  const integrations = data?.integrations?.edges?.map((edge) => edge.node) || []
   const hasNextPage = !!data?.integrations?.pageInfo?.hasNextPage
 
   return (
     <>
       <div style={{ marginBottom: 24 }}>
-        <Input.Search placeholder="Find integration" onChange={handleSearchChange} enterButton/>
+        <Input.Search placeholder="Find integration" onChange={handleSearchChange} enterButton />
       </div>
 
       <Row>
-        {
-          !hideCategories && (
-            <Col span={4}>
-              <Typography.Title level={5}>Category</Typography.Title>
-              <IntegrationFilters onCategoryChange={handleCategoryChange}
-                                  categorySelected={categorySelected}
-                                  useCategoryLink={useCategoryLink}/>
-            </Col>
-          )
-        }
-        
-        <Col span={hideCategories ? 24: 20} style={{ padding: '0px 24px' }}>
-          {
-            search && categorySelected && !integrations.length && (
-              <div style={{ marginBottom: 16 }}>
-                No results for "<strong>{search}</strong>" in <strong>{categorySelected.name}</strong>.
-                <Button type="link" onClick={() => setCategorySelected(null)}>Search all categories</Button>
-              </div>
-            )
-          }
+        {!hideCategories && (
+          <Col span={4}>
+            <Typography.Title level={5}>Category</Typography.Title>
+            <IntegrationFilters
+              onCategoryChange={handleCategoryChange}
+              categorySelected={categorySelected}
+              useCategoryLink={useCategoryLink}
+            />
+          </Col>
+        )}
+
+        <Col span={hideCategories ? 24 : 20} style={{ padding: '0px 24px' }}>
+          {search && categorySelected && !integrations.length && (
+            <div style={{ marginBottom: 16 }}>
+              No results for "<strong>{search}</strong>" in <strong>{categorySelected.name}</strong>.
+              <Button type="link" onClick={() => setCategorySelected(null)}>
+                Search all categories
+              </Button>
+            </div>
+          )}
 
           <List
             dataSource={integrations}
@@ -171,12 +168,12 @@ export const SelectIntegration = (props: Props) => {
               xl: 3,
               xxl: 3,
             }}
-            renderItem={integration => {
+            renderItem={(integration) => {
               const integrationContent = (
                 <List.Item onClick={() => onIntegrationSelect?.(integration)}>
                   <Card hoverable={!!onIntegrationSelect || !!useIntegrationLink} bordered={false}>
                     <Card.Meta
-                      avatar={<IntegrationAvatar integration={integration}/>}
+                      avatar={<IntegrationAvatar integration={integration} />}
                       title={integration.name}
                       description=""
                     />
@@ -195,7 +192,9 @@ export const SelectIntegration = (props: Props) => {
             loadMore={
               hasNextPage && (
                 <div style={{ textAlign: 'center', marginTop: 24 }}>
-                  <Button loading={loadingMore} onClick={handleLoadMoreClick}>Load More</Button>
+                  <Button loading={loadingMore} onClick={handleLoadMoreClick}>
+                    Load More
+                  </Button>
                 </div>
               )
             }

@@ -2,7 +2,13 @@ import React, { useState } from 'react'
 import { SelectWorkflowNode } from './SelectWorkflowNode'
 import { RequestError } from '../../../common/RequestStates/RequestError'
 import { useGetIntegrationTriggers } from '../../../../src/services/IntegrationTriggerHooks'
-import { Integration, IntegrationTrigger, IntegrationTriggerSortFields, OperationCategory, SortDirection } from '../../../../graphql'
+import {
+  Integration,
+  IntegrationTrigger,
+  IntegrationTriggerSortFields,
+  OperationCategory,
+  SortDirection,
+} from '../../../../graphql'
 
 interface Props {
   integration: Integration
@@ -17,11 +23,11 @@ export const SelectWorkflowTrigger = (props: Props) => {
   const queryVars = {
     filter: {
       integration: {
-        eq: integration.id
+        eq: integration.id,
       },
       deprecated: {
-        is: false
-      }
+        is: false,
+      },
     },
     sorting: [{ field: IntegrationTriggerSortFields.name, direction: SortDirection.ASC }],
     search,
@@ -30,7 +36,7 @@ export const SelectWorkflowTrigger = (props: Props) => {
     },
   }
   const { data, loading, error, refetch } = useGetIntegrationTriggers(SelectWorkflowNode.fragments.IntegrationTrigger, {
-    variables: queryVars
+    variables: queryVars,
   })
 
   const onFilterChange = async (search: string) => {
@@ -49,16 +55,16 @@ export const SelectWorkflowTrigger = (props: Props) => {
       filter: {
         ...queryVars.filter,
         ...(category?.key ? { category: { eq: category.key } } : {}),
-      }
+      },
     })
   }
 
   if (error) {
-    return <RequestError error={error}/>
+    return <RequestError error={error} />
   }
 
-  const operationCategories = (integration.operationCategories || []).filter(category => category.numberOfTriggers)
-  let triggers = (data?.integrationTriggers.edges?.map(edge => edge.node) || [])
+  const operationCategories = (integration.operationCategories || []).filter((category) => category.numberOfTriggers)
+  let triggers = data?.integrationTriggers.edges?.map((edge) => edge.node) || []
 
   // Sort instant triggers first, then by name
   if (!search) {
@@ -83,13 +89,15 @@ export const SelectWorkflowTrigger = (props: Props) => {
   }
 
   return (
-    <SelectWorkflowNode nodeType="trigger"
-                        nodes={triggers}
-                        operationCategories={operationCategories}
-                        categorySelected={categorySelected}
-                        onFilterChange={onFilterChange}
-                        onNodeSelected={onTriggerSelected}
-                        onCategorySelected={onCategorySelected}
-                        loading={loading}/>
+    <SelectWorkflowNode
+      nodeType="trigger"
+      nodes={triggers}
+      operationCategories={operationCategories}
+      categorySelected={categorySelected}
+      onFilterChange={onFilterChange}
+      onNodeSelected={onTriggerSelected}
+      onCategorySelected={onCategorySelected}
+      loading={loading}
+    />
   )
 }

@@ -10,13 +10,15 @@ interface Props {
   category?: IntegrationCategory
 }
 
-export function IntegrationPageContainer (props: Props) {
+export function IntegrationPageContainer(props: Props) {
   const { category } = props
   const router = useRouter()
 
   const handleCategoryChange = async (selectedCategory: IntegrationCategory | null) => {
     if (selectedCategory) {
-      await router.push('/integrations/category/[category]', `/integrations/category/${selectedCategory?.id}`, { shallow: true })
+      await router.push('/integrations/category/[category]', `/integrations/category/${selectedCategory?.id}`, {
+        shallow: true,
+      })
     } else {
       await router.push('/integrations', undefined, { shallow: true })
     }
@@ -24,16 +26,16 @@ export function IntegrationPageContainer (props: Props) {
 
   return (
     <>
-      <LandingHeader/>
-        <Card>
-            <SelectIntegration initialCategory={category}
-                               onCategoryChange={handleCategoryChange}
-                               useIntegrationLink={integration => `/integrations/${integration.key}`}
-                               useCategoryLink={
-                                 category => category ? `/integrations/category/${category.id}` : '/integrations'
-                               }/>
-        </Card>
-        <LandingFooter/>
+      <LandingHeader />
+      <Card>
+        <SelectIntegration
+          initialCategory={category}
+          onCategoryChange={handleCategoryChange}
+          useIntegrationLink={(integration) => `/integrations/${integration.key}`}
+          useCategoryLink={(category) => (category ? `/integrations/category/${category.id}` : '/integrations')}
+        />
+      </Card>
+      <LandingFooter />
     </>
   )
 }

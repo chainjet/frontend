@@ -21,7 +21,7 @@ export const CreateWorkflowTriggerDrawer = (props: Props) => {
   const onSubmitInputs = async (
     inputs: Record<string, any>,
     integrationTrigger: IntegrationTrigger,
-    credentialsID?: string
+    credentialsID?: string,
   ) => {
     const schedule = inputs.chainjet_schedule
     delete inputs.chainjet_schedule
@@ -33,10 +33,10 @@ export const CreateWorkflowTriggerDrawer = (props: Props) => {
             integrationTrigger: integrationTrigger.id,
             inputs,
             credentials: credentialsID,
-            schedule
+            schedule,
           },
-        }
-      }
+        },
+      },
     })
     setIntegrationTrigger(integrationTrigger)
     if (res.data?.createOneWorkflowTrigger) {
@@ -65,18 +65,21 @@ export const CreateWorkflowTriggerDrawer = (props: Props) => {
   }
 
   return (
-    <WorkflowNodeDrawer nodeType="trigger"
+    <WorkflowNodeDrawer
+      nodeType="trigger"
       title="Create Workflow Trigger"
       visible={visible}
       overrideStep={
-        integrationTrigger && workflowTrigger && hookStep
-          ? <CompleteHookTrigger
+        integrationTrigger && workflowTrigger && hookStep ? (
+          <CompleteHookTrigger
             integrationTrigger={integrationTrigger}
             workflowTrigger={workflowTrigger}
-            onClose={handleCompleteHooKTrigger} />
-          : undefined
+            onClose={handleCompleteHooKTrigger}
+          />
+        ) : undefined
       }
       onSubmitInputs={onSubmitInputs}
-      onCancel={handleCancel} />
+      onCancel={handleCancel}
+    />
   )
 }

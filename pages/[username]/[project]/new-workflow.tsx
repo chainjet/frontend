@@ -1,18 +1,18 @@
-import React, { useState } from 'react'
-import { withApollo } from '../../../src/apollo'
-import { Alert, Button, Card, Col, Form, Input, Row } from 'antd'
-import { Store } from 'rc-field-form/es/interface'
-import Router from 'next/router'
-import { PageWrapper } from '../../../components/common/PageLayout/PageWrapper'
-import { useCreateOneWorkflow } from '../../../src/services/WorkflowHooks'
 import { gql } from '@apollo/client'
-import { Loading } from '../../../components/common/RequestStates/Loading'
+import { Alert, Button, Card, Col, Form, Input, Row } from 'antd'
 import { NextPageContext } from 'next'
-import { RequestError } from '../../../components/common/RequestStates/RequestError'
-import { useGetProjects } from '../../../src/services/ProjectHooks'
-import { slugify } from '../../../src/utils/strings'
-import { getQueryParam } from '../../../src/utils/nextUtils'
 import Head from 'next/head'
+import Router from 'next/router'
+import { Store } from 'rc-field-form/es/interface'
+import { useState } from 'react'
+import { PageWrapper } from '../../../components/common/PageLayout/PageWrapper'
+import { Loading } from '../../../components/common/RequestStates/Loading'
+import { RequestError } from '../../../components/common/RequestStates/RequestError'
+import { withApollo } from '../../../src/apollo'
+import { useGetProjects } from '../../../src/services/ProjectHooks'
+import { useCreateOneWorkflow } from '../../../src/services/WorkflowHooks'
+import { getQueryParam } from '../../../src/utils/nextUtils'
+import { slugify } from '../../../src/utils/strings'
 
 const projectFragment = gql`
   fragment NewWorkflowPage on Project {
@@ -26,15 +26,15 @@ interface Props {
   projectName: string
 }
 
-function NewWorkflowPage (props: Props) {
+function NewWorkflowPage(props: Props) {
   const projectRes = useGetProjects(projectFragment, {
     variables: {
       filter: {
         slug: {
-          eq: `${props.username}/${props.projectName}`.toLowerCase()
-        }
-      }
-    }
+          eq: `${props.username}/${props.projectName}`.toLowerCase(),
+        },
+      },
+    },
   })
   const [form] = Form.useForm()
   const [createWorkflow] = useCreateOneWorkflow()
@@ -57,10 +57,10 @@ function NewWorkflowPage (props: Props) {
           input: {
             workflow: {
               project: project.id,
-              name: values.name
-            }
-          }
-        }
+              name: values.name,
+            },
+          },
+        },
       })
       const workflowSlug = workflowRes.data?.createOneWorkflow?.slug
       if (workflowSlug) {
@@ -86,25 +86,20 @@ function NewWorkflowPage (props: Props) {
       <PageWrapper
         title="Create workflow"
         subTitle="A workflow defines a set of operations to be executed."
-        onBack={handleGoBack}>
+        onBack={handleGoBack}
+      >
         <Row gutter={24}>
           <Col xs={24}>
-            {
-              formError && <Alert
-                message="Error"
-                description={formError}
-                type="error"
-                showIcon
-                closable
-              />
-            }
+            {formError && <Alert message="Error" description={formError} type="error" showIcon closable />}
             <Card>
               <Form form={form} name="create-workflow" onFinish={onFinish}>
-                <Form.Item name="name"
+                <Form.Item
+                  name="name"
                   label="Workflow Name"
                   rules={[{ required: true }]}
-                  help={name && `https://chainjet.io/${project.slug}/workflow/${slugify(name)}`}>
-                  <Input allowClear onChange={e => setName(e.target.value)} />
+                  help={name && `https://chainjet.io/${project.slug}/workflow/${slugify(name)}`}
+                >
+                  <Input allowClear onChange={(e) => setName(e.target.value)} />
                 </Form.Item>
                 <Form.Item>
                   <Button type="primary" htmlType="submit">
@@ -123,7 +118,7 @@ function NewWorkflowPage (props: Props) {
 NewWorkflowPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> => {
   return {
     username: getQueryParam(ctx, 'username').toLowerCase(),
-    projectName: getQueryParam(ctx, 'project').toLowerCase()
+    projectName: getQueryParam(ctx, 'project').toLowerCase(),
   }
 }
 

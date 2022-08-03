@@ -26,12 +26,12 @@ const userFragment = gql`
   ${ProfileApiKeyForm.fragments.User}
 `
 
-function SettingsPage () {
+function SettingsPage() {
   const { viewer } = useViewer()
   const { data, loading, error } = useGetViewer(userFragment, {
     variables: {
-      id: viewer?.id ?? ''
-    }
+      id: viewer?.id ?? '',
+    },
   })
 
   if (loading) {
@@ -50,7 +50,6 @@ function SettingsPage () {
       </Head>
 
       <PageWrapper title="Settings" onBack={() => window.history.back()}>
-
         <Card title="Public info">
           <ProfilePublicInfoForm user={user} />
         </Card>
@@ -66,7 +65,6 @@ function SettingsPage () {
         <Card title="Security" style={{ marginTop: 24 }}>
           <ProfileSecurityForm user={user} />
         </Card>
-
       </PageWrapper>
     </>
   )

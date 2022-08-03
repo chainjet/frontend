@@ -28,8 +28,8 @@ export const SignTabs = (props: Props) => {
       await login({
         variables: {
           username: values.username,
-          password: values.password
-        }
+          password: values.password,
+        },
       })
       await redirectAfterAuth('/')
     } catch (e) {
@@ -56,10 +56,10 @@ export const SignTabs = (props: Props) => {
         variables: {
           email: values.email,
           username: values.username,
-          password: values.password
-        }
+          password: values.password,
+        },
       })
-      
+
       if (res?.data?.register?.project?.slug) {
         await redirectAfterAuth(`/${res.data.register.project.slug}`)
       } else {
@@ -98,34 +98,27 @@ export const SignTabs = (props: Props) => {
   }
 
   const renderMessage = () => {
-    return passwordChanged && (
-      <Alert
-        message="Password successfully updated"
-        description="You can now login with your new password."
-        type="success"
-        showIcon
-        style={{ marginBottom: '24px' }}
-      />
+    return (
+      passwordChanged && (
+        <Alert
+          message="Password successfully updated"
+          description="You can now login with your new password."
+          type="success"
+          showIcon
+          style={{ marginBottom: '24px' }}
+        />
+      )
     )
   }
 
   const renderError = () => {
-    return error && (
-      <Alert
-        message="Error"
-        description={error}
-        type="error"
-        showIcon
-        style={{ marginBottom: '24px' }}
-      />
-    )
+    return error && <Alert message="Error" description={error} type="error" showIcon style={{ marginBottom: '24px' }} />
   }
 
   return (
     <SignContainer>
       <Tabs defaultActiveKey={defaultTabKey} onChange={handleTabChange} centered>
         <Tabs.TabPane tab="Login" key="login">
-
           {renderMessage()}
           {renderError()}
 
@@ -134,23 +127,12 @@ export const SignTabs = (props: Props) => {
           </div>
           <Divider style={{ margin: '24px 0' }}>OR</Divider>
 
-          <Form
-            name="login"
-            initialValues={{ remember: true }}
-            onFinish={handleLogin}
-            onFinishFailed={handleLoginFail}
-          >
-            <Form.Item
-              name="username"
-              rules={[{ required: true, message: 'Please enter your username' }]}
-            >
+          <Form name="login" initialValues={{ remember: true }} onFinish={handleLogin} onFinishFailed={handleLoginFail}>
+            <Form.Item name="username" rules={[{ required: true, message: 'Please enter your username' }]}>
               <Input size="large" placeholder="Username or email" prefix={<UserOutlined />} />
             </Form.Item>
 
-            <Form.Item
-              name="password"
-              rules={[{ required: true, message: 'Please enter your password' }]}
-            >
+            <Form.Item name="password" rules={[{ required: true, message: 'Please enter your password' }]}>
               <Input.Password size="large" placeholder="Password" prefix={<LockTwoTone />} />
             </Form.Item>
 
@@ -174,7 +156,6 @@ export const SignTabs = (props: Props) => {
         </Tabs.TabPane>
 
         <Tabs.TabPane tab="Register" key="register">
-
           {renderError()}
 
           <div style={{ marginTop: 16 }}>
@@ -188,31 +169,19 @@ export const SignTabs = (props: Props) => {
             onFinish={handleRegister}
             onFinishFailed={handleRegisterFail}
           >
-            <Form.Item
-              name="email"
-              rules={[{ required: true, message: 'Please enter your email' }]}
-            >
+            <Form.Item name="email" rules={[{ required: true, message: 'Please enter your email' }]}>
               <Input size="large" placeholder="Email" prefix={<MailOutlined />} />
             </Form.Item>
 
-            <Form.Item
-              name="username"
-              rules={[{ required: true, message: 'Please enter your username' }]}
-            >
+            <Form.Item name="username" rules={[{ required: true, message: 'Please enter your username' }]}>
               <Input size="large" placeholder="Username" prefix={<UserOutlined />} />
             </Form.Item>
 
-            <Form.Item
-              name="password"
-              rules={[{ required: true, message: 'Please enter your password' }]}
-            >
+            <Form.Item name="password" rules={[{ required: true, message: 'Please enter your password' }]}>
               <Input.Password size="large" placeholder="Password" prefix={<LockTwoTone />} />
             </Form.Item>
 
-            <Form.Item
-              name="confirmPassword"
-              rules={[{ required: true, message: 'Please confirm your password' }]}
-            >
+            <Form.Item name="confirmPassword" rules={[{ required: true, message: 'Please confirm your password' }]}>
               <Input.Password size="large" placeholder="Confirm Password" prefix={<LockTwoTone />} />
             </Form.Item>
 
@@ -227,7 +196,6 @@ export const SignTabs = (props: Props) => {
               <Link href="/legal/terms">terms and conditions</Link> and&nbsp;
               <Link href="/legal/privacy">privacy policy</Link>.
             </p>
-
           </Form>
         </Tabs.TabPane>
       </Tabs>

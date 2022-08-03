@@ -19,14 +19,16 @@ export const WorkflowRunHistoryModal = (props: Props) => {
     variables: {
       filter: {
         workflow: {
-          eq: workflow.id
-        }
+          eq: workflow.id,
+        },
       },
-      sorting: [{
-        field: 'createdAt' as WorkflowRunSortFields,
-        direction: SortDirection.DESC
-      }]
-    }
+      sorting: [
+        {
+          field: 'createdAt' as WorkflowRunSortFields,
+          direction: SortDirection.DESC,
+        },
+      ],
+    },
   })
 
   useEffect(() => {
@@ -37,10 +39,10 @@ export const WorkflowRunHistoryModal = (props: Props) => {
   if (loading) {
     modalContent = <Loading />
   } else if (error || !data?.workflowRuns.edges) {
-    modalContent = <RequestError error={error}/>
+    modalContent = <RequestError error={error} />
   } else {
-    const workflowRuns = data.workflowRuns.edges.map(run => run.node)
-    modalContent = <WorkflowRunsTable workflowRuns={workflowRuns} workflow={workflow}/>
+    const workflowRuns = data.workflowRuns.edges.map((run) => run.node)
+    modalContent = <WorkflowRunsTable workflowRuns={workflowRuns} workflow={workflow} />
   }
 
   return (
@@ -51,7 +53,7 @@ export const WorkflowRunHistoryModal = (props: Props) => {
       footer={null}
       width={Math.min(window.innerWidth, 800)}
     >
-      { modalContent }
+      {modalContent}
     </Modal>
   )
 }

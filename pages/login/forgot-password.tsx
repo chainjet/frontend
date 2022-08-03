@@ -20,8 +20,8 @@ const ForgotPasswordPage = () => {
     try {
       await requestPasswordReset({
         variables: {
-          email: values.email
-        }
+          email: values.email,
+        },
       })
       setEmailSent(true)
     } catch (e) {
@@ -36,25 +36,12 @@ const ForgotPasswordPage = () => {
   }
 
   const renderError = () => {
-    return error && (
-      <Alert
-        message="Error"
-        description={error}
-        type="error"
-        showIcon
-        style={{ marginBottom: '24px' }}
-      />
-    )
+    return error && <Alert message="Error" description={error} type="error" showIcon style={{ marginBottom: '24px' }} />
   }
 
   const renderForm = () => {
     return (
-      <Form
-        name="forgot-password"
-        layout="vertical"
-        onFinish={handleSubmit}
-        onFinishFailed={handleSubmitFail}
-      >
+      <Form name="forgot-password" layout="vertical" onFinish={handleSubmit} onFinishFailed={handleSubmitFail}>
         {renderError()}
 
         <Form.Item
@@ -88,18 +75,14 @@ const ForgotPasswordPage = () => {
   return (
     <>
       <Head>
-        {
-          getHeadMetatags({
-            path: '/login/forgot-password',
-            title: 'Reset your password - ChainJet',
-            description: 'Reset your ChainJet password.'
-          })
-        }
+        {getHeadMetatags({
+          path: '/login/forgot-password',
+          title: 'Reset your password - ChainJet',
+          description: 'Reset your ChainJet password.',
+        })}
       </Head>
 
-      <SignContainer>
-        {emailSent ? renderEmailSentMessage() : renderForm()}
-      </SignContainer>
+      <SignContainer>{emailSent ? renderEmailSentMessage() : renderForm()}</SignContainer>
     </>
   )
 }

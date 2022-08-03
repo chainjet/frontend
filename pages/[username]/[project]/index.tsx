@@ -29,21 +29,21 @@ interface Props {
   projectName: string
 }
 
-function ProjectPage (props: Props) {
+function ProjectPage(props: Props) {
   const projectSlug = `${props.username}/${props.projectName}`.toLowerCase()
   const { data, loading, error } = useGetProjects(projectFragment, {
     variables: {
       filter: {
-        slug: { eq: projectSlug }
-      }
-    }
+        slug: { eq: projectSlug },
+      },
+    },
   })
 
   if (loading) {
-    return <Loading/>
+    return <Loading />
   }
   if (error || !data?.projects?.edges?.[0]?.node) {
-    return <RequestError error={error}/>
+    return <RequestError error={error} />
   }
 
   const project = data.projects.edges[0].node
@@ -53,7 +53,7 @@ function ProjectPage (props: Props) {
   }
 
   const handleSettingsClick = async () => {
-    await Router.push('/[username]/[project]/settings', `/${project.slug}/settings`,)
+    await Router.push('/[username]/[project]/settings', `/${project.slug}/settings`)
   }
 
   return (
@@ -62,23 +62,21 @@ function ProjectPage (props: Props) {
         <title>{project.name}</title>
       </Head>
 
-      <PageWrapper title={project.name}
-                   onBack={handleGoBack}
-                   extra={[
-                    <Button
-                      key="settings"
-                      onClick={handleSettingsClick}
-                      icon={<SettingOutlined />}>
-                        Settings
-                      </Button>
-                    ]}>
-
+      <PageWrapper
+        title={project.name}
+        onBack={handleGoBack}
+        extra={[
+          <Button key="settings" onClick={handleSettingsClick} icon={<SettingOutlined />}>
+            Settings
+          </Button>,
+        ]}
+      >
         <div style={{ marginBottom: 16 }}>
           <Link href="/[username]/[project]/new-workflow" as={`/${project.slug}/new-workflow`}>
             <Button type="primary">Create Workflow</Button>
           </Link>
         </div>
-        <ProjectWorkflows project={project}/>
+        <ProjectWorkflows project={project} />
       </PageWrapper>
     </>
   )
@@ -87,7 +85,7 @@ function ProjectPage (props: Props) {
 ProjectPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> => {
   return {
     username: getQueryParam(ctx, 'username').toLowerCase(),
-    projectName: getQueryParam(ctx, 'project').toLowerCase()
+    projectName: getQueryParam(ctx, 'project').toLowerCase(),
   }
 }
 

@@ -19,7 +19,7 @@ interface Props {
   email?: string
 }
 
-function CompleteAuthPage (props: Props) {
+function CompleteAuthPage(props: Props) {
   const { id, code, completeUsername, completeEmail, email } = props
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -27,7 +27,7 @@ function CompleteAuthPage (props: Props) {
   const router = useRouter()
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       // No more data needed, complete authentication now
       if (!completeUsername && !completeEmail) {
         const res = await completeExternalAuth({
@@ -35,8 +35,8 @@ function CompleteAuthPage (props: Props) {
             id,
             code,
             email: '',
-            username: ''
-          }
+            username: '',
+          },
         })
         if (res.data.completeExternalAuth.project) {
           await router.push(`/${res.data.completeExternalAuth.project.slug}`)
@@ -61,8 +61,8 @@ function CompleteAuthPage (props: Props) {
           id,
           code,
           email: values.email,
-          username: values.username
-        }
+          username: values.username,
+        },
       })
       if (res.data.completeExternalAuth.project) {
         await router.push(`/${res.data.completeExternalAuth.project.slug}`)
@@ -81,15 +81,7 @@ function CompleteAuthPage (props: Props) {
   }
 
   const renderError = () => {
-    return error && (
-      <Alert
-        message="Error"
-        description={error}
-        type="error"
-        showIcon
-        style={{ marginBottom: '24px' }}
-      />
-    )
+    return error && <Alert message="Error" description={error} type="error" showIcon style={{ marginBottom: '24px' }} />
   }
 
   return (
@@ -98,41 +90,30 @@ function CompleteAuthPage (props: Props) {
         <title>Complete Registration</title>
       </Head>
       <SignContainer>
-        <Form
-          name="complete-auth"
-          layout="vertical"
-          onFinish={handleSubmit}
-          onFinishFailed={handleSubmitFail}
-        >
+        <Form name="complete-auth" layout="vertical" onFinish={handleSubmit} onFinishFailed={handleSubmitFail}>
           {renderError()}
 
           <Alert
             style={{ marginBottom: 32 }}
             message="Welcome to ChainJet"
-            description="Please make sure your email is correct and choose your username." />
+            description="Please make sure your email is correct and choose your username."
+          />
 
-          {
-            completeEmail && (
-              <Form.Item
-                name="email"
-                initialValue={email}
-                rules={[{ required: true, message: 'Please enter your email' }]}
-              >
-                <Input size="large" placeholder="Email" prefix={<MailOutlined />} />
-              </Form.Item>
-            )
-          }
+          {completeEmail && (
+            <Form.Item
+              name="email"
+              initialValue={email}
+              rules={[{ required: true, message: 'Please enter your email' }]}
+            >
+              <Input size="large" placeholder="Email" prefix={<MailOutlined />} />
+            </Form.Item>
+          )}
 
-          {
-            completeUsername && (
-              <Form.Item
-                name="username"
-                rules={[{ required: true, message: 'Please enter your username' }]}
-              >
-                <Input size="large" placeholder="Username" prefix={<UserOutlined />} />
-              </Form.Item>
-            )
-          }
+          {completeUsername && (
+            <Form.Item name="username" rules={[{ required: true, message: 'Please enter your username' }]}>
+              <Input size="large" placeholder="Username" prefix={<UserOutlined />} />
+            </Form.Item>
+          )}
 
           <Form.Item>
             <Button block type="primary" htmlType="submit" loading={loading}>

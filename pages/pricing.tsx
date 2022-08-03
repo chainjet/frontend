@@ -6,17 +6,15 @@ import { LandingPricing } from '../components/landing/LandingPricing'
 import { withApollo } from '../src/apollo'
 import { getHeadMetatags } from '../src/utils/html.utils'
 
-function PricingPage () {
+function PricingPage() {
   return (
     <>
       <Head>
-        {
-          getHeadMetatags({
-            path: '/pricing',
-            title: 'ChainJet Pricing',
-            description: 'Check out ChainJet pricing plans.'
-          })
-        }
+        {getHeadMetatags({
+          path: '/pricing',
+          title: 'ChainJet Pricing',
+          description: 'Check out ChainJet pricing plans.',
+        })}
       </Head>
       <LandingHeader />
       <LandingPricing />

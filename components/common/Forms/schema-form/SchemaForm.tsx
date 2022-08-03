@@ -36,15 +36,7 @@ interface Props {
 }
 
 export const SchemaForm = (props: Props) => {
-  const {
-    schema,
-    initialInputs,
-    parentOutputs,
-    loading,
-    onChange,
-    onSubmit,
-    onError
-  } = props
+  const { schema, initialInputs, parentOutputs, loading, onChange, onSubmit, onError } = props
 
   // Prepare Json Schema
   let formSchema = cloneDeep(schema) ?? {}
@@ -83,11 +75,7 @@ export const SchemaForm = (props: Props) => {
   return (
     <>
       <Head>
-        <link
-          rel='stylesheet'
-          id='theme'
-          href='https://cdnjs.cloudflare.com/ajax/libs/antd/4.5.2/antd.min.css'
-        />
+        <link rel="stylesheet" id="theme" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.5.2/antd.min.css" />
       </Head>
       <ThemedForm
         schema={formSchema}
@@ -101,24 +89,24 @@ export const SchemaForm = (props: Props) => {
           TextareaWidget: TextWidgetFactory({ outputs, widgetType: 'textarea' }),
         }}
         fields={{
-          TitleField
+          TitleField,
         }}
         onSubmit={(args: any) => onSubmit(args.formData)}
         onError={onError ? onError : () => {}}
-
-        onChange={data => {
+        onChange={(data) => {
           onChange?.(data.formData)
           formData = data.formData
         }}
-
-        // Workaround to fix validation. See: 
+        // Workaround to fix validation. See:
         //   - https://github.com/flowoid/flowoid/issues/32
         //   - https://github.com/rjsf-team/react-jsonschema-form/issues/2103
-        transformErrors={errors => {
-          return errors.filter(error => !isEmptyObj(_.get(formData, error.property.split('.').slice(1, -1).join('.'))))
+        transformErrors={(errors) => {
+          return errors.filter(
+            (error) => !isEmptyObj(_.get(formData, error.property.split('.').slice(1, -1).join('.'))),
+          )
         }}
       >
-        <Button type='primary' htmlType='submit' loading={loading}>
+        <Button type="primary" htmlType="submit" loading={loading}>
           Submit
         </Button>
       </ThemedForm>

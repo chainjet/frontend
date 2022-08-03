@@ -9,7 +9,7 @@ interface Props {
   integration: Integration
 }
 
-export function IntegrationBanner (props: Props) {
+export function IntegrationBanner(props: Props) {
   const { integration } = props
   const shortName = integration.name.replace(/\([^)]*\)/, '').trim()
 
@@ -23,15 +23,16 @@ export function IntegrationBanner (props: Props) {
           <div>
             <Typography.Title level={2}>{integration.name}</Typography.Title>
             <Typography.Text>
-              ChainJet allows you to automate repetitive tasks in {shortName}.
-              Connect {shortName} with over 300 integrations and unlock its potential.
-              No coding skills required.
+              ChainJet allows you to automate repetitive tasks in {shortName}. Connect {shortName} with over 300
+              integrations and unlock its potential. No coding skills required.
             </Typography.Text>
           </div>
           <div>
             <Link href={`/register?integration=${integration.key}`}>
               <a>
-                <Button type="primary" style={{ marginTop: 24 }}>Start for free</Button>
+                <Button type="primary" style={{ marginTop: 24 }}>
+                  Start for free
+                </Button>
               </a>
             </Link>
           </div>
@@ -49,5 +50,5 @@ IntegrationBanner.fragments = {
       name
       logo
     }
-  `
+  `,
 }

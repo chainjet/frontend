@@ -2,7 +2,13 @@ import React, { CSSProperties, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { GoKey } from 'react-icons/go'
 import './PageLayout.less'
-import Icon, { LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, ProjectOutlined, SettingOutlined } from '@ant-design/icons'
+import Icon, {
+  LogoutOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  ProjectOutlined,
+  SettingOutlined,
+} from '@ant-design/icons'
 import { useLogout, useViewer } from '../../../src/services/UserHooks'
 import { Dropdown, Layout, Menu } from 'antd'
 import { useRouter } from 'next/router'
@@ -12,7 +18,7 @@ interface Props {
   children: JSX.Element
 }
 
-export default function PageLayout ({ children }: Props) {
+export default function PageLayout({ children }: Props) {
   const { viewer } = useViewer()
   const router = useRouter()
   const breakpoint = useBreakpoint()
@@ -32,11 +38,13 @@ export default function PageLayout ({ children }: Props) {
   const renderLogo = () => {
     const style: CSSProperties = {
       transition: 'all 0.3s',
-      ...(siderCollapsed ? { height: 65 } : { height: 80, marginLeft: 30 })
+      ...(siderCollapsed ? { height: 65 } : { height: 80, marginLeft: 30 }),
     }
     return (
-      <Link href='/'>
-        <a><img src="/logo-white.svg" style={style} /></a>
+      <Link href="/">
+        <a>
+          <img src="/logo-white.svg" style={style} />
+        </a>
       </Link>
     )
   }
@@ -49,12 +57,12 @@ export default function PageLayout ({ children }: Props) {
             <UserOutlined />
             Profile
           </Menu.Item> */}
-          <Menu.Item key='settings' onClick={handleSettingsClick}>
+          <Menu.Item key="settings" onClick={handleSettingsClick}>
             <SettingOutlined />
             Settings
           </Menu.Item>
           <Menu.Divider />
-          <Menu.Item key='logout' onClick={handleLogoutClick}>
+          <Menu.Item key="logout" onClick={handleLogoutClick}>
             <LogoutOutlined />
             Logout
           </Menu.Item>
@@ -63,62 +71,55 @@ export default function PageLayout ({ children }: Props) {
 
       return (
         <Dropdown overlay={menu}>
-          <span className='user-menu'>
+          <span className="user-menu">
             <span>{viewer.username}</span>
           </span>
         </Dropdown>
       )
     } else {
-      return <Link href='/login'>Login</Link>
+      return <Link href="/login">Login</Link>
     }
   }
 
   return (
     <Layout hasSider={true} style={{ minHeight: '100vh' }}>
-
-      <Layout.Sider trigger={null}
-        collapsible
-        collapsed={siderCollapsed}
-        collapsedWidth={hasMobileSider ? 0 : 80}>
-
+      <Layout.Sider trigger={null} collapsible collapsed={siderCollapsed} collapsedWidth={hasMobileSider ? 0 : 80}>
         {renderLogo()}
 
         <Menu theme="dark" mode="inline" defaultSelectedKeys={[router.pathname]}>
           <Menu.Item key="/" icon={<ProjectOutlined />}>
-            <Link href='/'>
-              Projects
-            </Link>
+            <Link href="/">Projects</Link>
           </Menu.Item>
           <Menu.Item key="/credentials" icon={<Icon component={GoKey} />}>
-            <Link href='/credentials'>
-              Credentials
-            </Link>
+            <Link href="/credentials">Credentials</Link>
           </Menu.Item>
         </Menu>
       </Layout.Sider>
 
       <Layout>
-
         <Layout.Header className="layout-header" style={{ padding: 0 }}>
           {React.createElement(siderCollapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
             className: 'toggle-sider',
-            onClick: () => setSiderCollapsed(!siderCollapsed)
+            onClick: () => setSiderCollapsed(!siderCollapsed),
           })}
           <div style={{ flex: '1 1 0%' }} />
           {renderHeaderContent()}
         </Layout.Header>
 
-        <Layout.Content>
-          {children}
-        </Layout.Content>
+        <Layout.Content>{children}</Layout.Content>
 
         <Layout.Footer>
           <div>
             <a href="mailto:admin@chainjet.io">Contact Us</a> |&nbsp;
-            <Link href="/legal/terms"><a>Terms</a></Link> | <Link href="/legal/privacy"><a>Privacy</a></Link>
+            <Link href="/legal/terms">
+              <a>Terms</a>
+            </Link>{' '}
+            |{' '}
+            <Link href="/legal/privacy">
+              <a>Privacy</a>
+            </Link>
           </div>
         </Layout.Footer>
-
       </Layout>
     </Layout>
   )

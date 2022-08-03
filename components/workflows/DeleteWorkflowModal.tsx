@@ -1,9 +1,9 @@
-import { WarningOutlined } from "@ant-design/icons"
-import React, { useState } from "react"
-import { Project, Workflow } from "../../graphql"
-import { useDeleteOneProject } from "../../src/services/ProjectHooks"
-import { useDeleteOneWorkflow } from "../../src/services/WorkflowHooks"
-import { DeleteConfirmationModal } from "../common/Modals/DeleteConfirmationModal"
+import { WarningOutlined } from '@ant-design/icons'
+import React, { useState } from 'react'
+import { Project, Workflow } from '../../graphql'
+import { useDeleteOneProject } from '../../src/services/ProjectHooks'
+import { useDeleteOneWorkflow } from '../../src/services/WorkflowHooks'
+import { DeleteConfirmationModal } from '../common/Modals/DeleteConfirmationModal'
 
 interface Props {
   workflow: Workflow
@@ -22,9 +22,9 @@ export const DeleteWorkflowModal = (props: Props) => {
     await deleteWorkflow({
       variables: {
         input: {
-          id: workflow.id
-        }
-      }
+          id: workflow.id,
+        },
+      },
     })
     setLoading(false)
     onDeleteWorkflow(workflow.id)
@@ -34,13 +34,15 @@ export const DeleteWorkflowModal = (props: Props) => {
     <DeleteConfirmationModal
       message={
         <>
-          Are you sure you want to delete the workflow <strong>{workflow.name}</strong>?<br/><br/>
+          Are you sure you want to delete the workflow <strong>{workflow.name}</strong>?<br />
+          <br />
           <WarningOutlined /> This action cannot be undone.
         </>
       }
       visible={visible}
       onDelete={handleDelete}
       onCancel={onCancel}
-      loading={loading}/>
+      loading={loading}
+    />
   )
 }

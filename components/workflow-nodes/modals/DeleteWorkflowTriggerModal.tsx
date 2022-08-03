@@ -20,9 +20,9 @@ export const DeleteWorkflowTriggerModal = (props: Props) => {
     await deleteWorkflowTrigger({
       variables: {
         input: {
-          id: workflowTriggerId
-        }
-      }
+          id: workflowTriggerId,
+        },
+      },
     })
     setLoading(false)
     onDeleteWorkflowTrigger(workflowTriggerId)
@@ -30,10 +30,15 @@ export const DeleteWorkflowTriggerModal = (props: Props) => {
 
   return (
     <DeleteConfirmationModal
-      message={<>Are you sure you want to delete trigger <strong>{workflowTriggerName}</strong></>}
+      message={
+        <>
+          Are you sure you want to delete trigger <strong>{workflowTriggerName}</strong>
+        </>
+      }
       visible={visible}
       onDelete={handleDelete}
       onCancel={onCancel}
-      loading={loading}/>
+      loading={loading}
+    />
   )
 }

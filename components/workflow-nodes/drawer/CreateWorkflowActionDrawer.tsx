@@ -23,7 +23,7 @@ export const CreateWorkflowActionDrawer = (props: Props) => {
     nextAction,
     visible,
     onCreateWorkflowAction,
-    onCancel
+    onCancel,
   } = props
   const [createOneWorkflowAction] = useCreateOneWorkflowAction()
 
@@ -40,9 +40,9 @@ export const CreateWorkflowActionDrawer = (props: Props) => {
             previousActionCondition,
             nextAction,
             credentials: credentialsID,
-          }
-        }
-      }
+          },
+        },
+      },
     })
     if (res.data?.createOneWorkflowAction) {
       onCreateWorkflowAction(res.data.createOneWorkflowAction)
@@ -52,12 +52,14 @@ export const CreateWorkflowActionDrawer = (props: Props) => {
   }
 
   return (
-    <WorkflowNodeDrawer nodeType="action"
-                        title="Create Workflow Action"
-                        visible={visible}
-                        workflowTriggerId={workflowTriggerId}
-                        parentActionIds={parentActionIds}
-                        onSubmitInputs={onSubmitInputs}
-                        onCancel={onCancel}/>
+    <WorkflowNodeDrawer
+      nodeType="action"
+      title="Create Workflow Action"
+      visible={visible}
+      workflowTriggerId={workflowTriggerId}
+      parentActionIds={parentActionIds}
+      onSubmitInputs={onSubmitInputs}
+      onCancel={onCancel}
+    />
   )
 }

@@ -1,9 +1,9 @@
-import { WarningOutlined } from "@ant-design/icons"
-import React, { useState } from "react"
-import { AccountCredential, Project } from "../../graphql"
-import { useDeleteOneAccountCredential } from "../../src/services/AccountCredentialHooks"
-import { useDeleteOneProject } from "../../src/services/ProjectHooks"
-import { DeleteConfirmationModal } from "../common/Modals/DeleteConfirmationModal"
+import { WarningOutlined } from '@ant-design/icons'
+import React, { useState } from 'react'
+import { AccountCredential, Project } from '../../graphql'
+import { useDeleteOneAccountCredential } from '../../src/services/AccountCredentialHooks'
+import { useDeleteOneProject } from '../../src/services/ProjectHooks'
+import { DeleteConfirmationModal } from '../common/Modals/DeleteConfirmationModal'
 
 interface Props {
   accountCredential: AccountCredential
@@ -22,9 +22,9 @@ export const DeleteCredentialModal = (props: Props) => {
     await deleteAccountCredential({
       variables: {
         input: {
-          id: accountCredential.id
-        }
-      }
+          id: accountCredential.id,
+        },
+      },
     })
     setLoading(false)
     onDeleteAccountCredential(accountCredential.id)
@@ -34,13 +34,15 @@ export const DeleteCredentialModal = (props: Props) => {
     <DeleteConfirmationModal
       message={
         <>
-          Are you sure you want to delete the credential <strong>{accountCredential.name}</strong>?<br/><br/>
+          Are you sure you want to delete the credential <strong>{accountCredential.name}</strong>?<br />
+          <br />
           <WarningOutlined /> This action cannot be undone.
         </>
       }
       visible={visible}
       onDelete={handleDelete}
       onCancel={onCancel}
-      loading={loading}/>
+      loading={loading}
+    />
   )
 }

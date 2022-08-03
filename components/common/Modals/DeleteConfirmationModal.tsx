@@ -27,9 +27,7 @@ export const DeleteConfirmationModal = (props: Props) => {
         </Button>,
       ]}
     >
-      <p>
-        {message ? message : 'Are you sure you want to delete this?'}
-      </p>
+      <p>{message ? message : 'Are you sure you want to delete this?'}</p>
     </Modal>
   )
 }

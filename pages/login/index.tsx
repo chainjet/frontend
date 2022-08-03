@@ -14,13 +14,11 @@ const LoginPage = (props: Props) => {
   return (
     <>
       <Head>
-        {
-          getHeadMetatags({
-            path: '/login',
-            title: 'ChainJet - Login',
-            description: 'Login into ChainJet'
-          })
-        }
+        {getHeadMetatags({
+          path: '/login',
+          title: 'ChainJet - Login',
+          description: 'Login into ChainJet',
+        })}
       </Head>
       <SignTabs defaultTabKey="login" passwordChanged={props.passwordChanged} />
     </>
@@ -29,7 +27,7 @@ const LoginPage = (props: Props) => {
 
 LoginPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> => {
   return {
-    passwordChanged: !!getQueryParam(ctx, 'password-changed')
+    passwordChanged: !!getQueryParam(ctx, 'password-changed'),
   }
 }
 

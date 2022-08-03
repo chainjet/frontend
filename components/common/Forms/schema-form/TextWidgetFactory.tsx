@@ -15,7 +15,7 @@ import { assertNever } from '../../../../src/utils/typescript.utils'
 
 const INPUT_STYLE = {
   width: '100%',
-  borderRadius: '2px 0 0 2px'
+  borderRadius: '2px 0 0 2px',
 }
 
 type WidgetType = 'text' | 'password' | 'url' | 'email' | 'textarea'
@@ -48,7 +48,7 @@ export const TextWidgetFactory = (props: Props) => {
     const { readonlyAsDisabled = true } = formContext
     const isNumberInput = schema.type === 'number' || schema.type === 'integer'
 
-    const parseValue = (value: string | number | boolean | null) => isNumberInput ? Number(value) || null : value
+    const parseValue = (value: string | number | boolean | null) => (isNumberInput ? Number(value) || null : value)
 
     const handleTextChange = ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const newValue = target.value === '' ? options.emptyValue : parseValue(target.value)
@@ -75,12 +75,12 @@ export const TextWidgetFactory = (props: Props) => {
       setInputValue(newValue)
       setAddingOutputs(false)
     }
-    
+
     let inputType: string
     let autoComplete = 'off' // Otherwise the suggestions are displayed above the "Add outputs" popover
     switch (widgetType) {
       case 'text':
-        inputType = isNumberInput ? 'number' : options.inputType as InputProps['type'] || 'text'
+        inputType = isNumberInput ? 'number' : (options.inputType as InputProps['type']) || 'text'
         break
       case 'password':
         inputType = 'password'
@@ -100,8 +100,9 @@ export const TextWidgetFactory = (props: Props) => {
         inputType = ''
     }
 
-    const inputElement = inputType === 'textarea'
-      ? <Input.TextArea
+    const inputElement =
+      inputType === 'textarea' ? (
+        <Input.TextArea
           autoComplete={autoComplete}
           disabled={disabled || (readonlyAsDisabled && readonly)}
           id={id}
@@ -117,7 +118,8 @@ export const TextWidgetFactory = (props: Props) => {
           // maxLength={schema.maxLength}
           // showCount={!!schema.maxLength}
         />
-      : <Input
+      ) : (
+        <Input
           autoComplete={autoComplete}
           disabled={disabled || (readonlyAsDisabled && readonly)}
           id={id}
@@ -130,35 +132,38 @@ export const TextWidgetFactory = (props: Props) => {
           type={inputType}
           value={inputValue}
         />
+      )
 
     return (
       <>
-        {
-          outputs.length
-            ? <Row>
-                <Col xs={23}>{inputElement}</Col>
-                <Col xs={1}>
-                  <Tooltip title="Add outputs from previous operations" placement="left">
-                    <Button type="primary"
-                            style={{ borderRadius: '0 2px 2px 0' }}
-                            icon={<ImMagicWand />}
-                            onClick={handleSelectOutputClick}/>
-                  </Tooltip>
-                </Col>
-              </Row>
-            : inputElement
-        }
-        {
-          schema.description && (
-            <Typography.Paragraph type="secondary" ellipsis={{ rows: 1, expandable: true, symbol: 'more' }}>
-              {schema.description}
-            </Typography.Paragraph>
-          )
-        }
-        <SelectNodeOutputs outputs={outputs}
-                           onSelectOutput={handleOutputSelect}
-                           onCancel={() => setAddingOutputs(false)}
-                           visible={addingOutputs}/>
+        {outputs.length ? (
+          <Row>
+            <Col xs={23}>{inputElement}</Col>
+            <Col xs={1}>
+              <Tooltip title="Add outputs from previous operations" placement="left">
+                <Button
+                  type="primary"
+                  style={{ borderRadius: '0 2px 2px 0' }}
+                  icon={<ImMagicWand />}
+                  onClick={handleSelectOutputClick}
+                />
+              </Tooltip>
+            </Col>
+          </Row>
+        ) : (
+          inputElement
+        )}
+        {schema.description && (
+          <Typography.Paragraph type="secondary" ellipsis={{ rows: 1, expandable: true, symbol: 'more' }}>
+            {schema.description}
+          </Typography.Paragraph>
+        )}
+        <SelectNodeOutputs
+          outputs={outputs}
+          onSelectOutput={handleOutputSelect}
+          onCancel={() => setAddingOutputs(false)}
+          visible={addingOutputs}
+        />
       </>
     )
   }

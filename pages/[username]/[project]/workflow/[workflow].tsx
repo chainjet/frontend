@@ -51,25 +51,25 @@ const workflowFragment = gql`
   ${WorkflowRunsTable.fragments.Workflow}
 `
 
-function WorkflowPage (props: Props) {
+function WorkflowPage(props: Props) {
   const { data, loading, error, refetch } = useGetWorkflows(workflowFragment, {
     variables: {
       filter: {
         slug: {
-          eq: `${props.username}/${props.projectName}/workflow/${props.workflowName}`.toLowerCase()
-        }
-      }
-    }
+          eq: `${props.username}/${props.projectName}/workflow/${props.workflowName}`.toLowerCase(),
+        },
+      },
+    },
   })
   const [updateWorkflowTrigger] = useUpdateOneWorkflowTrigger()
   const [runHistoryModalOpen, setRunHistoryModalOpen] = useState(false)
   const [changingWorkflowTriggerEnable, setChangingWorkflowTriggerEnable] = useState(false)
 
   if (loading) {
-    return <Loading/>
+    return <Loading />
   }
   if (error || !data?.workflows?.edges?.[0]?.node) {
-    return <RequestError error={error}/>
+    return <RequestError error={error} />
   }
 
   const workflow = data.workflows.edges[0].node
@@ -83,7 +83,7 @@ function WorkflowPage (props: Props) {
   }
 
   const handleSettingsClick = async () => {
-    await Router.push('/[username]/[project]/workflow/[workflow]/settings', `/${workflow.slug}/settings`,)
+    await Router.push('/[username]/[project]/workflow/[workflow]/settings', `/${workflow.slug}/settings`)
   }
 
   const handleEnableClick = async (enabled: boolean) => {
@@ -94,10 +94,10 @@ function WorkflowPage (props: Props) {
           input: {
             id: workflow.trigger.id,
             update: {
-              enabled
-            }
-          }
-        }
+              enabled,
+            },
+          },
+        },
       })
       setChangingWorkflowTriggerEnable(false)
     }
@@ -105,22 +105,23 @@ function WorkflowPage (props: Props) {
 
   const renderHeaderExtra = () => {
     return [
-      workflow.trigger &&
-        <Switch checkedChildren="On"
-                unCheckedChildren="Off"
-                loading={changingWorkflowTriggerEnable}
-                checked={workflow.trigger.enabled}
-                onClick={handleEnableClick} />,
+      workflow.trigger && (
+        <Switch
+          checkedChildren="On"
+          unCheckedChildren="Off"
+          loading={changingWorkflowTriggerEnable}
+          checked={workflow.trigger.enabled}
+          onClick={handleEnableClick}
+        />
+      ),
 
-      <Button type="default"
-              key="run-history"
-              icon={<HistoryOutlined />}
-              onClick={() => setRunHistoryModalOpen(true)}>Run history</Button>,
+      <Button type="default" key="run-history" icon={<HistoryOutlined />} onClick={() => setRunHistoryModalOpen(true)}>
+        Run history
+      </Button>,
 
-      <Button
-              key="settings"
-              onClick={handleSettingsClick}
-              icon={<SettingOutlined />}>Settings</Button>
+      <Button key="settings" onClick={handleSettingsClick} icon={<SettingOutlined />}>
+        Settings
+      </Button>,
     ]
   }
 
@@ -130,21 +131,21 @@ function WorkflowPage (props: Props) {
         <title>{workflow.name}</title>
       </Head>
 
-      <PageWrapper title={workflow.name}
-                   extra={renderHeaderExtra()}
-                   onBack={handleGoBack}
-                   className="workflow-diagram-container">
-        <WorkflowDiagramContainer workflow={workflow}
-                                  onWorkflowChange={handleWorkflowChange}/>
+      <PageWrapper
+        title={workflow.name}
+        extra={renderHeaderExtra()}
+        onBack={handleGoBack}
+        className="workflow-diagram-container"
+      >
+        <WorkflowDiagramContainer workflow={workflow} onWorkflowChange={handleWorkflowChange} />
 
-        {
-          runHistoryModalOpen && (
-            <WorkflowRunHistoryModal visible={runHistoryModalOpen}
-                                     workflow={workflow}
-                                     onClose={() => setRunHistoryModalOpen(false)}/>
-          )
-        }
-
+        {runHistoryModalOpen && (
+          <WorkflowRunHistoryModal
+            visible={runHistoryModalOpen}
+            workflow={workflow}
+            onClose={() => setRunHistoryModalOpen(false)}
+          />
+        )}
       </PageWrapper>
     </>
   )
@@ -154,7 +155,7 @@ WorkflowPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> => {
   return {
     username: getQueryParam(ctx, 'username').toLowerCase(),
     projectName: getQueryParam(ctx, 'project').toLowerCase(),
-    workflowName: getQueryParam(ctx, 'workflow').toLowerCase()
+    workflowName: getQueryParam(ctx, 'workflow').toLowerCase(),
   }
 }
 

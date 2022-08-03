@@ -11,21 +11,28 @@ interface Props {
   columns?: number
 }
 
-export function OperationList (props: Props) {
+export function OperationList(props: Props) {
   const { integration, operations, columns } = props
 
   return (
     <List
       grid={{ gutter: 0, column: columns ?? 1 }}
       dataSource={operations}
-      renderItem={operation => (
+      renderItem={(operation) => (
         <List.Item>
           <List.Item.Meta
-            avatar={<IntegrationAvatar integration={integration}/>}
+            avatar={<IntegrationAvatar integration={integration} />}
             title={
-              (operation as IntegrationTrigger).instant
-                ? <>{operation.name} <Tag color="cyan" style={{ marginLeft: 8 }}>Instant</Tag></>
-                : operation.name
+              (operation as IntegrationTrigger).instant ? (
+                <>
+                  {operation.name}{' '}
+                  <Tag color="cyan" style={{ marginLeft: 8 }}>
+                    Instant
+                  </Tag>
+                </>
+              ) : (
+                operation.name
+              )
             }
             description={
               <Typography.Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'more' }}>
@@ -54,5 +61,5 @@ OperationList.fragments = {
       name
       description
     }
-  `
+  `,
 }

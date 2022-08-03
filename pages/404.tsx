@@ -1,10 +1,10 @@
-import { Button, Result } from "antd";
-import { useRouter } from "next/router";
-import React from "react";
-import { LandingFooter } from "../components/landing/LandingFooter";
-import { LandingHeader } from "../components/landing/LandingHeader";
+import { Button, Result } from 'antd'
+import { useRouter } from 'next/router'
+import React from 'react'
+import { LandingFooter } from '../components/landing/LandingFooter'
+import { LandingHeader } from '../components/landing/LandingHeader'
 
-export default function Error404Page () {
+export default function Error404Page() {
   const router = useRouter()
 
   const handleGoHome = async () => {
@@ -13,7 +13,7 @@ export default function Error404Page () {
 
   return (
     <>
-      <LandingHeader/>
+      <LandingHeader />
       <Result
         status="404"
         title="404"
@@ -24,7 +24,7 @@ export default function Error404Page () {
           </Button>
         }
       />
-      <LandingFooter/>
+      <LandingFooter />
     </>
   )
 }

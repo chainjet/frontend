@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import { Workflow } from '../../graphql'
 
 const WorkflowDiagram = dynamic(() => import('./workflow-diagram/WorkflowDiagram'), {
-  ssr: false
+  ssr: false,
 })
 
 interface Props {
@@ -16,15 +16,19 @@ export const WorkflowDiagramContainer = (props: Props) => {
   const { workflow, onWorkflowChange } = props
   return (
     <>
-      {isBrowser && <WorkflowDiagram workflow={workflow}
-                                     workflowTrigger={workflow.trigger}
-                                     workflowActions={(workflow.actions?.edges || []).map(action => action.node)}
-                                     onCreateWorkflowTrigger={onWorkflowChange}
-                                     onUpdateWorkflowTrigger={onWorkflowChange}
-                                     onDeleteWorkflowTrigger={onWorkflowChange}
-                                     onCreateWorkflowAction={onWorkflowChange}
-                                     onUpdateWorkflowAction={onWorkflowChange}
-                                     onDeleteWorkflowAction={onWorkflowChange}/>}
+      {isBrowser && (
+        <WorkflowDiagram
+          workflow={workflow}
+          workflowTrigger={workflow.trigger}
+          workflowActions={(workflow.actions?.edges || []).map((action) => action.node)}
+          onCreateWorkflowTrigger={onWorkflowChange}
+          onUpdateWorkflowTrigger={onWorkflowChange}
+          onDeleteWorkflowTrigger={onWorkflowChange}
+          onCreateWorkflowAction={onWorkflowChange}
+          onUpdateWorkflowAction={onWorkflowChange}
+          onDeleteWorkflowAction={onWorkflowChange}
+        />
+      )}
     </>
   )
 }

@@ -34,8 +34,8 @@ const PasswordResetPage = (props: Props) => {
         variables: {
           code: props.code,
           username: props.username,
-          password: values.password
-        }
+          password: values.password,
+        },
       })
       if (res.data?.completePasswordReset?.error) {
         setError(res.data.completePasswordReset.error)
@@ -54,51 +54,30 @@ const PasswordResetPage = (props: Props) => {
   }
 
   const renderError = () => {
-    return error && (
-      <Alert
-        message="Error"
-        description={error}
-        type="error"
-        showIcon
-        style={{ marginBottom: '24px' }}
-      />
-    )
+    return error && <Alert message="Error" description={error} type="error" showIcon style={{ marginBottom: '24px' }} />
   }
 
   return (
     <>
       <Head>
-        {
-          getHeadMetatags({
-            path: '/login/password-reset',
-            title: 'Complete password reset - ChainJet',
-            description: 'Complete your password reset on ChainJet.'
-          })
-        }
+        {getHeadMetatags({
+          path: '/login/password-reset',
+          title: 'Complete password reset - ChainJet',
+          description: 'Complete your password reset on ChainJet.',
+        })}
       </Head>
 
       <SignContainer>
-        <Form
-          name="forgot-password"
-          layout="vertical"
-          onFinish={handleSubmit}
-          onFinishFailed={handleSubmitFail}
-        >
+        <Form name="forgot-password" layout="vertical" onFinish={handleSubmit} onFinishFailed={handleSubmitFail}>
           {renderError()}
 
           <Typography.Title level={5}>Set your new password:</Typography.Title>
 
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: 'Please enter your password' }]}
-          >
+          <Form.Item name="password" rules={[{ required: true, message: 'Please enter your password' }]}>
             <Input.Password size="large" placeholder="Password" prefix={<LockTwoTone />} />
           </Form.Item>
 
-          <Form.Item
-            name="confirmPassword"
-            rules={[{ required: true, message: 'Please confirm your password' }]}
-          >
+          <Form.Item name="confirmPassword" rules={[{ required: true, message: 'Please confirm your password' }]}>
             <Input.Password size="large" placeholder="Confirm Password" prefix={<LockTwoTone />} />
           </Form.Item>
 
@@ -116,7 +95,7 @@ const PasswordResetPage = (props: Props) => {
 PasswordResetPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> => {
   return {
     code: getQueryParam(ctx, 'code'),
-    username: getQueryParam(ctx, 'username')
+    username: getQueryParam(ctx, 'username'),
   }
 }
 

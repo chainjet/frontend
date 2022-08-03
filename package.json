@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "type-check": "tsc",
-    "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
+    "prettier": "prettier --write '{src,pages,components}/**/*.{ts,tsx}'",
     "test": "jest"
   },
   "lint-staged": {

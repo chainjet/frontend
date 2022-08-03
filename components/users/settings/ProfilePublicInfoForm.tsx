@@ -24,9 +24,9 @@ export function ProfilePublicInfoForm(props: Props) {
         variables: {
           input: {
             id: user.id,
-            update: values
-          }
-        }
+            update: values,
+          },
+        },
       })
     } catch (e) {
       setError(e.message)
@@ -34,22 +34,14 @@ export function ProfilePublicInfoForm(props: Props) {
       setUpdateLoading(false)
     }
   }
-  
+
   const handleSubmitFail = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
   }
 
   return (
     <>
-      {
-        error && <Alert
-          style={{ marginBottom: 16 }}
-          message="Error"
-          description={error}
-          type="error"
-          showIcon
-        />
-      }
+      {error && <Alert style={{ marginBottom: 16 }} message="Error" description={error} type="error" showIcon />}
       <Form
         name="profile-public-info"
         initialValues={user}
@@ -57,35 +49,22 @@ export function ProfilePublicInfoForm(props: Props) {
         onFinish={handleSubmit}
         onFinishFailed={handleSubmitFail}
       >
-
-        <Form.Item
-          style={{ marginBottom: 16 }}
-          label="Name"
-          name="name"
-        >
+        <Form.Item style={{ marginBottom: 16 }} label="Name" name="name">
           <Input size="large" prefix={<UserOutlined />} />
         </Form.Item>
 
-        <Form.Item
-          style={{ marginBottom: 16 }}
-          label="Website"
-          name="website"
-        >
+        <Form.Item style={{ marginBottom: 16 }} label="Website" name="website">
           <Input size="large" type="url" prefix={<LinkOutlined />} />
         </Form.Item>
 
-        <Form.Item
-          style={{ marginBottom: 16 }}
-          label="Company"
-          name="company"
-        >
+        <Form.Item style={{ marginBottom: 16 }} label="Company" name="company">
           <Input size="large" prefix={<ShopOutlined />} />
         </Form.Item>
 
         <Form.Item style={{ marginTop: 28 }}>
           <div style={{ marginBottom: 16 }}>
-            All of these fields might be appear in your public profile.
-            These fields are optional anc can be deleted at any time.
+            All of these fields might be appear in your public profile. These fields are optional anc can be deleted at
+            any time.
           </div>
           <Button type="primary" htmlType="submit" loading={updateLoading}>
             Update
@@ -104,5 +83,5 @@ ProfilePublicInfoForm.fragments = {
       website
       company
     }
-  `
+  `,
 }

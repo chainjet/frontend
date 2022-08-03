@@ -23,23 +23,21 @@ export const ProjectWorkflows = (props: Props) => {
   const { data, loading, error } = useGetWorkflows(workflowsFragment, {
     variables: {
       filter: {
-        project: { eq: project.id }
-      }
-    }
+        project: { eq: project.id },
+      },
+    },
   })
 
   if (loading) {
-    return <Loading/>
+    return <Loading />
   }
   if (error || !data?.workflows) {
-    return <RequestError error={error}/>
+    return <RequestError error={error} />
   }
 
-  const workflows = data.workflows.edges.map(workflow => workflow.node)
+  const workflows = data.workflows.edges.map((workflow) => workflow.node)
 
-  return (
-    <WorkflowsTable project={project} workflows={workflows}/>
-  )
+  return <WorkflowsTable project={project} workflows={workflows} />
 }
 
 ProjectWorkflows.fragments = {
@@ -48,5 +46,5 @@ ProjectWorkflows.fragments = {
       ...WorkflowsTable_Project
     }
     ${WorkflowsTable.fragments.Project}
-  `
+  `,
 }

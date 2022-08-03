@@ -20,9 +20,9 @@ export const DeleteWorkflowActionModal = (props: Props) => {
     await deleteWorkflowAction({
       variables: {
         input: {
-          id: workflowActionId
-        }
-      }
+          id: workflowActionId,
+        },
+      },
     })
     setLoading(false)
     onDeleteWorkflowAction(workflowActionId)
@@ -30,10 +30,15 @@ export const DeleteWorkflowActionModal = (props: Props) => {
 
   return (
     <DeleteConfirmationModal
-      message={<>Are you sure you want to delete action <strong>{workflowActionName}</strong></>}
+      message={
+        <>
+          Are you sure you want to delete action <strong>{workflowActionName}</strong>
+        </>
+      }
       visible={visible}
       onDelete={handleDelete}
       onCancel={onCancel}
-      loading={loading}/>
+      loading={loading}
+    />
   )
 }

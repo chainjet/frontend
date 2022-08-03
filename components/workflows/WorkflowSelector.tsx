@@ -20,37 +20,37 @@ interface Props {
   filterWorkflows?: (workflow: Workflow) => boolean
 }
 
-export function WorkflowSelector (props: Props) {
+export function WorkflowSelector(props: Props) {
   const { projectId, selectedWorkflowId, onChange, filterWorkflows } = props
   const { data, loading, error } = useGetWorkflows(workflowsFragment, {
     variables: {
       filter: {
-        project: { eq: projectId }
-      }
-    }
+        project: { eq: projectId },
+      },
+    },
   })
 
   if (loading) {
     return <Loading />
   }
   if (error || !data?.workflows) {
-    return <RequestError error={error}/>
+    return <RequestError error={error} />
   }
 
   const workflows = data.workflows.edges
-    .map(workflow => workflow.node)
-    .filter(workflow => filterWorkflows ? filterWorkflows(workflow) : true)
+    .map((workflow) => workflow.node)
+    .filter((workflow) => (filterWorkflows ? filterWorkflows(workflow) : true))
 
   return (
-    <Select defaultValue={selectedWorkflowId}
-            placeholder="Select workflow to run"
-            onChange={onChange}
-            style={{ width: '100%' }}>
-      {
-        workflows.map(workflow => 
-          <Select.Option value={workflow.id}>{workflow.name}</Select.Option>
-        )
-      }
+    <Select
+      defaultValue={selectedWorkflowId}
+      placeholder="Select workflow to run"
+      onChange={onChange}
+      style={{ width: '100%' }}
+    >
+      {workflows.map((workflow) => (
+        <Select.Option value={workflow.id}>{workflow.name}</Select.Option>
+      ))}
     </Select>
   )
 }

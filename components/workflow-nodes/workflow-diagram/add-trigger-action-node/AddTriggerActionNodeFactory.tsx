@@ -5,15 +5,15 @@ import { AddTriggerActionNodeModel } from './AddTriggerActionNodeModel'
 import { AddTriggerActionNodeWidget } from './AddTriggerActionNodeWidget'
 
 export class AddTriggerActionNodeFactory extends AbstractReactFactory<AddTriggerActionNodeModel, DiagramEngine> {
-  constructor () {
+  constructor() {
     super('AddTriggerActionNode')
   }
 
-  generateModel (_initialConfig: GenerateModelEvent): AddTriggerActionNodeModel {
+  generateModel(_initialConfig: GenerateModelEvent): AddTriggerActionNodeModel {
     throw new Error('not implemented yet')
   }
 
-  generateReactWidget (event: GenerateWidgetEvent<AddTriggerActionNodeModel>): JSX.Element {
-    return <AddTriggerActionNodeWidget node={event.model}/>
+  generateReactWidget(event: GenerateWidgetEvent<AddTriggerActionNodeModel>): JSX.Element {
+    return <AddTriggerActionNodeWidget node={event.model} />
   }
 }

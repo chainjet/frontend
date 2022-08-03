@@ -8,7 +8,7 @@ import { PageWrapper } from '../../components/common/PageLayout/PageWrapper'
 import { ProjectForm } from '../../components/projects/ProjectForm'
 import Head from 'next/head'
 
-function NewProjectPage () {
+function NewProjectPage() {
   const [createProject] = useCreateOneProject()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -20,10 +20,10 @@ function NewProjectPage () {
           input: {
             project: {
               name: values.name,
-              public: false
-            }
-          }
-        }
+              public: false,
+            },
+          },
+        },
       })
       const projectSlug = project.data?.createOneProject?.slug
       if (projectSlug) {
@@ -45,10 +45,7 @@ function NewProjectPage () {
       <Head>
         <title>Create a new project - ChainJet</title>
       </Head>
-      <PageWrapper
-        title="New Project"
-        subTitle="A project can contain multiple workflows."
-        onBack={handleGoBack}>
+      <PageWrapper title="New Project" subTitle="A project can contain multiple workflows." onBack={handleGoBack}>
         <Row gutter={24}>
           <Col xs={24}>
             <Card>

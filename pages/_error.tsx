@@ -1,11 +1,11 @@
-import React from "react"
-import { Button, Result } from "antd"
-import { NextPageContext } from "next"
-import { LandingHeader } from "../components/landing/LandingHeader"
-import { LandingFooter } from "../components/landing/LandingFooter"
-import { ResultStatusType } from "antd/lib/result"
-import { useRouter } from "next/router"
-import { ApolloError } from "@apollo/client"
+import React from 'react'
+import { Button, Result } from 'antd'
+import { NextPageContext } from 'next'
+import { LandingHeader } from '../components/landing/LandingHeader'
+import { LandingFooter } from '../components/landing/LandingFooter'
+import { ResultStatusType } from 'antd/lib/result'
+import { useRouter } from 'next/router'
+import { ApolloError } from '@apollo/client'
 
 interface Props {
   statusCode?: ResultStatusType
@@ -21,7 +21,7 @@ export function ErrorPage({ statusCode, error }: Props) {
 
   return (
     <>
-      <LandingHeader/>
+      <LandingHeader />
       <Result
         status={statusCode ?? 500}
         title="Error occurred"
@@ -32,7 +32,7 @@ export function ErrorPage({ statusCode, error }: Props) {
           </Button>
         }
       />
-      <LandingFooter/>
+      <LandingFooter />
     </>
   )
 }

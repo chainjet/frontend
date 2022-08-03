@@ -6,7 +6,7 @@ import { Button, Card, Row, Tooltip } from 'antd'
 import {
   getIntegrationFromWorkflowNode,
   getIntegrationNodeFromWorkflowNode,
-  workflowNodeIsTrigger
+  workflowNodeIsTrigger,
 } from '../../../../src/utils/workflow.utils'
 import Meta from 'antd/es/card/Meta'
 import { IntegrationAvatar } from '../../../integrations/IntegrationAvatar'
@@ -42,8 +42,8 @@ export const DiagramNodeWidget = (props: DiagramNodeWidgetProps) => {
     setIsCheckingWorkflowTrigger(true)
     await checkWorkflowTrigger({
       variables: {
-        id: workflowNode.id
-      }
+        id: workflowNode.id,
+      },
     })
     setIsCheckingWorkflowTrigger(false)
   }
@@ -59,17 +59,17 @@ export const DiagramNodeWidget = (props: DiagramNodeWidgetProps) => {
           onClick={handleCheckTriggerClick}
           loading={isCheckingWorkflowTrigger}
         />
-      </Tooltip>
+      </Tooltip>,
     )
   }
 
   return (
-    <div className='custom-node'>
+    <div className="custom-node">
       {!nodeIsTrigger && node.nodeOptions.isRootNode && (
-        <Row justify='center' align='middle' style={{ marginBottom: '4px' }}>
+        <Row justify="center" align="middle" style={{ marginBottom: '4px' }}>
           <Button
-            type='dashed'
-            shape='circle'
+            type="dashed"
+            shape="circle"
             icon={<PlusOutlined />}
             onClick={() => node.nodeOptions.onCreateClick()}
           />
@@ -78,18 +78,18 @@ export const DiagramNodeWidget = (props: DiagramNodeWidgetProps) => {
 
       {portIn && (
         <PortWidget engine={engine} port={portIn}>
-          <div className='circle-port' />
+          <div className="circle-port" />
         </PortWidget>
       )}
       <Card
-        size='small'
+        size="small"
         actions={[
           ...actions,
           <Tooltip title={`Update ${nodeType}`} placement="bottom">
             <Button
               type="link"
               title={`Update ${nodeType}`}
-              key='update'
+              key="update"
               icon={<EditTwoTone />}
               onClick={() => node.nodeOptions.onUpdateClick(workflowNode)}
             />
@@ -98,11 +98,11 @@ export const DiagramNodeWidget = (props: DiagramNodeWidgetProps) => {
             <Button
               type="link"
               title={`Delete ${nodeType}`}
-              key='delete'
+              key="delete"
               icon={<DeleteTwoTone />}
               onClick={() => node.nodeOptions.onDeleteClick(workflowNode)}
             />
-          </Tooltip>
+          </Tooltip>,
         ]}
       >
         <Meta
@@ -113,14 +113,14 @@ export const DiagramNodeWidget = (props: DiagramNodeWidgetProps) => {
       </Card>
       {portOut && (
         <PortWidget engine={props.engine} port={portOut}>
-          <div className='circle-port' />
+          <div className="circle-port" />
         </PortWidget>
       )}
 
-      <Row justify='center' align='middle' style={{ marginTop: '4px' }}>
+      <Row justify="center" align="middle" style={{ marginTop: '4px' }}>
         <Button
-          type='dashed'
-          shape='circle'
+          type="dashed"
+          shape="circle"
           icon={<PlusOutlined />}
           onClick={() => node.nodeOptions.onCreateClick(workflowNode)}
         />

@@ -17,13 +17,13 @@ const credentialsFragment = gql`
   ${CredentialsTable.fragments.AccountCredential}
 `
 
-export function CredentialsPage () {
+export function CredentialsPage() {
   const { data, loading, error } = useGetAccountCredentials(credentialsFragment, {
     variables: {
       paging: {
-        first: 50
-      }
-    }
+        first: 50,
+      },
+    },
   })
 
   if (loading) {
@@ -33,7 +33,7 @@ export function CredentialsPage () {
     return <RequestError error={error} />
   }
 
-  const accountCredentials = data.accountCredentials.edges.map(edge => edge.node)
+  const accountCredentials = data.accountCredentials.edges.map((edge) => edge.node)
 
   const handleGoBack = async () => {
     await Router.push('/')

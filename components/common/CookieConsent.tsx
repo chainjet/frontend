@@ -9,7 +9,7 @@ declare global {
 }
 
 class CookieConsent extends React.PureComponent<{}> {
-  componentDidMount () {
+  componentDidMount() {
     if (typeof window === 'undefined') {
       return
     }
@@ -21,28 +21,30 @@ class CookieConsent extends React.PureComponent<{}> {
         popup: {
           background: '#dfeaff',
           text: '#5c7291',
-          padding: 0
+          padding: 0,
         },
         button: {
           background: '#1890ff',
-          text: '#ffffff'
-        }
+          text: '#ffffff',
+        },
       },
       showLink: false,
       content: {
-        message:
-          `This website uses cookies for technical, analytical, and marketing purposes.
+        message: `This website uses cookies for technical, analytical, and marketing purposes.
           <a href="/legal/privacy">Learn more</a>.`,
-        dismiss: 'Close'
-      }
+        dismiss: 'Close',
+      },
     })
   }
 
-  render () {
+  render() {
     return (
       <Head>
-        <link rel="stylesheet" type="text/css"
-              href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.css"/>
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.css"
+        />
       </Head>
     )
   }

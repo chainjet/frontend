@@ -10,50 +10,47 @@ import Error404Page from '../../404'
 import ErrorPage from '../../_error'
 import { getHeadMetatags } from '../../../src/utils/html.utils'
 
-
 interface Props {
   categoryKey: string
 }
 
-function IntegrationCategoryPage (props: Props) {
+function IntegrationCategoryPage(props: Props) {
   const { categoryKey } = props
   const { data, loading, error } = useGetIntegrationCategory({
     variables: {
-      id: categoryKey
-    }
+      id: categoryKey,
+    },
   })
 
   if (loading) {
-    return <Loading/>
+    return <Loading />
   }
   if (error) {
-    return <ErrorPage error={error}/>
+    return <ErrorPage error={error} />
   }
   if (!data?.integrationCategory) {
-    return <Error404Page/> // TODO soft 404
+    return <Error404Page /> // TODO soft 404
   }
-  
+
   const category = data.integrationCategory
 
   return (
     <>
       <Head>
-        {
-          getHeadMetatags({
-            path: `/integrations/category/${category.id}`,
-            title: `No-Code Automation for ${category.name}`,
-            description: `Build automations for ${category.name} without writing any code.`
-          })
-        }
+        {getHeadMetatags({
+          path: `/integrations/category/${category.id}`,
+          title: `No-Code Automation for ${category.name}`,
+          description: `Build automations for ${category.name} without writing any code.`,
+        })}
       </Head>
-      <IntegrationPageContainer category={category}/>
+      <IntegrationPageContainer category={category} />
     </>
   )
 }
 
 IntegrationCategoryPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> => {
   return {
-    categoryKey: getQueryParam(ctx, 'category').toLowerCase()
+    categoryKey: getQueryParam(ctx, 'category').toLowerCase(),
   }
 }
 

@@ -8,13 +8,11 @@ const RegisterPage = () => {
   return (
     <>
       <Head>
-        {
-          getHeadMetatags({
-            path: '/register',
-            title: 'ChainJet - Register',
-            description: 'Start using ChainJet for free.'
-          })
-        }
+        {getHeadMetatags({
+          path: '/register',
+          title: 'ChainJet - Register',
+          description: 'Start using ChainJet for free.',
+        })}
       </Head>
       <SignTabs defaultTabKey="register" />
     </>

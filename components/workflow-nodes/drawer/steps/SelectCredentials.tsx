@@ -7,7 +7,7 @@ import { SchemaForm } from '../../../common/Forms/schema-form/SchemaForm'
 import { IntegrationAccount } from '../../../../graphql'
 import {
   useCreateOneAccountCredential,
-  useGetAccountCredentials
+  useGetAccountCredentials,
 } from '../../../../src/services/AccountCredentialHooks'
 
 interface Props {
@@ -27,20 +27,17 @@ export const SelectCredentials = (props: Props) => {
   const queryVars = {
     filter: {
       integrationAccount: {
-        eq: integrationAccount.id
-      }
-    }
+        eq: integrationAccount.id,
+      },
+    },
   }
-  const { data, loading, error, refetch } = useGetAccountCredentials(
-    credentialsFragment,
-    {
-      variables: queryVars,
-      fetchPolicy: 'network-only'
-    }
+  const { data, loading, error, refetch } = useGetAccountCredentials(credentialsFragment, {
+    variables: queryVars,
+    fetchPolicy: 'network-only',
+  })
+  const [selectedCredentialID, setSelectedCredentialID] = useState<string | undefined>(
+    data?.accountCredentials?.edges?.[0]?.node?.id,
   )
-  const [selectedCredentialID, setSelectedCredentialID] = useState<
-    string | undefined
-  >(data?.accountCredentials?.edges?.[0]?.node?.id)
   const [createCredential] = useCreateOneAccountCredential()
   const [createCredentialLoading, setCreateCredentialLoading] = useState(false)
   const accountNameKey = '__name'
@@ -53,7 +50,7 @@ export const SelectCredentials = (props: Props) => {
   useEffect(() => {
     const focusRefetch = () => void refetch(queryVars)
     window.addEventListener('focus', focusRefetch)
-    return function cleanup () {
+    return function cleanup() {
       window.removeEventListener('focus', focusRefetch)
     }
   }, [])
@@ -84,10 +81,10 @@ export const SelectCredentials = (props: Props) => {
             name,
             integrationAccount: integrationAccount.id,
             credentials: credentialInputs,
-            fields: exposedInputs
-          }
-        }
-      }
+            fields: exposedInputs,
+          },
+        },
+      },
     })
     if (res.data?.createOneAccountCredential?.id) {
       await onCredentialsSelected(res.data.createOneAccountCredential.id)
@@ -120,17 +117,16 @@ export const SelectCredentials = (props: Props) => {
     return <Loading />
   }
   if (error) {
-    return <RequestError error={error}/>
+    return <RequestError error={error} />
   }
 
-  const credentials =
-    data?.accountCredentials?.edges.map(edge => edge.node) ?? []
+  const credentials = data?.accountCredentials?.edges.map((edge) => edge.node) ?? []
 
   const renderAccountSelector = () => (
     <div style={{ marginBottom: '16px' }}>
       <Select
         defaultValue={credentials.length ? credentials[0].id : ''}
-        size='large'
+        size="large"
         onChange={handleCredentialSelectChange}
       >
         {credentials.map((credential, i) => (
@@ -138,7 +134,7 @@ export const SelectCredentials = (props: Props) => {
             {credential.name}
           </Select.Option>
         ))}
-        <Select.Option value=''>Add a new account</Select.Option>
+        <Select.Option value="">Add a new account</Select.Option>
       </Select>
     </div>
   )
@@ -154,24 +150,19 @@ export const SelectCredentials = (props: Props) => {
         // Add credentials name field
         const schema = {
           ...integrationAccount.fieldsSchema,
-          required: [
-            accountNameKey,
-            ...(integrationAccount.fieldsSchema.required || [])
-          ],
+          required: [accountNameKey, ...(integrationAccount.fieldsSchema.required || [])],
           properties: {
             [accountNameKey]: {
               title: 'Name',
               type: 'string',
-              default: `My ${integrationAccount.name} account`
+              default: `My ${integrationAccount.name} account`,
             },
-            ...(integrationAccount.fieldsSchema.properties || {})
-          }
+            ...(integrationAccount.fieldsSchema.properties || {}),
+          },
         }
         return (
           <>
-            <Typography.Title level={4}>
-              Add a new {integrationAccount.name} account
-            </Typography.Title>
+            <Typography.Title level={4}>Add a new {integrationAccount.name} account</Typography.Title>
             <SchemaForm
               schema={schema}
               initialInputs={{}}
@@ -183,10 +174,7 @@ export const SelectCredentials = (props: Props) => {
       case 'oauth1':
       case 'oauth2':
         return (
-          <Button
-            type='primary'
-            onClick={() => handleConnectOauthAccountClick(integrationAccount.key)}
-          >
+          <Button type="primary" onClick={() => handleConnectOauthAccountClick(integrationAccount.key)}>
             Connect {integrationAccount.name} account
           </Button>
         )
@@ -198,12 +186,12 @@ export const SelectCredentials = (props: Props) => {
       {credentials.length ? renderAccountSelector() : ''}
 
       {selectedCredentialID ? (
-        <Button type='primary' onClick={handleContinueClick}>
+        <Button type="primary" onClick={handleContinueClick}>
           Continue
         </Button>
       ) : (
-          renderNewAccount()
-        )}
+        renderNewAccount()
+      )}
     </>
   )
 }
@@ -217,5 +205,5 @@ SelectCredentials.fragments = {
       fieldsSchema
       authType
     }
-  `
+  `,
 }

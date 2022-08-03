@@ -17,14 +17,15 @@ export const WorkflowsTable = (props: Props) => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (name: string, workflow: Workflow) =>
-        <Link href="/[username]/[project]/workflow/[workflow]" as={`/${workflow.slug}`}><a>{name}</a></Link>
-    }
+      render: (name: string, workflow: Workflow) => (
+        <Link href="/[username]/[project]/workflow/[workflow]" as={`/${workflow.slug}`}>
+          <a>{name}</a>
+        </Link>
+      ),
+    },
   ]
 
-  return (
-    <Table dataSource={workflows} columns={tableColumns}/>
-  )
+  return <Table dataSource={workflows} columns={tableColumns} />
 }
 
 WorkflowsTable.fragments = {
@@ -39,5 +40,5 @@ WorkflowsTable.fragments = {
       name
       slug
     }
-  `
+  `,
 }

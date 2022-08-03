@@ -17,8 +17,8 @@ describe('SelectNodeOutputs', () => {
           },
           number: {
             type: 'number',
-          }
-        }
+          },
+        },
       }
       expect(createOutputsTree(schema, 'test')).toEqual([
         {
@@ -36,7 +36,7 @@ describe('SelectNodeOutputs', () => {
         {
           title: 'number',
           key: 'test.number',
-        }
+        },
       ])
     })
 
@@ -57,8 +57,8 @@ describe('SelectNodeOutputs', () => {
           },
           null: {
             type: 'null',
-          }
-        }
+          },
+        },
       }
       expect(createOutputsTree(schema, 'test')).toEqual([
         {
@@ -76,7 +76,7 @@ describe('SelectNodeOutputs', () => {
         {
           title: 'number',
           key: 'test.number',
-        }
+        },
       ])
     })
 
@@ -90,8 +90,8 @@ describe('SelectNodeOutputs', () => {
                 type: 'string',
               },
             },
-          }
-        }
+          },
+        },
       }
       expect(createOutputsTree(schema, 'test')).toEqual([
         {

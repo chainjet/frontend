@@ -38,15 +38,15 @@ const workflowFragment = gql`
   ${WorkflowForm.fragments.WorkflowTrigger}
 `
 
-function WorkflowSettingsPage (props: Props) {
+function WorkflowSettingsPage(props: Props) {
   const { data, loading, error } = useGetWorkflows(workflowFragment, {
     variables: {
       filter: {
         slug: {
-          eq: `${props.username}/${props.projectName}/workflow/${props.workflowName}`.toLowerCase()
-        }
-      }
-    }
+          eq: `${props.username}/${props.projectName}/workflow/${props.workflowName}`.toLowerCase(),
+        },
+      },
+    },
   })
   const [workflow, setWorkflow] = useState(data?.workflows.edges[0].node)
   const [updateLoading, setUpdateLoading] = useState(false)
@@ -60,16 +60,16 @@ function WorkflowSettingsPage (props: Props) {
   }, [data])
 
   if (loading) {
-    return <Loading/>
+    return <Loading />
   }
   if (error || !workflow) {
-    return <RequestError error={error}/>
+    return <RequestError error={error} />
   }
 
   const handleWorkflowChange = (key: keyof Workflow, value: any) => {
     setWorkflow({
       ...workflow,
-      [key]: value
+      [key]: value,
     })
   }
 
@@ -82,10 +82,10 @@ function WorkflowSettingsPage (props: Props) {
             input: {
               id: workflow.trigger?.id ?? '',
               update: {
-                maxConsecutiveFailures: Number(update.maxConsecutiveFailures)
-              }
-            }
-          }
+                maxConsecutiveFailures: Number(update.maxConsecutiveFailures),
+              },
+            },
+          },
         })
         delete update.maxConsecutiveFailures
       }
@@ -94,8 +94,8 @@ function WorkflowSettingsPage (props: Props) {
           input: {
             id: workflow.id,
             update,
-          }
-        }
+          },
+        },
       })
       await Router.push('/[username]/[project]/workflow/[workflow]', `/${res.data?.updateOneWorkflow.slug}`)
     } catch (e) {
@@ -103,7 +103,7 @@ function WorkflowSettingsPage (props: Props) {
     }
     setUpdateLoading(false)
   }
-  
+
   const handleWorkflowDelete = async () => {
     await Router.push('/[username]/[project]', `/${workflow.project.slug}`)
   }
@@ -118,26 +118,30 @@ function WorkflowSettingsPage (props: Props) {
         <title>{workflow.name} settings</title>
       </Head>
 
-      <PageWrapper title={`Update workflow "${workflow.name}" settings`}
-                   onBack={handleGoBack}>
-        
+      <PageWrapper title={`Update workflow "${workflow.name}" settings`} onBack={handleGoBack}>
         <Card>
-            <WorkflowForm workflow={workflow}
-                          showSubmit={true}
-                          onChange={handleWorkflowChange}
-                          onSubmit={handleWorkflowUpdate}
-                          loading={updateLoading}
-                          error={updateError}/>
+          <WorkflowForm
+            workflow={workflow}
+            showSubmit={true}
+            onChange={handleWorkflowChange}
+            onSubmit={handleWorkflowUpdate}
+            loading={updateLoading}
+            error={updateError}
+          />
         </Card>
 
         <Card title="Danger settings" style={{ marginTop: 24, border: '1px solid #d40000' }}>
-          <Button type="primary" danger onClick={() => setDeleteWorkflowModalOpen(true)}>Delete workflow</Button>
+          <Button type="primary" danger onClick={() => setDeleteWorkflowModalOpen(true)}>
+            Delete workflow
+          </Button>
         </Card>
 
-        <DeleteWorkflowModal visible={deleteWorkflowModalOpen}
-                             workflow={workflow}
-                             onDeleteWorkflow={handleWorkflowDelete}
-                             onCancel={() => setDeleteWorkflowModalOpen(false)}/>
+        <DeleteWorkflowModal
+          visible={deleteWorkflowModalOpen}
+          workflow={workflow}
+          onDeleteWorkflow={handleWorkflowDelete}
+          onCancel={() => setDeleteWorkflowModalOpen(false)}
+        />
       </PageWrapper>
     </>
   )
@@ -147,7 +151,7 @@ WorkflowSettingsPage.getInitialProps = async (ctx: NextPageContext): Promise<Pro
   return {
     username: getQueryParam(ctx, 'username').toLowerCase(),
     projectName: getQueryParam(ctx, 'project').toLowerCase(),
-    workflowName: getQueryParam(ctx, 'workflow').toLowerCase()
+    workflowName: getQueryParam(ctx, 'workflow').toLowerCase(),
   }
 }
 

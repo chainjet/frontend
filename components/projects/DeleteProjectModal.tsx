@@ -1,8 +1,8 @@
-import { WarningOutlined } from "@ant-design/icons"
-import React, { useState } from "react"
-import { Project } from "../../graphql"
-import { useDeleteOneProject } from "../../src/services/ProjectHooks"
-import { DeleteConfirmationModal } from "../common/Modals/DeleteConfirmationModal"
+import { WarningOutlined } from '@ant-design/icons'
+import React, { useState } from 'react'
+import { Project } from '../../graphql'
+import { useDeleteOneProject } from '../../src/services/ProjectHooks'
+import { DeleteConfirmationModal } from '../common/Modals/DeleteConfirmationModal'
 
 interface Props {
   project: Project
@@ -21,9 +21,9 @@ export const DeleteProjectModal = (props: Props) => {
     await deleteProject({
       variables: {
         input: {
-          id: project.id
-        }
-      }
+          id: project.id,
+        },
+      },
     })
     setLoading(false)
     onDeleteProject(project.id)
@@ -33,13 +33,15 @@ export const DeleteProjectModal = (props: Props) => {
     <DeleteConfirmationModal
       message={
         <>
-          Are you sure you want to delete the project <strong>{project.name}</strong>?<br/><br/>
+          Are you sure you want to delete the project <strong>{project.name}</strong>?<br />
+          <br />
           <WarningOutlined /> This action cannot be undone.
         </>
       }
       visible={visible}
       onDelete={handleDelete}
       onCancel={onCancel}
-      loading={loading}/>
+      loading={loading}
+    />
   )
 }

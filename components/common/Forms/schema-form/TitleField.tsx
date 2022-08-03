@@ -21,8 +21,8 @@ const TitleField = ({
   required,
   // schema,
   title,
-  // uiSchema,
-}: any) => {
+}: // uiSchema,
+any) => {
   const { colon = true } = formContext
 
   let labelChildren = title
@@ -42,7 +42,7 @@ const TitleField = ({
 
     const control: HTMLElement | null = document.querySelector(`[id="${id}"]`)
     control?.focus()
-  };
+  }
 
   return title ? (
     <label

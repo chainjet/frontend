@@ -30,21 +30,15 @@ export function ProfileApiKeyForm(props: Props) {
 
   return (
     <>
-      {
-        error && <Alert
-          style={{ marginBottom: 16 }}
-          message="Error"
-          description={error}
-          type="error"
-          showIcon
-        />
-      }
+      {error && <Alert style={{ marginBottom: 16 }} message="Error" description={error} type="error" showIcon />}
 
-      {
-        apiKey
-          ? <>{apiKey}</>
-          : <Button type="primary" onClick={handleGenerateApiKey} loading={generatingApiKey}>Generate API Key</Button>
-      }
+      {apiKey ? (
+        <>{apiKey}</>
+      ) : (
+        <Button type="primary" onClick={handleGenerateApiKey} loading={generatingApiKey}>
+          Generate API Key
+        </Button>
+      )}
     </>
   )
 }
@@ -55,5 +49,5 @@ ProfileApiKeyForm.fragments = {
       id
       apiKey
     }
-  `
+  `,
 }

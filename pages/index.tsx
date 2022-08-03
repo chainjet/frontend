@@ -10,20 +10,18 @@ import Landing from '../components/landing/generated'
 import { getHeadMetatags } from '../src/utils/html.utils'
 import { LandingHeader } from '../components/landing/LandingHeader'
 
-function HomePage () {
+function HomePage() {
   const { viewer } = useViewer()
 
   if (!viewer) {
     return (
       <>
         <Head>
-          {
-            getHeadMetatags({
-              path: '/',
-              title: 'ChainJet - No-Code Blockchain Workflow Automation',
-              description: 'Connect over 300 integrations to automate your routine and unlock your business potential.'
-            })
-          }
+          {getHeadMetatags({
+            path: '/',
+            title: 'ChainJet - No-Code Blockchain Workflow Automation',
+            description: 'Connect over 300 integrations to automate your routine and unlock your business potential.',
+          })}
         </Head>
         <LandingHeader />
         <Landing />
@@ -38,7 +36,9 @@ function HomePage () {
       </Head>
       <PageWrapper title="Projects">
         <div style={{ marginBottom: 16 }}>
-          <Link href="/new"><Button type="primary">Create Project</Button></Link>
+          <Link href="/new">
+            <Button type="primary">Create Project</Button>
+          </Link>
         </div>
         <UserProjects />
       </PageWrapper>

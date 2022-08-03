@@ -9,20 +9,20 @@ interface NodeOptions {
 }
 
 export class AddTriggerActionNodeModel extends NodeModel {
-  constructor (readonly nodeOptions: NodeOptions, options: BaseModelOptions = {}) {
+  constructor(readonly nodeOptions: NodeOptions, options: BaseModelOptions = {}) {
     super({
       ...options,
       type: 'AddTriggerActionNode',
     })
   }
 
-  serialize () {
+  serialize() {
     return {
       ...super.serialize(),
     }
   }
 
-  deserialize (event: DeserializeEvent<this>): void {
+  deserialize(event: DeserializeEvent<this>): void {
     super.deserialize(event)
   }
 }

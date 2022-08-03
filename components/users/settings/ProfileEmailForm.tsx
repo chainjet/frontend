@@ -25,9 +25,9 @@ export function ProfileEmailForm(props: Props) {
         variables: {
           input: {
             id: user.id,
-            update: values
-          }
-        }
+            update: values,
+          },
+        },
       })
 
       if (user.email !== values.email) {
@@ -39,22 +39,14 @@ export function ProfileEmailForm(props: Props) {
       setUpdateLoading(false)
     }
   }
-  
+
   const handleSubmitFail = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
   }
 
   return (
     <>
-      {
-        error && <Alert
-          style={{ marginBottom: 16 }}
-          message="Error"
-          description={error}
-          type="error"
-          showIcon
-        />
-      }
+      {error && <Alert style={{ marginBottom: 16 }} message="Error" description={error} type="error" showIcon />}
 
       <Form
         name="profile-public-info"
@@ -63,24 +55,19 @@ export function ProfileEmailForm(props: Props) {
         onFinish={handleSubmit}
         onFinishFailed={handleSubmitFail}
       >
-
-        <Form.Item
-          style={{ marginBottom: 16 }}
-          label="Email address"
-          name="email"
-        >
+        <Form.Item style={{ marginBottom: 16 }} label="Email address" name="email">
           <Input size="large" type="email" placeholder="Email address" prefix={<MailOutlined />} />
         </Form.Item>
 
-        {
-          emailUpdated && <Alert
+        {emailUpdated && (
+          <Alert
             style={{ marginBottom: 16 }}
             message="Email updated"
             description="A verification email has been sent to your new email."
             type="info"
             showIcon
           />
-        }
+        )}
 
         <Form.Item style={{ marginTop: 32 }}>
           <Button type="primary" htmlType="submit" loading={updateLoading}>
@@ -98,5 +85,5 @@ ProfileEmailForm.fragments = {
       id
       email
     }
-  `
+  `,
 }

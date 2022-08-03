@@ -8,11 +8,10 @@ declare global {
 }
 
 export class CrispChat extends React.PureComponent<{}> {
-  componentDidMount () {
+  componentDidMount() {
     window.$crisp = []
     window.CRISP_WEBSITE_ID = process.env.CRISP_WEBSITE_ID
-
-    ;(function() {
+    ;(function () {
       const s = document.createElement('script')
       s.src = 'https://client.crisp.chat/l.js'
       s.async = true
@@ -20,7 +19,7 @@ export class CrispChat extends React.PureComponent<{}> {
     })()
   }
 
-  render () {
+  render() {
     return <></>
   }
 }

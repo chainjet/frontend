@@ -1,7 +1,4 @@
-import {
-  BaseModelOptions,
-  DeserializeEvent
-} from '@projectstorm/react-canvas-core'
+import { BaseModelOptions, DeserializeEvent } from '@projectstorm/react-canvas-core'
 import { NodeModel } from '@projectstorm/react-diagrams-core'
 import { DefaultPortModel } from '@projectstorm/react-diagrams-defaults'
 import { Workflow } from '../../../../graphql'
@@ -19,13 +16,10 @@ interface NodeOptions {
 export class DiagramNodeModel extends NodeModel {
   private nodeId: string
 
-  constructor (
-    readonly nodeOptions: NodeOptions,
-    options: BaseModelOptions = {}
-  ) {
+  constructor(readonly nodeOptions: NodeOptions, options: BaseModelOptions = {}) {
     super({
       ...options,
-      type: 'DiagramNode'
+      type: 'DiagramNode',
     })
 
     this.nodeId = nodeOptions.workflowNode.id
@@ -34,25 +28,25 @@ export class DiagramNodeModel extends NodeModel {
     this.addPort(
       new DefaultPortModel({
         in: true,
-        name: 'in'
-      })
+        name: 'in',
+      }),
     )
     this.addPort(
       new DefaultPortModel({
         in: false,
-        name: 'out'
-      })
+        name: 'out',
+      }),
     )
   }
 
-  serialize () {
+  serialize() {
     return {
       ...super.serialize(),
-      nodeId: this.nodeOptions.workflowNode.id
+      nodeId: this.nodeOptions.workflowNode.id,
     }
   }
 
-  deserialize (event: DeserializeEvent<this>): void {
+  deserialize(event: DeserializeEvent<this>): void {
     super.deserialize(event)
     this.nodeId = event.data.nodeId
   }

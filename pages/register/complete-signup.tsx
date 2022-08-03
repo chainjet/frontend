@@ -20,12 +20,12 @@ const CompleteSignupPage = (props: Props) => {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       const res = await verifyEmail({
         variables: {
           username,
           code,
-        }
+        },
       })
       if (res.data.verifyEmail.error) {
         setError(res.data.verifyEmail.error)
@@ -38,13 +38,11 @@ const CompleteSignupPage = (props: Props) => {
   return (
     <>
       <Head>
-        {
-          getHeadMetatags({
-            path: '/complete-signup',
-            title: 'Complete Sign Up - ChainJet',
-            description: 'Complete ChainJet Sign Up.'
-          })
-        }
+        {getHeadMetatags({
+          path: '/complete-signup',
+          title: 'Complete Sign Up - ChainJet',
+          description: 'Complete ChainJet Sign Up.',
+        })}
       </Head>
       {error ? <Alert type="error" message={error} /> : <Loading />}
     </>
@@ -54,7 +52,7 @@ const CompleteSignupPage = (props: Props) => {
 CompleteSignupPage.getInitialProps = (ctx: NextPageContext) => {
   return {
     username: getQueryParam(ctx, 'username'),
-    code: getQueryParam(ctx, 'code')
+    code: getQueryParam(ctx, 'code'),
   }
 }
 

@@ -13,7 +13,7 @@ export function CredentialsTable(props: Props) {
   const { accountCredentials } = props
   const [deletingCredential, setDeletingCredential] = useState<AccountCredential | null>(null)
 
-  const dataSource = accountCredentials.map(credential => ({
+  const dataSource = accountCredentials.map((credential) => ({
     key: credential.id,
     name: credential.name,
     integration: credential.integrationAccount.name,
@@ -23,12 +23,9 @@ export function CredentialsTable(props: Props) {
         {/* <Button type="primary"
                 icon={<EditOutlined />}
                 style={{ marginRight: 16 }}/> */}
-        <Button danger
-                type="primary"
-                icon={<DeleteOutlined />}
-                onClick={() => setDeletingCredential(credential)}/>
+        <Button danger type="primary" icon={<DeleteOutlined />} onClick={() => setDeletingCredential(credential)} />
       </>
-    )
+    ),
   }))
 
   return (
@@ -40,29 +37,30 @@ export function CredentialsTable(props: Props) {
           {
             title: 'Name',
             key: 'name',
-            dataIndex: 'name'
+            dataIndex: 'name',
           },
           {
             title: 'Integration',
             key: 'integration',
-            dataIndex: 'integration'
+            dataIndex: 'integration',
           },
           {
             title: 'Delete credential', // TODO rename to actions after editing is implemented
             key: 'actions',
             dataIndex: 'actions',
-            align: 'right'
-          }
-        ]}/>
-        
-        {
-          !!deletingCredential && (
-            <DeleteCredentialModal visible={true}
-                                   accountCredential={deletingCredential}
-                                   onDeleteAccountCredential={() => setDeletingCredential(null)}
-                                   onCancel={() => setDeletingCredential(null)}/>
-          )
-        }
+            align: 'right',
+          },
+        ]}
+      />
+
+      {!!deletingCredential && (
+        <DeleteCredentialModal
+          visible={true}
+          accountCredential={deletingCredential}
+          onDeleteAccountCredential={() => setDeletingCredential(null)}
+          onCancel={() => setDeletingCredential(null)}
+        />
+      )}
     </>
   )
 }
@@ -77,5 +75,5 @@ CredentialsTable.fragments = {
         name
       }
     }
-  `
+  `,
 }

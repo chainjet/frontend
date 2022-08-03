@@ -15,7 +15,7 @@ export const WorkflowRunsTable = (props: Props) => {
   dayjs.extend(relativeTime)
   const { workflowRuns, workflow } = props
 
-  const dataSource = workflowRuns.map(run => ({
+  const dataSource = workflowRuns.map((run) => ({
     key: run.id,
     started: <span title={run.createdAt}>{dayjs(run.createdAt).fromNow()}</span>,
     status: run.status,
@@ -25,40 +25,38 @@ export const WorkflowRunsTable = (props: Props) => {
       <Link href="/[username]/[project]/workflow/[workflow]/run/[workflowRun]" as={`/${workflow.slug}/run/${run.id}`}>
         <a>View logs</a>
       </Link>
-    )
+    ),
   }))
 
   const columns = [
     {
       title: 'Run started',
       dataIndex: 'started',
-      key: 'started'
+      key: 'started',
     },
     {
       title: 'Status',
       dataIndex: 'status',
-      key: 'status'
+      key: 'status',
     },
     {
       title: 'Workflow Triggered',
       dataIndex: 'workflowTriggered',
-      key: 'workflowTriggered'
+      key: 'workflowTriggered',
     },
     {
       title: 'Operations Used',
       dataIndex: 'operationsUsed',
-      key: 'operationsUsed'
+      key: 'operationsUsed',
     },
     {
       title: 'Logs',
       dataIndex: 'logs',
-      key: 'logs'
-    }
+      key: 'logs',
+    },
   ]
 
-  return (
-    <Table dataSource={dataSource} columns={columns} size="small"/>
-  )
+  return <Table dataSource={dataSource} columns={columns} size="small" />
 }
 
 WorkflowRunsTable.fragments = {
@@ -78,5 +76,5 @@ WorkflowRunsTable.fragments = {
       id
       slug
     }
-  `
+  `,
 }

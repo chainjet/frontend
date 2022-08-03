@@ -16,15 +16,13 @@ export const UserProjects = () => {
   const { data, loading, error } = useGetProjects(projectsFragment)
 
   if (loading) {
-    return <Loading/>
+    return <Loading />
   }
   if (error || !data?.projects) {
-    return <RequestError error={error}/>
+    return <RequestError error={error} />
   }
 
-  const projects = data.projects.edges.map(edge => edge.node)
+  const projects = data.projects.edges.map((edge) => edge.node)
 
-  return (
-    <ProjectsTable projects={projects}/>
-  )
+  return <ProjectsTable projects={projects} />
 }

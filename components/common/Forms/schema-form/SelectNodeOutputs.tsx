@@ -16,24 +16,19 @@ export const SelectNodeOutputs = (props: Props) => {
   const { visible, outputs, onSelectOutput, onCancel } = props
 
   const handleOutputSelect = (selectedKeys: Key[]) => {
-    if (
-      selectedKeys[0] &&
-      typeof selectedKeys[0] === 'string' &&
-      selectedKeys[0].includes('.')
-    ) {
+    if (selectedKeys[0] && typeof selectedKeys[0] === 'string' && selectedKeys[0].includes('.')) {
       onSelectOutput(selectedKeys[0])
     }
   }
 
-  const treeData: DataNode[] = outputs.map(output => ({
+  const treeData: DataNode[] = outputs.map((output) => ({
     key: output.nodeId,
     title: (
       <>
-        {output.nodeLogo && <Avatar src={output.nodeLogo} size='small' />}{' '}
-        {output.nodeName}
+        {output.nodeLogo && <Avatar src={output.nodeLogo} size="small" />} {output.nodeName}
       </>
     ),
-    children: createOutputsTree(output.schema, output.nodeId)
+    children: createOutputsTree(output.schema, output.nodeId),
   }))
 
   return (
@@ -50,20 +45,14 @@ export const SelectNodeOutputs = (props: Props) => {
   )
 }
 
-export function createOutputsTree (
-  schema: JSONSchema7,
-  parentKey: string
-): DataNode[] {
+export function createOutputsTree(schema: JSONSchema7, parentKey: string): DataNode[] {
   return Object.entries(schema?.properties || {})
     .filter(([_, value]) => {
       if (typeof value === 'boolean') {
         return false
       }
       // remove null properties (type = 'null' or ['null'])
-      return !(
-        value.type === 'null' ||
-        (value.type?.length === 1 && value.type[0] === 'null')
-      )
+      return !(value.type === 'null' || (value.type?.length === 1 && value.type[0] === 'null'))
     })
     .map(([key, value]) => {
       let property = value as JSONSchema7
@@ -79,23 +68,19 @@ export function createOutputsTree (
           property = {
             ...property,
             ...refValue,
-            $ref: undefined
+            $ref: undefined,
           }
         }
       }
 
       const dataNode: DataNode = {
         key: `${parentKey}.${key}`,
-        title: key // property.title || key
+        title: key, // property.title || key
       }
-      const propertyType = (typeof property.type === 'string'
-        ? [property.type]
-        : property.type) as JSONSchema7TypeName[] | undefined
-      if (
-        propertyType?.find(type =>
-          ['string', 'number', 'boolean', 'integer'].includes(type)
-        )
-      ) {
+      const propertyType = (typeof property.type === 'string' ? [property.type] : property.type) as
+        | JSONSchema7TypeName[]
+        | undefined
+      if (propertyType?.find((type) => ['string', 'number', 'boolean', 'integer'].includes(type))) {
         return dataNode
       }
       if (propertyType?.includes('array')) {
@@ -103,7 +88,7 @@ export function createOutputsTree (
       }
       return {
         ...dataNode,
-        children: createOutputsTree(property, '' + dataNode.key)
+        children: createOutputsTree(property, '' + dataNode.key),
       }
     })
 }

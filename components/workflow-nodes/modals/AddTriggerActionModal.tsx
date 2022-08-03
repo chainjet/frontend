@@ -12,17 +12,30 @@ interface Props {
 export const AddTriggerActionModal = (props: Props) => {
   const { visible, onTriggerSelected, onActionSelected, onClose } = props
 
-  const data = [{
-    key: 'trigger',
-    title: <><PlusOutlined/> Add a trigger</>,
-    description: '(Optional) A trigger will run your workflow when certain conditions are met. ' +
-      'Workflows without trigger can be run manually or invoked from other workflows.',
-  }, {
-    key: 'action',
-    title: <><PlusOutlined/> Add an action</>,
-    description: 'Actions perform specific tasks when the workflow is run. ' +
-      'Your workflow can contain any number of actions.',
-  }]
+  const data = [
+    {
+      key: 'trigger',
+      title: (
+        <>
+          <PlusOutlined /> Add a trigger
+        </>
+      ),
+      description:
+        '(Optional) A trigger will run your workflow when certain conditions are met. ' +
+        'Workflows without trigger can be run manually or invoked from other workflows.',
+    },
+    {
+      key: 'action',
+      title: (
+        <>
+          <PlusOutlined /> Add an action
+        </>
+      ),
+      description:
+        'Actions perform specific tasks when the workflow is run. ' +
+        'Your workflow can contain any number of actions.',
+    },
+  ]
 
   const onOptionSelected = (key: string) => {
     if (key === 'trigger') {
@@ -34,21 +47,13 @@ export const AddTriggerActionModal = (props: Props) => {
   }
 
   return (
-    <Modal
-      visible={visible}
-      title="Add the first trigger or action"
-      onCancel={onClose}
-      footer={null}
-    >
+    <Modal visible={visible} title="Add the first trigger or action" onCancel={onClose} footer={null}>
       <List
         itemLayout="horizontal"
         dataSource={data}
-        renderItem={item => (
+        renderItem={(item) => (
           <List.Item onClick={() => onOptionSelected(item.key)} className="list-item">
-            <List.Item.Meta
-              title={item.title}
-              description={item.description}
-            />
+            <List.Item.Meta title={item.title} description={item.description} />
           </List.Item>
         )}
       />

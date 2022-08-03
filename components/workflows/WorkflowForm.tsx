@@ -43,77 +43,61 @@ export const WorkflowForm = (props: Props) => {
   const handleFormSubmit = (workflow: Partial<Workflow>) => {
     onSubmit({
       ...workflow,
-      runOnFailure
+      runOnFailure,
     } as Partial<Workflow>)
   }
 
   return (
     <>
-      {
-        error && <Alert
-          style={{ marginBottom: 16 }}
-          message="Error"
-          description={error}
-          type="error"
-          showIcon
-        />
-      }
-      <Form
-        form={form}
-        name="workflow-form"
-        onFinish={handleFormSubmit}
-        layout="vertical"
-      >
-
-        <Form.Item name="name"
+      {error && <Alert style={{ marginBottom: 16 }} message="Error" description={error} type="error" showIcon />}
+      <Form form={form} name="workflow-form" onFinish={handleFormSubmit} layout="vertical">
+        <Form.Item
+          name="name"
           label="Workflow Name"
           initialValue={name}
           rules={[{ required: true }]}
           help={name && `https://chainjet.io/${workflow.project.slug}/workflow/${slugify(name)}`}
-          style={{ marginBottom: 32 }}>
-          <Input allowClear onChange={e => handleNameChange(e.target.value)} />
+          style={{ marginBottom: 32 }}
+        >
+          <Input allowClear onChange={(e) => handleNameChange(e.target.value)} />
         </Form.Item>
 
-        {
-          workflow.trigger && (
-            <Form.Item name="maxConsecutiveFailures"
-              label="Max consecutive failures"
-              initialValue={workflow.trigger?.maxConsecutiveFailures}
-              rules={[{ required: true }]}
-              help="Stop the workflow after this number of consecutive failures. Set to zero to disable."
-              style={{ marginBottom: 32 }}>
-              <Input type="number" allowClear />
-            </Form.Item>
-          )
-        }
+        {workflow.trigger && (
+          <Form.Item
+            name="maxConsecutiveFailures"
+            label="Max consecutive failures"
+            initialValue={workflow.trigger?.maxConsecutiveFailures}
+            rules={[{ required: true }]}
+            help="Stop the workflow after this number of consecutive failures. Set to zero to disable."
+            style={{ marginBottom: 32 }}
+          >
+            <Input type="number" allowClear />
+          </Form.Item>
+        )}
 
         <div style={{ marginBottom: 32 }}>
-          <Switch checked={runWorkflowOnFailureEnabled}
-            onChange={handleWorkflowOnFailureToggle} />
+          <Switch checked={runWorkflowOnFailureEnabled} onChange={handleWorkflowOnFailureToggle} />
           <span style={{ marginLeft: 8 }}>Run a workflow on failure</span>
         </div>
 
-        {
-          runWorkflowOnFailureEnabled && (
-            <div style={{ marginBottom: 32 }}>
-              <WorkflowSelector projectId={workflow.project.id}
-                selectedWorkflowId={runOnFailure ?? undefined}
-                onChange={handleRunOnFailureChange}
-                filterWorkflows={wf => wf.id !== workflow.id} />
-            </div>
-          )
-        }
+        {runWorkflowOnFailureEnabled && (
+          <div style={{ marginBottom: 32 }}>
+            <WorkflowSelector
+              projectId={workflow.project.id}
+              selectedWorkflowId={runOnFailure ?? undefined}
+              onChange={handleRunOnFailureChange}
+              filterWorkflows={(wf) => wf.id !== workflow.id}
+            />
+          </div>
+        )}
 
-        {
-          showSubmit && (
-            <Form.Item>
-              <Button type="primary" htmlType="submit" loading={loading}>
-                Submit
-              </Button>
-            </Form.Item>
-          )
-        }
-
+        {showSubmit && (
+          <Form.Item>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              Submit
+            </Button>
+          </Form.Item>
+        )}
       </Form>
     </>
   )
@@ -140,5 +124,5 @@ WorkflowForm.fragments = {
       id
       slug
     }
-  `
+  `,
 }

@@ -40,8 +40,8 @@ export const UpdateWorkflowTriggerDrawer = (props: Props) => {
   const [updateWorkflowTrigger] = useUpdateOneWorkflowTrigger()
   const { data, loading, error } = useGetWorkflowTriggerById(workflowTriggerFragment, {
     variables: {
-      id: props.workflowTriggerId
-    }
+      id: props.workflowTriggerId,
+    },
   })
 
   if (loading) {
@@ -66,10 +66,10 @@ export const UpdateWorkflowTriggerDrawer = (props: Props) => {
             name,
             inputs,
             ...(credentialsID ? { credentials: credentialsID } : {}),
-            schedule
-          }
-        }
-      }
+            schedule,
+          },
+        },
+      },
     })
     onUpdateWorkflowTrigger(workflowTrigger)
   }
@@ -77,7 +77,7 @@ export const UpdateWorkflowTriggerDrawer = (props: Props) => {
   const initialInputs = {
     ...(workflowTrigger.inputs ?? {}),
     chainjet_schedule: workflowTrigger.schedule,
-    chainjet_operation_name: workflowTrigger.name
+    chainjet_operation_name: workflowTrigger.name,
   }
 
   return (
@@ -93,12 +93,13 @@ export const UpdateWorkflowTriggerDrawer = (props: Props) => {
           chainjet_operation_name: {
             title: 'Display name',
             type: 'string',
-            description: 'Operation name to use on the flow chart and logs.'
-          }
-        }
+            description: 'Operation name to use on the flow chart and logs.',
+          },
+        },
       }}
       visible={visible}
       onSubmitInputs={onSubmitInputs}
-      onCancel={onCancel} />
+      onCancel={onCancel}
+    />
   )
 }

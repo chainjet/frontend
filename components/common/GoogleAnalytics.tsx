@@ -4,19 +4,19 @@ import { GoogleAnalyticsService } from '../../src/services/GoogleAnalyticsServic
 class GoogleAnalytics extends React.Component<{}> {
   currentPage: string = ''
 
-  componentDidMount () {
+  componentDidMount() {
     this.currentPage = document.location.pathname + document.location.search
     GoogleAnalyticsService.trackPage(this.currentPage)
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     if (this.currentPage !== document.location.pathname + document.location.search) {
       this.currentPage = document.location.pathname + document.location.search
       GoogleAnalyticsService.trackPage(this.currentPage)
     }
   }
 
-  render () {
+  render() {
     return <></>
   }
 }

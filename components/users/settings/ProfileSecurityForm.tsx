@@ -29,8 +29,8 @@ export function ProfileSecurityForm(props: Props) {
       await changePassword({
         variables: {
           oldPassword: values.oldPassword,
-          newPassword: values.newPassword
-        }
+          newPassword: values.newPassword,
+        },
       })
       setPasswordUpdated(true)
     } catch (e) {
@@ -39,39 +39,26 @@ export function ProfileSecurityForm(props: Props) {
       setUpdateLoading(false)
     }
   }
-  
+
   const handleSubmitFail = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
   }
 
   return (
     <>
-      {
-        error && <Alert
-          style={{ marginBottom: 16 }}
-          message="Error"
-          description={error}
-          type="error"
-          showIcon
-        />
-      }
+      {error && <Alert style={{ marginBottom: 16 }} message="Error" description={error} type="error" showIcon />}
 
-      {
-        !error && passwordUpdated && <Alert
+      {!error && passwordUpdated && (
+        <Alert
           style={{ marginBottom: 16 }}
           message="Success"
           description="Password updated successfully."
           type="success"
           showIcon
         />
-      }
+      )}
 
-      <Form
-        name="profile-public-info"
-        layout="vertical"
-        onFinish={handleSubmit}
-        onFinishFailed={handleSubmitFail}
-      >
+      <Form name="profile-public-info" layout="vertical" onFinish={handleSubmit} onFinishFailed={handleSubmitFail}>
         <Form.Item
           label="Old Password"
           name="oldPassword"

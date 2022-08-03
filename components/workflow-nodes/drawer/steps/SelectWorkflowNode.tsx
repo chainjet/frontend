@@ -17,8 +17,17 @@ interface Props<T extends IntegrationTrigger | IntegrationAction> {
   loading: boolean
 }
 
-export function SelectWorkflowNode<T extends IntegrationTrigger | IntegrationAction> (props: Props<T>) {
-  const { nodeType, nodes, operationCategories, categorySelected, onNodeSelected, onFilterChange, onCategorySelected, loading } = props
+export function SelectWorkflowNode<T extends IntegrationTrigger | IntegrationAction>(props: Props<T>) {
+  const {
+    nodeType,
+    nodes,
+    operationCategories,
+    categorySelected,
+    onNodeSelected,
+    onFilterChange,
+    onCategorySelected,
+    loading,
+  } = props
   const [search, setSearch] = useState('')
   const nodeTypeWithArticle = nodeType === 'trigger' ? 'a trigger' : 'an action'
 
@@ -39,7 +48,7 @@ export function SelectWorkflowNode<T extends IntegrationTrigger | IntegrationAct
           bordered
           loading={loading}
           dataSource={operationCategories}
-          renderItem={category => (
+          renderItem={(category) => (
             <List.Item onClick={() => onCategorySelected(category)} className="list-item">
               <List.Item.Meta
                 title={capitalize(category.name)}
@@ -61,7 +70,7 @@ export function SelectWorkflowNode<T extends IntegrationTrigger | IntegrationAct
     if (categorySelected) {
       title = (
         <>
-          <ArrowLeftOutlined onClick={() => onCategorySelected(null)} style={{ marginRight: '8px' }}/>
+          <ArrowLeftOutlined onClick={() => onCategorySelected(null)} style={{ marginRight: '8px' }} />
           {capitalize(nodeType)}s in the category "{categorySelected}"
         </>
       )
@@ -80,13 +89,20 @@ export function SelectWorkflowNode<T extends IntegrationTrigger | IntegrationAct
           bordered
           loading={loading}
           dataSource={nodes}
-          renderItem={node => (
+          renderItem={(node) => (
             <List.Item onClick={() => onNodeSelected(node)} className="list-item">
               <List.Item.Meta
                 title={
-                  (node as IntegrationTrigger).instant
-                    ? <>{capitalize(node.name)} <Tag color="cyan" style={{ marginLeft: 8 }}>Instant</Tag></>
-                    : capitalize(node.name)
+                  (node as IntegrationTrigger).instant ? (
+                    <>
+                      {capitalize(node.name)}{' '}
+                      <Tag color="cyan" style={{ marginLeft: 8 }}>
+                        Instant
+                      </Tag>
+                    </>
+                  ) : (
+                    capitalize(node.name)
+                  )
                 }
                 description={
                   <Typography.Paragraph ellipsis={{ rows: 2 }} type="secondary">
@@ -107,13 +123,13 @@ export function SelectWorkflowNode<T extends IntegrationTrigger | IntegrationAct
         {operationCategories.length ? `Find ${nodeTypeWithArticle} by name` : ''}
       </Typography.Title>
 
-      <Input.Search placeholder={`Type the ${nodeType}'s name`}
-                    onChange={e => handleFilterChange(e.target.value)}
-                    enterButton/>
+      <Input.Search
+        placeholder={`Type the ${nodeType}'s name`}
+        onChange={(e) => handleFilterChange(e.target.value)}
+        enterButton
+      />
 
-      {
-        !search && !categorySelected && operationCategories.length > 1 ? renderCategoryList() : renderNodeList()
-      }
+      {!search && !categorySelected && operationCategories.length > 1 ? renderCategoryList() : renderNodeList()}
     </>
   )
 }
@@ -135,5 +151,5 @@ SelectWorkflowNode.fragments = {
       skipAuth
       instant
     }
-  `
+  `,
 }

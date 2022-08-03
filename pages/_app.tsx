@@ -6,8 +6,7 @@ import GoogleAnalytics from '../components/common/GoogleAnalytics'
 import { CrispChat } from '../components/common/CrispChat'
 
 export default class ChainJetApp extends App {
-
-  render () {
+  render() {
     const { Component, pageProps } = this.props
     return (
       <>
@@ -39,9 +38,7 @@ export default class ChainJetApp extends App {
           <meta name="twitter:site" content="@flowoid" />
           <meta name="twitter:creator" content="@flowoid" />
 
-          {
-            process.env.SLACK_APP_ID && <meta name="slack-app-id" content={process.env.SLACK_APP_ID}></meta>
-          }
+          {process.env.SLACK_APP_ID && <meta name="slack-app-id" content={process.env.SLACK_APP_ID}></meta>}
         </Head>
 
         <GoogleAnalytics />

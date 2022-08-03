@@ -1,10 +1,6 @@
 import React, { KeyboardEvent, useEffect, useState } from 'react'
 import { isServer } from '../../../src/utils/environment'
-import createEngine, {
-  DagreEngine,
-  DefaultLinkModel,
-  DiagramModel
-} from '@projectstorm/react-diagrams'
+import createEngine, { DagreEngine, DefaultLinkModel, DiagramModel } from '@projectstorm/react-diagrams'
 import { CanvasWidget, InputType } from '@projectstorm/react-canvas-core'
 import './WorkflowDiagram.less'
 import { DiagramNodeModel } from './diagram-node/DiagramNodeModel'
@@ -50,7 +46,7 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
   const [creatingTrigger, setCreatingTrigger] = useState<boolean>(false)
   const [updatingTrigger, setUpdatingTrigger] = useState<WorkflowTrigger | undefined>()
   const [deletingTrigger, setDeletingTrigger] = useState<WorkflowTrigger | undefined>()
-  const [creatingAction, setCreatingAction] = useState<{ node?: WorkflowNode | boolean, condition?: string }>({})
+  const [creatingAction, setCreatingAction] = useState<{ node?: WorkflowNode | boolean; condition?: string }>({})
   const [updatingAction, setUpdatingAction] = useState<WorkflowAction | undefined>()
   const [deletingAction, setDeletingAction] = useState<WorkflowAction | undefined>()
 
@@ -84,19 +80,10 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
     setDeletingAction(undefined)
   }
 
-  const getParentActionIds = (
-    node: WorkflowNode | boolean | undefined,
-    includeAction: boolean
-  ) => {
-    if (
-      node &&
-      typeof node === 'object' &&
-      (node as WorkflowAction)?.integrationAction
-    ) {
+  const getParentActionIds = (node: WorkflowNode | boolean | undefined, includeAction: boolean) => {
+    if (node && typeof node === 'object' && (node as WorkflowAction)?.integrationAction) {
       const parentAction = node as WorkflowAction
-      const ancestry = getActionAncestryList(workflowActions, parentAction).map(
-        action => action.id
-      )
+      const ancestry = getActionAncestryList(workflowActions, parentAction).map((action) => action.id)
       if (includeAction) {
         return [...ancestry, parentAction.id]
       }
@@ -113,18 +100,14 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
       engine = createEngine({ registerDefaultDeleteItemsAction: false })
 
       // Register factories
-      const factories = [
-        new DiagramNodeFactory(),
-        new DecisionNodeFactory(),
-        new AddTriggerActionNodeFactory()
-      ]
-      factories.forEach(factory => engine?.getNodeFactories().registerFactory(factory))
+      const factories = [new DiagramNodeFactory(), new DecisionNodeFactory(), new AddTriggerActionNodeFactory()]
+      factories.forEach((factory) => engine?.getNodeFactories().registerFactory(factory))
 
       // Disable link points
       engine.setMaxNumberPointsPerLink(0)
 
       engine.registerListener({
-        canvasReady: () => engine?.zoomToFit()
+        canvasReady: () => engine?.zoomToFit(),
       })
 
       fixEngineEventBus(engine)
@@ -139,11 +122,11 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
       workflowTrigger: workflowTrigger,
       workflowActions: workflowActions,
       onCreateTriggerClick: () => setCreatingTrigger(true),
-      onUpdateTriggerClick: trigger => setUpdatingTrigger(trigger as WorkflowTrigger),
-      onDeleteTriggerClick: trigger => setDeletingTrigger(trigger as WorkflowTrigger),
+      onUpdateTriggerClick: (trigger) => setUpdatingTrigger(trigger as WorkflowTrigger),
+      onDeleteTriggerClick: (trigger) => setDeletingTrigger(trigger as WorkflowTrigger),
       onCreateActionClick: (node, condition) => setCreatingAction({ node: node ?? true, condition }),
-      onUpdateActionClick: action => setUpdatingAction(action as WorkflowAction),
-      onDeleteActionClick: action => setDeletingAction(action as WorkflowAction)
+      onUpdateActionClick: (action) => setUpdatingAction(action as WorkflowAction),
+      onDeleteActionClick: (action) => setDeletingAction(action as WorkflowAction),
     })
     engine.setModel(model)
 
@@ -157,7 +140,7 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
         ranksep: 200,
         // ranker: 'longest-path',
       },
-      includeLinks: true
+      includeLinks: true,
     })
     dagreEngine.redistribute(model)
   }, [props.workflowTrigger, props.workflowActions])
@@ -169,7 +152,7 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
   return (
     <>
       <BlockPageScroll>
-        <CanvasWidget className='flow-canvas' engine={diagramEngine} />
+        <CanvasWidget className="flow-canvas" engine={diagramEngine} />
       </BlockPageScroll>
 
       {creatingTrigger && (
@@ -231,14 +214,14 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
   )
 }
 
-function addNode (
+function addNode(
   model: DiagramModel,
   workflow: Workflow,
   workflowNode: WorkflowNode,
   isRootNode: boolean,
   onCreateClick: (node?: WorkflowNode, condition?: string) => void,
   onUpdateClick: (node: WorkflowNode) => void,
-  onDeleteClick: (node: WorkflowNode) => void
+  onDeleteClick: (node: WorkflowNode) => void,
 ) {
   const ModelClass = getNodeModel(workflowNode)
   const node = new ModelClass({
@@ -247,13 +230,13 @@ function addNode (
     isRootNode,
     onCreateClick,
     onUpdateClick,
-    onDeleteClick
+    onDeleteClick,
   })
   model.addNode(node)
   return node
 }
 
-function getNodeModel (workflowNode: WorkflowNode) {
+function getNodeModel(workflowNode: WorkflowNode) {
   const integrationNode = getIntegrationNodeFromWorkflowNode(workflowNode)
   if (integrationNode.integration.key === 'logic' && integrationNode.key === 'decision') {
     return DecisionNodeModel
@@ -261,16 +244,16 @@ function getNodeModel (workflowNode: WorkflowNode) {
   return DiagramNodeModel
 }
 
-function createEmptyWorkflowDiagram (
+function createEmptyWorkflowDiagram(
   model: DiagramModel,
   workflow: Workflow,
   onCreateTriggerClick: (node?: WorkflowNode) => void,
-  onCreateActionClick: (node?: WorkflowNode, condition?: string) => void
+  onCreateActionClick: (node?: WorkflowNode, condition?: string) => void,
 ) {
   const node = new AddTriggerActionNodeModel({
     workflow,
     onCreateTriggerClick,
-    onCreateActionClick
+    onCreateActionClick,
   })
   model.addNode(node)
 }
@@ -288,13 +271,13 @@ interface CreateWorkflowTreeOpts {
   onDeleteActionClick: (node: WorkflowNode) => void
 }
 
-function createWorkflowTree (options: CreateWorkflowTreeOpts) {
+function createWorkflowTree(options: CreateWorkflowTreeOpts) {
   if (!options.workflowTrigger && !options.workflowActions.length) {
     return createEmptyWorkflowDiagram(
       options.model,
       options.workflow,
       options.onCreateTriggerClick,
-      options.onCreateActionClick
+      options.onCreateActionClick,
     )
   }
   let triggerNode: NodeModel | undefined
@@ -306,13 +289,11 @@ function createWorkflowTree (options: CreateWorkflowTreeOpts) {
       true,
       options.onCreateActionClick,
       options.onUpdateTriggerClick,
-      options.onDeleteTriggerClick
+      options.onDeleteTriggerClick,
     )
   }
-  const rootActions = options.workflowActions.filter(
-    action => action.isRootAction
-  )
-  rootActions.forEach(rootAction =>
+  const rootActions = options.workflowActions.filter((action) => action.isRootAction)
+  rootActions.forEach((rootAction) =>
     createActionNodes(
       options.model,
       options.workflow,
@@ -323,12 +304,12 @@ function createWorkflowTree (options: CreateWorkflowTreeOpts) {
       options.onCreateTriggerClick,
       options.onCreateActionClick,
       options.onUpdateActionClick,
-      options.onDeleteActionClick
-    )
+      options.onDeleteActionClick,
+    ),
   )
 }
 
-function createActionNodes (
+function createActionNodes(
   model: DiagramModel,
   workflow: Workflow,
   workflowActions: WorkflowAction[],
@@ -338,16 +319,17 @@ function createActionNodes (
   onCreateTriggerClick: (node?: WorkflowNode) => void,
   onCreateActionClick: (node?: WorkflowNode, condition?: string) => void,
   onUpdateActionClick: (node: WorkflowNode) => void,
-  onDeleteActionClick: (node: WorkflowNode) => void
+  onDeleteActionClick: (node: WorkflowNode) => void,
 ) {
   const node = addNode(
     model,
     workflow,
     rootAction,
     !parentNode,
-    (node?: WorkflowNode, condition?: string) => node ? onCreateActionClick(node, condition) : onCreateTriggerClick(node),
+    (node?: WorkflowNode, condition?: string) =>
+      node ? onCreateActionClick(node, condition) : onCreateTriggerClick(node),
     onUpdateActionClick,
-    onDeleteActionClick
+    onDeleteActionClick,
   )
   if (parentNode) {
     const portFrom = parentNode.getPort(parentCondition ?? 'out')
@@ -357,15 +339,15 @@ function createActionNodes (
       link.setSourcePort(portFrom)
       link.setTargetPort(portTo)
       if (parentCondition) {
-        link.addLabel(parentCondition)  
+        link.addLabel(parentCondition)
       }
       model.addLink(link)
     }
   }
 
-  (rootAction.nextActions ?? [])
+  ;(rootAction.nextActions ?? [])
     .slice() // since array is frozen, we need a copy in order to sort it
-    .sort(a => {
+    .sort((a) => {
       if (a.condition) {
         const aAlignment = node.getPort(a.condition)?.getOptions().alignment
         if (aAlignment === 'left') {
@@ -376,8 +358,8 @@ function createActionNodes (
       }
       return 0
     })
-    .forEach(nextAction => {
-      const action = workflowActions.find(action => action.id === nextAction.action.id)
+    .forEach((nextAction) => {
+      const action = workflowActions.find((action) => action.id === nextAction.action.id)
       if (action) {
         createActionNodes(
           model,
@@ -389,7 +371,7 @@ function createActionNodes (
           onCreateTriggerClick,
           onCreateActionClick,
           onUpdateActionClick,
-          onDeleteActionClick
+          onDeleteActionClick,
         )
       }
     })
@@ -399,14 +381,14 @@ function createActionNodes (
  * Event bus key up/down has issues when using forms in the drawer
  * Disable key actions and fix internal method
  */
-function fixEngineEventBus (engine: DiagramEngine) {
+function fixEngineEventBus(engine: DiagramEngine) {
   const eventBus = engine.getActionEventBus()
   // @ts-ignore
   Object.values(eventBus.actions)
-    .filter(action => ['key-up', 'key-down'].includes(action.options.type))
-    .forEach(action => eventBus.deregisterAction(action))
+    .filter((action) => ['key-up', 'key-down'].includes(action.options.type))
+    .forEach((action) => eventBus.deregisterAction(action))
 
-  eventBus.getActionsForEvent = actionEvent => {
+  eventBus.getActionsForEvent = (actionEvent) => {
     const { event } = actionEvent
     if (event.type === 'mousedown') {
       return eventBus.getActionsForType(InputType.MOUSE_DOWN)
@@ -415,16 +397,12 @@ function fixEngineEventBus (engine: DiagramEngine) {
     } else if (event.type === 'keydown') {
       // store the recorded key
       // @ts-ignore
-      eventBus.keys[
-        (event as KeyboardEvent).key?.toLowerCase() || 'Unidentified'
-      ] = true
+      eventBus.keys[(event as KeyboardEvent).key?.toLowerCase() || 'Unidentified'] = true
       return eventBus.getActionsForType(InputType.KEY_DOWN)
     } else if (event.type === 'keyup') {
       // delete the recorded key
       // @ts-ignore
-      delete eventBus.keys[
-        (event as KeyboardEvent).key?.toLowerCase() || 'Unidentified'
-      ]
+      delete eventBus.keys[(event as KeyboardEvent).key?.toLowerCase() || 'Unidentified']
       return eventBus.getActionsForType(InputType.KEY_UP)
     } else if (event.type === 'mousemove') {
       return eventBus.getActionsForType(InputType.MOUSE_MOVE)

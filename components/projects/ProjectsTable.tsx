@@ -11,23 +11,28 @@ interface Props {
 export const ProjectsTable = (props: Props) => {
   const { projects } = props
 
-  const dataSource = projects.map(project => ({
+  const dataSource = projects.map((project) => ({
     key: project.id,
     name: project.name,
-    slug: project.slug
+    slug: project.slug,
   }))
 
   return (
-    <Table dataSource={dataSource}
-           columns={[
-             {
-               title: 'Name',
-               dataIndex: 'name',
-               key: 'name',
-               render: (name, project) =>
-                 <Link href="/[username]/[project]" as={`/${project.slug}`}><a>{name}</a></Link>
-             }
-           ]}/>
+    <Table
+      dataSource={dataSource}
+      columns={[
+        {
+          title: 'Name',
+          dataIndex: 'name',
+          key: 'name',
+          render: (name, project) => (
+            <Link href="/[username]/[project]" as={`/${project.slug}`}>
+              <a>{name}</a>
+            </Link>
+          ),
+        },
+      ]}
+    />
   )
 }
 
@@ -38,5 +43,5 @@ ProjectsTable.fragments = {
       slug
       name
     }
-  `
+  `,
 }

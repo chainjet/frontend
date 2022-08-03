@@ -48,12 +48,12 @@ const workflowRunFragment = gql`
   }
 `
 
-function WorkflowRunPage (props: Props) {
+function WorkflowRunPage(props: Props) {
   const { username, projectName, workflowName, workflowRunId } = props
   const { data, error, loading, startPolling, stopPolling } = useGetWorkflowRunById(workflowRunFragment, {
     variables: {
-      id: workflowRunId
-    }
+      id: workflowRunId,
+    },
   })
 
   /**
@@ -73,7 +73,7 @@ function WorkflowRunPage (props: Props) {
     return <Loading />
   }
   if (error || !data?.workflowRun) {
-    return <RequestError error={error}/>
+    return <RequestError error={error} />
   }
 
   const LOG_LEVEL_INFO = <Tag color="cyan">Info</Tag>
@@ -90,7 +90,7 @@ function WorkflowRunPage (props: Props) {
       operation: workflowRun.triggerRun.operationName,
       integration: workflowRun.triggerRun.integrationName,
       log: 'Checking trigger condition.',
-      level: LOG_LEVEL_INFO
+      level: LOG_LEVEL_INFO,
     })
     const triggerIds = workflowRun.triggerRun.triggerIds
     if (triggerIds?.length) {
@@ -99,36 +99,41 @@ function WorkflowRunPage (props: Props) {
         time: dayjs(workflowRun.triggerRun.finishedAt).format('YYYY-MM-DD HH:mm:ss'),
         operation: workflowRun.triggerRun.operationName,
         integration: workflowRun.triggerRun.integrationName,
-        log: <>
-          Trigger ID{triggerIds.length > 1 ? 's' : ''}: <strong>{triggerIds.join(', ')}</strong>
-        </>,
-        level: LOG_LEVEL_INFO
+        log: (
+          <>
+            Trigger ID{triggerIds.length > 1 ? 's' : ''}: <strong>{triggerIds.join(', ')}</strong>
+          </>
+        ),
+        level: LOG_LEVEL_INFO,
       })
     }
     if (['completed', 'failed'].includes(workflowRun.triggerRun.status)) {
-      const log = workflowRun.triggerRun.status === 'failed'
-        ? 'Trigger check failed.'
-        : workflowRun.triggerRun.workflowTriggered ? 'Trigger condition satisfied.' : 'Trigger condition not satisfied.'
+      const log =
+        workflowRun.triggerRun.status === 'failed'
+          ? 'Trigger check failed.'
+          : workflowRun.triggerRun.workflowTriggered
+          ? 'Trigger condition satisfied.'
+          : 'Trigger condition not satisfied.'
       dataSource.push({
         key: 'trigger-2',
         time: dayjs(workflowRun.triggerRun.finishedAt).format('YYYY-MM-DD HH:mm:ss'),
         operation: workflowRun.triggerRun.operationName,
         integration: workflowRun.triggerRun.integrationName,
         log,
-        level: workflowRun.triggerRun.status === 'failed' ? LOG_LEVEL_ERROR : LOG_LEVEL_INFO
+        level: workflowRun.triggerRun.status === 'failed' ? LOG_LEVEL_ERROR : LOG_LEVEL_INFO,
       })
     }
   }
 
   // Add action logs
-  for (const actionRun of (workflowRun.actionRuns || [])) {
+  for (const actionRun of workflowRun.actionRuns || []) {
     dataSource.push({
       key: `${new Date(actionRun.createdAt).getTime()}-0`,
       time: dayjs(actionRun.createdAt).format('YYYY-MM-DD HH:mm:ss'),
       operation: actionRun.operationName,
       integration: actionRun.integrationName,
       log: 'Running operation.',
-      level: LOG_LEVEL_INFO
+      level: LOG_LEVEL_INFO,
     })
     if (['completed', 'failed'].includes(actionRun.status)) {
       const log = actionRun.status === 'failed' ? 'Operation run failed.' : 'Operation ran succesfully.'
@@ -138,7 +143,7 @@ function WorkflowRunPage (props: Props) {
         operation: actionRun.operationName,
         integration: actionRun.integrationName,
         log,
-        level: actionRun.status === 'failed' ? LOG_LEVEL_ERROR : LOG_LEVEL_INFO
+        level: actionRun.status === 'failed' ? LOG_LEVEL_ERROR : LOG_LEVEL_INFO,
       })
     }
   }
@@ -149,7 +154,7 @@ function WorkflowRunPage (props: Props) {
       ...lastDataSource,
       key: 'error',
       log: `Error: ${workflowRun.errorMessage}`,
-      level: LOG_LEVEL_ERROR
+      level: LOG_LEVEL_ERROR,
     })
   }
   if (workflowRun.errorResponse && dataSource.length > 1) {
@@ -158,7 +163,7 @@ function WorkflowRunPage (props: Props) {
       ...lastDataSource,
       key: 'error',
       log: `Response: ${workflowRun.errorResponse}`,
-      level: LOG_LEVEL_ERROR
+      level: LOG_LEVEL_ERROR,
     })
   }
 
@@ -184,45 +189,65 @@ function WorkflowRunPage (props: Props) {
     {
       title: 'Time',
       dataIndex: 'time',
-      key: 'time'
+      key: 'time',
     },
     {
       title: 'Operation',
       dataIndex: 'operation',
-      key: 'operation'
+      key: 'operation',
     },
     {
       title: 'Integration',
       dataIndex: 'integration',
-      key: 'integration'
+      key: 'integration',
     },
     {
       title: 'Log message',
       dataIndex: 'log',
-      key: 'log'
-    }
+      key: 'log',
+    },
   ]
 
   const handleGoBack = async () => {
     await Router.push(
       '/[username]/[project]/workflow/[workflow]',
-      `/${username}/${projectName}/workflow/${workflowName}`
+      `/${username}/${projectName}/workflow/${workflowName}`,
     )
   }
 
   const getWorkflowStatusTag = () => {
     switch (workflowRun.status) {
       case WorkflowRunStatus.running:
-        return <Tag key="status" color="blue">Running</Tag>
+        return (
+          <Tag key="status" color="blue">
+            Running
+          </Tag>
+        )
       case WorkflowRunStatus.sleeping:
-        return <Tag key="status" color="gold">Sleeping</Tag>
+        return (
+          <Tag key="status" color="gold">
+            Sleeping
+          </Tag>
+        )
       case WorkflowRunStatus.completed:
         if (workflowRun.triggerRun?.workflowTriggered) {
-          return <Tag key="status" color="green">Completed</Tag>
+          return (
+            <Tag key="status" color="green">
+              Completed
+            </Tag>
+          )
         }
-        return <Tag key="status" color="blue">Trigger condition not satisfied</Tag>
+        return (
+          <Tag key="status" color="blue">
+            Trigger condition not satisfied
+          </Tag>
+        )
       case WorkflowRunStatus.failed:
-        return <Tag key="status" color="red">Failed</Tag>
+        return (
+          <Tag key="status" color="red">
+            Failed
+          </Tag>
+        )
       default:
         assertNever(workflowRun.status)
         throw new Error('assert never')
@@ -232,11 +257,23 @@ function WorkflowRunPage (props: Props) {
   const getStartedByTag = () => {
     switch (workflowRun.startedBy) {
       case WorkflowRunStartedByOptions.trigger:
-        return <Tag key="started-by" color="geekblue">Started by schedule</Tag>
+        return (
+          <Tag key="started-by" color="geekblue">
+            Started by schedule
+          </Tag>
+        )
       case WorkflowRunStartedByOptions.user:
-        return <Tag key="started-by" color="geekblue">Manually started</Tag>
+        return (
+          <Tag key="started-by" color="geekblue">
+            Manually started
+          </Tag>
+        )
       case WorkflowRunStartedByOptions.workflowFailure:
-        return <Tag key="started-by" color="geekblue">Started by workflow failure</Tag>
+        return (
+          <Tag key="started-by" color="geekblue">
+            Started by workflow failure
+          </Tag>
+        )
       default:
         assertNever(workflowRun.startedBy)
         throw new Error('assert never')
@@ -249,10 +286,7 @@ function WorkflowRunPage (props: Props) {
         <title>Workflow Run Logs</title>
       </Head>
 
-      <PageWrapper
-        title="Workflow Run Logs"
-        onBack={handleGoBack}
-        tags={[ getWorkflowStatusTag(), getStartedByTag() ]}>
+      <PageWrapper title="Workflow Run Logs" onBack={handleGoBack} tags={[getWorkflowStatusTag(), getStartedByTag()]}>
         <Table dataSource={dataSource} columns={columns} />
       </PageWrapper>
     </>
@@ -264,7 +298,7 @@ WorkflowRunPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> =
     username: getQueryParam(ctx, 'username').toLowerCase(),
     projectName: getQueryParam(ctx, 'project').toLowerCase(),
     workflowName: getQueryParam(ctx, 'workflow').toLowerCase(),
-    workflowRunId: getQueryParam(ctx, 'workflowRun').toLowerCase()
+    workflowRunId: getQueryParam(ctx, 'workflowRun').toLowerCase(),
   }
 }
 

@@ -41,8 +41,8 @@ export const UpdateWorkflowActionDrawer = (props: Props) => {
   const [updateWorkflowAction] = useUpdateOneWorkflowAction()
   const { data, loading, error } = useGetWorkflowActionById(workflowActionFragment, {
     variables: {
-      id: props.workflowActionId
-    }
+      id: props.workflowActionId,
+    },
   })
 
   if (loading) {
@@ -65,18 +65,17 @@ export const UpdateWorkflowActionDrawer = (props: Props) => {
             name,
             inputs,
             ...(credentialsID ? { credentials: credentialsID } : {}),
-          }
-        }
-      }
+          },
+        },
+      },
     })
     onUpdateWorkflowAction(workflowAction)
   }
 
   const initialInputs = {
     ...(workflowAction.inputs ?? {}),
-    chainjet_operation_name: workflowAction.name
+    chainjet_operation_name: workflowAction.name,
   }
-
 
   return (
     <WorkflowNodeDrawer
@@ -94,11 +93,12 @@ export const UpdateWorkflowActionDrawer = (props: Props) => {
           chainjet_operation_name: {
             title: 'Display name',
             type: 'string',
-            description: 'Operation name to use on the flow chart and logs.'
-          }
-        }
+            description: 'Operation name to use on the flow chart and logs.',
+          },
+        },
       }}
       onSubmitInputs={onSubmitInputs}
-      onCancel={onCancel} />
+      onCancel={onCancel}
+    />
   )
 }

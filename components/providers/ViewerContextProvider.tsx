@@ -1,8 +1,7 @@
 import React, { createContext, useState } from 'react'
 import { User } from '../../graphql'
 
-export const ViewerContext =
-  createContext<{ viewer: User | null, setViewer: any }>({ viewer: null, setViewer: null })
+export const ViewerContext = createContext<{ viewer: User | null; setViewer: any }>({ viewer: null, setViewer: null })
 
 interface Props {
   viewer?: User | null
@@ -11,11 +10,7 @@ interface Props {
 
 const ViewerContextProvider = (props: Props) => {
   const [viewer, setViewer] = useState<User | null>(props.viewer || null)
-  return (
-    <ViewerContext.Provider value={{ viewer, setViewer }}>
-      {props.children}
-    </ViewerContext.Provider>
-  )
+  return <ViewerContext.Provider value={{ viewer, setViewer }}>{props.children}</ViewerContext.Provider>
 }
 
 export default ViewerContextProvider

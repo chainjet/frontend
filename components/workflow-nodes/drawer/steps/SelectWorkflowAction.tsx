@@ -8,7 +8,7 @@ import {
   IntegrationActionSort,
   IntegrationActionSortFields,
   OperationCategory,
-  SortDirection
+  SortDirection,
 } from '../../../../graphql'
 import { useGetIntegrationActions } from '../../../../src/services/IntegrationActionHooks'
 import { QueryMany } from '../../../../src/typings/GraphQL'
@@ -29,8 +29,8 @@ export const SelectWorkflowAction = (props: Props) => {
         eq: integration.id,
       },
       deprecated: {
-        is: false
-      }
+        is: false,
+      },
     },
     sorting: [{ field: IntegrationActionSortFields.name, direction: SortDirection.ASC }],
     search,
@@ -39,7 +39,7 @@ export const SelectWorkflowAction = (props: Props) => {
     },
   }
   const { data, loading, error, refetch } = useGetIntegrationActions(SelectWorkflowNode.fragments.IntegrationAction, {
-    variables: queryVars
+    variables: queryVars,
   })
 
   const onFilterChange = async (search: string) => {
@@ -53,16 +53,16 @@ export const SelectWorkflowAction = (props: Props) => {
       filter: {
         ...queryVars.filter,
         ...(category?.key ? { category: { eq: category.key } } : {}),
-      }
+      },
     })
   }
 
   if (error) {
-    return <RequestError error={error}/>
+    return <RequestError error={error} />
   }
 
-  const operationCategories = (integration.operationCategories || []).filter(category => category.numberOfActions)
-  let actions = (data?.integrationActions.edges?.map(edge => edge.node) || [])
+  const operationCategories = (integration.operationCategories || []).filter((category) => category.numberOfActions)
+  let actions = data?.integrationActions.edges?.map((edge) => edge.node) || []
 
   // Sort actions by name
   if (!search) {
@@ -75,13 +75,15 @@ export const SelectWorkflowAction = (props: Props) => {
   }
 
   return (
-    <SelectWorkflowNode nodeType="action"
-                        nodes={actions}
-                        operationCategories={operationCategories}
-                        categorySelected={categorySelected}
-                        onFilterChange={onFilterChange}
-                        onNodeSelected={onOperationSelected}
-                        onCategorySelected={onCategorySelected}
-                        loading={loading}/>
+    <SelectWorkflowNode
+      nodeType="action"
+      nodes={actions}
+      operationCategories={operationCategories}
+      categorySelected={categorySelected}
+      onFilterChange={onFilterChange}
+      onNodeSelected={onOperationSelected}
+      onCategorySelected={onCategorySelected}
+      loading={loading}
+    />
   )
 }

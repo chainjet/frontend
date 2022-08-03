@@ -30,32 +30,24 @@ export const ProjectForm = (props: Props) => {
 
   return (
     <>
-      {
-        error && <Alert
-          style={{ marginBottom: 16 }}
-          message="Error"
-          description={error}
-          type="error"
-          showIcon
-        />
-      }
+      {error && <Alert style={{ marginBottom: 16 }} message="Error" description={error} type="error" showIcon />}
       <Form form={form} name="project-form" onFinish={onSubmit}>
-        <Form.Item name="name"
+        <Form.Item
+          name="name"
           label="Project Name"
           initialValue={name}
           rules={[{ required: true }]}
-          help={name && `https://chainjet.io/${viewer?.username}/${slugify(name)}`}>
-          <Input allowClear onChange={e => handleNameChange(e.target.value)} />
+          help={name && `https://chainjet.io/${viewer?.username}/${slugify(name)}`}
+        >
+          <Input allowClear onChange={(e) => handleNameChange(e.target.value)} />
         </Form.Item>
-        {
-          showSubmit && (
-            <Form.Item>
-              <Button type="primary" htmlType="submit" loading={loading}>
-                Submit
-              </Button>
-            </Form.Item>
-          )
-        }
+        {showSubmit && (
+          <Form.Item>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              Submit
+            </Button>
+          </Form.Item>
+        )}
       </Form>
     </>
   )

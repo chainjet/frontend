@@ -7,15 +7,13 @@ export const PageWrapper = (props: PageHeaderProps & { children: React.ReactNode
   const pageHeaderProps = {
     ghost: false,
     ...props,
-    children: undefined
+    children: undefined,
   }
 
   return (
     <>
-      <PageHeader {...pageHeaderProps}/>
-      <div style={{ margin: '24px 24px 0' }}>
-        {children}
-      </div>
+      <PageHeader {...pageHeaderProps} />
+      <div style={{ margin: '24px 24px 0' }}>{children}</div>
     </>
   )
 }
