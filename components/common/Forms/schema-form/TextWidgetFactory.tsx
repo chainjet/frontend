@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 
-import Input from 'antd/lib/input'
-import { Button, Col, Row, Tooltip, Typography } from 'antd'
-import { ImMagicWand } from 'react-icons/im'
 import { WidgetProps } from '@rjsf/core'
+import { Button, Col, Row, Tooltip } from 'antd'
 import { InputProps } from 'antd/es/input'
+import Input from 'antd/lib/input'
+import { ImMagicWand } from 'react-icons/im'
 import { WorkflowOutput } from '../../../../src/typings/Workflow'
-import { SelectNodeOutputs } from './SelectNodeOutputs'
 import { assertNever } from '../../../../src/utils/typescript.utils'
+import { SelectNodeOutputs } from './SelectNodeOutputs'
 
 // Based on:
 //   https://github.com/rjsf-team/react-jsonschema-form/blob/master/packages/antd/src/widgets/TextWidget/index.js
@@ -153,11 +153,11 @@ export const TextWidgetFactory = (props: Props) => {
         ) : (
           inputElement
         )}
-        {schema.description && (
+        {/* {schema.description && (
           <Typography.Paragraph type="secondary" ellipsis={{ rows: 1, expandable: true, symbol: 'more' }}>
             {schema.description}
           </Typography.Paragraph>
-        )}
+        )} */}
         <SelectNodeOutputs
           outputs={outputs}
           onSelectOutput={handleOutputSelect}
