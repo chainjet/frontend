@@ -1,9 +1,9 @@
-import { UserOutlined, LockTwoTone, MailOutlined } from '@ant-design/icons'
+import { LockTwoTone, MailOutlined, UserOutlined } from '@ant-design/icons'
 import { Alert, Button, Checkbox, Divider, Form, Input, Tabs } from 'antd'
 import { Store } from 'antd/lib/form/interface'
 import Link from 'next/link'
 import Router from 'next/router'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useLogin, useRegister } from '../../src/services/UserHooks'
 import { ExteralLoginButtons } from '../common/ExternalLoginButtons'
 import { SignContainer } from './SignContainer'
@@ -80,7 +80,7 @@ export const SignTabs = (props: Props) => {
     const url = new URL(window.location.href)
     const integrationAccountKey = url.searchParams.get('adding_integration_account')
     if (integrationAccountKey) {
-      const completeOAuthPath = `/api/account-credentials/oauth/${integrationAccountKey}/callback${url.search}`
+      const completeOAuthPath = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/account-credentials/oauth/${integrationAccountKey}/callback${url.search}`
       await Router.push(`${completeOAuthPath}&redirect_to=${redirectTo}`)
     } else {
       await Router.push(redirectTo)

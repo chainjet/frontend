@@ -101,7 +101,7 @@ export const SelectCredentials = (props: Props) => {
   }
 
   const handleConnectOauthAccountClick = (key: string) => {
-    const popup = window.open(`/api/account-credentials/oauth/${key}`)
+    const popup = window.open(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/account-credentials/oauth/${key}`)
     if (popup) {
       popup.addEventListener('beforeunload', () => {
         void onOauthAccountConnected()

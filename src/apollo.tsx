@@ -184,7 +184,7 @@ function createApolloClient(initialState: NormalizedCacheObject = {}, tokens?: U
 }
 
 async function refreshCredentials(ctx: ApolloPageContext, username: string, tokens: UserTokens) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/auth/token`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/v1/auth/token`, {
     // TODO
     method: 'POST',
     headers: {
