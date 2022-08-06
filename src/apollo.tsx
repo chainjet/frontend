@@ -198,6 +198,10 @@ async function refreshCredentials(ctx: ApolloPageContext, username: string, toke
   })
 
   if (res.status >= 200 && res.status < 300) {
+    const options = {
+      path: '/',
+      ...(process.env.NEXT_PUBLIC_API_ENDPOINT?.includes('chainjet.io') ? { domain: '.chainjet.io' } : {}),
+    }
     setCookie(
       ctx,
       TOKEN_COOKIE_NAME,
@@ -206,7 +210,7 @@ async function refreshCredentials(ctx: ApolloPageContext, username: string, toke
         ...(await res.json()),
         __typename: undefined,
       }),
-      {},
+      options,
     )
   } else if (res.status === 401) {
     // invalid refresh token, remove all cookies

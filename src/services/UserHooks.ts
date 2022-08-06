@@ -204,8 +204,12 @@ export function useGenerateApiKey() {
 }
 
 function createCookies(data: { token: any; user: User }) {
-  setCookie(null, TOKEN_COOKIE_NAME, JSON.stringify(data.token), { path: '/' })
-  setCookie(null, USER_COOKIE_NAME, JSON.stringify(data.user), { path: '/' })
+  const options = {
+    path: '/',
+    ...(process.env.NEXT_PUBLIC_API_ENDPOINT?.includes('chainjet.io') ? { domain: '.chainjet.io' } : {}),
+  }
+  setCookie(null, TOKEN_COOKIE_NAME, JSON.stringify(data.token), options)
+  setCookie(null, USER_COOKIE_NAME, JSON.stringify(data.user), options)
   refreshApolloClient()
 }
 
