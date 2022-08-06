@@ -1,13 +1,18 @@
-import React from 'react'
 import App from 'next/app'
 import Head from 'next/head'
 import CookieConsent from '../components/common/CookieConsent'
-import GoogleAnalytics from '../components/common/GoogleAnalytics'
 import { CrispChat } from '../components/common/CrispChat'
+import GoogleAnalytics from '../components/common/GoogleAnalytics'
+import { isBrowser, isServer } from '../src/utils/environment'
 
 export default class ChainJetApp extends App {
   render() {
     const { Component, pageProps } = this.props
+
+    if (isServer || (isBrowser && window.localStorage.getItem('foo') !== 'bar')) {
+      return <></>
+    }
+
     return (
       <>
         <Head>
