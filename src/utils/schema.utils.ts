@@ -1,4 +1,5 @@
 import { UiSchema } from '@rjsf/core'
+import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
 
 export function removeHiddenProperties(schema: JSONSchema7): JSONSchema7 | undefined {
@@ -21,6 +22,21 @@ export function fixArraysWithoutItems(schema: JSONSchema7): JSONSchema7 {
     schema.items = { type: 'string' }
   }
   return applySchemaChangeRecursively(schema, fixArraysWithoutItems)
+}
+
+export function mergePropSchema(schema: JSONSchema7, propSchemas: { [key: string]: JSONSchema7 }): JSONSchema7 {
+  // The schema object can be received as read only, so we need to clone it
+  schema = { ...schema }
+  schema.properties = schema.properties ? { ...schema.properties } : {}
+
+  for (const propKey of Object.keys(propSchemas)) {
+    for (const schemaKey of Object.keys(schema?.properties ?? {})) {
+      if (propKey === schemaKey) {
+        schema.properties![schemaKey] = deepmerge(schema.properties![schemaKey] as JSONSchema7, propSchemas[propKey])
+      }
+    }
+  }
+  return applySchemaChangeRecursively(schema, (schemaRec) => mergePropSchema(schemaRec, propSchemas))
 }
 
 export function extractUISchema(schema: JSONSchema7): UiSchema {

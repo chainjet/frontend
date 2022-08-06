@@ -4,6 +4,7 @@ import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
 import { useEffect, useState } from 'react'
 import { useGetAccountCredentialById } from '../../../../src/services/AccountCredentialHooks'
+import { useGetAsyncSchemas } from '../../../../src/services/AsyncSchemaHooks'
 import { useGetIntegrationActionById } from '../../../../src/services/IntegrationActionHooks'
 import { useLazyGetContractSchema } from '../../../../src/services/SmartContractHooks'
 import { useGetWorkflowsActions } from '../../../../src/services/WorkflowActionHooks'
@@ -11,6 +12,7 @@ import { useGetWorkflowTriggerById } from '../../../../src/services/WorkflowTrig
 import { WorkflowOutput } from '../../../../src/typings/Workflow'
 import { retrocycle } from '../../../../src/utils/json.utils'
 import { isEmptyObj } from '../../../../src/utils/object.utils'
+import { mergePropSchema } from '../../../../src/utils/schema.utils'
 import { SchemaForm } from '../../../common/Forms/schema-form/SchemaForm'
 import { DisplayError } from '../../../common/RequestStates/DisplayError'
 import { Loading } from '../../../common/RequestStates/Loading'
@@ -33,6 +35,9 @@ const actionInputsFormFragment = gql`
     id
     key
     schemaRequest
+    integration {
+      id
+    }
   }
 `
 
@@ -60,6 +65,7 @@ const actionFragment = gql`
     id
     schemaResponse
     integrationAction {
+      id
       name
       schemaResponse
       integration {
@@ -120,10 +126,23 @@ export function ActionInputsForm(props: Props) {
       id: accountCredentialId ?? '',
     },
   })
-  const [getContractSchema, { data: contractSchemaData, loading: contractSchemaLoading, error: contractSchemaError }] =
-    useLazyGetContractSchema()
 
   const integrationAction = data?.integrationAction
+  const asyncSchemaNames =
+    integrationAction?.schemaRequest?.['x-asyncSchemas']?.map((prop: { name: string }) => prop.name) ?? []
+
+  const asyncSchemaRes = useGetAsyncSchemas({
+    skip: !integrationAction || !accountCredentialId || !asyncSchemaNames.length,
+    variables: {
+      integrationId: integrationAction?.integration.id ?? '',
+      accountCredentialId: accountCredentialId ?? '',
+      names: asyncSchemaNames,
+    },
+  })
+
+  // TODO replace with x-asyncSchema
+  const [getContractSchema, { data: contractSchemaData, loading: contractSchemaLoading, error: contractSchemaError }] =
+    useLazyGetContractSchema()
 
   useEffect(() => {
     if (
@@ -143,11 +162,11 @@ export function ActionInputsForm(props: Props) {
     }
   }, [inputs])
 
-  if (loading || triggerRes.loading || actionRes.loading) {
+  if (triggerRes.loading || actionRes.loading) {
     return <Loading />
   }
-  if (error || !integrationAction?.schemaRequest) {
-    return <RequestError error={error} />
+  if (triggerRes?.error || actionRes?.error! || !integrationAction?.schemaRequest) {
+    return <RequestError error={triggerRes?.error ?? actionRes?.error} />
   }
 
   const trigger = triggerRes.data?.workflowTrigger
@@ -215,6 +234,10 @@ export function ActionInputsForm(props: Props) {
         ...accountCredential?.schemaRefs,
       },
     }
+  }
+
+  if (!isEmptyObj(asyncSchemaRes?.data?.asyncSchemas.schemas ?? {})) {
+    schema = mergePropSchema(schema, asyncSchemaRes?.data?.asyncSchemas.schemas!)
   }
 
   // TODO hack for Smart Contracts integration
