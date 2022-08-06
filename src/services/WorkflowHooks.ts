@@ -2,7 +2,7 @@ import { DocumentNode, gql, useMutation, useQuery } from '@apollo/client'
 import { QueryHookOptions } from '@apollo/client/react/types/types'
 import {
   CreateOneWorkflowInput,
-  DeleteOneInput,
+  DeleteOneWorkflowInput,
   UpdateOneWorkflowInput,
   Workflow,
   WorkflowConnection,
@@ -53,13 +53,13 @@ export function useUpdateOneWorkflow() {
 
 export function useDeleteOneWorkflow() {
   const mutation = gql`
-    mutation ($input: DeleteOneInput!) {
+    mutation ($input: DeleteOneWorkflowInput!) {
       deleteOneWorkflow(input: $input) {
         id
       }
     }
   `
-  return useMutation<{ deleteOneWorkflow: Workflow }, { input: DeleteOneInput }>(mutation, {
+  return useMutation<{ deleteOneWorkflow: Workflow }, { input: DeleteOneWorkflowInput }>(mutation, {
     update: (cache, { data }) => {
       if (data?.deleteOneWorkflow.id) {
         cache.evict({

@@ -6,7 +6,7 @@ import {
   AccountCredentialFilter,
   AccountCredentialSort,
   CreateOneAccountCredentialInput,
-  DeleteOneInput,
+  DeleteOneAccountCredentialInput,
   UpdateOneAccountCredentialInput,
 } from '../../graphql'
 import { QueryById, QueryMany } from '../typings/GraphQL'
@@ -71,19 +71,22 @@ export function useUpdateOneAccountCredential() {
 
 export function useDeleteOneAccountCredential() {
   const mutation = gql`
-    mutation ($input: DeleteOneInput!) {
+    mutation ($input: DeleteOneAccountCredentialInput!) {
       deleteOneAccountCredential(input: $input) {
         id
       }
     }
   `
-  return useMutation<{ deleteOneAccountCredential: AccountCredential }, { input: DeleteOneInput }>(mutation, {
-    update: (cache, { data }) => {
-      if (data?.deleteOneAccountCredential.id) {
-        cache.evict({
-          id: data.deleteOneAccountCredential.id,
-        })
-      }
+  return useMutation<{ deleteOneAccountCredential: AccountCredential }, { input: DeleteOneAccountCredentialInput }>(
+    mutation,
+    {
+      update: (cache, { data }) => {
+        if (data?.deleteOneAccountCredential.id) {
+          cache.evict({
+            id: data.deleteOneAccountCredential.id,
+          })
+        }
+      },
     },
-  })
+  )
 }

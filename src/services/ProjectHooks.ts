@@ -2,7 +2,7 @@ import { DocumentNode, gql, useMutation, useQuery } from '@apollo/client'
 import { QueryHookOptions } from '@apollo/client/react/types/types'
 import {
   CreateOneProjectInput,
-  DeleteOneInput,
+  DeleteOneProjectInput,
   Project,
   ProjectConnection,
   ProjectFilter,
@@ -52,13 +52,13 @@ export function useUpdateOneProject() {
 
 export function useDeleteOneProject() {
   const mutation = gql`
-    mutation ($input: DeleteOneInput!) {
+    mutation ($input: DeleteOneProjectInput!) {
       deleteOneProject(input: $input) {
         id
       }
     }
   `
-  return useMutation<{ deleteOneProject: Project }, { input: DeleteOneInput }>(mutation, {
+  return useMutation<{ deleteOneProject: Project }, { input: DeleteOneProjectInput }>(mutation, {
     update: (cache, { data }) => {
       if (data?.deleteOneProject.id) {
         cache.evict({

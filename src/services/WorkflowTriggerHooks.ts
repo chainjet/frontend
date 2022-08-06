@@ -2,7 +2,7 @@ import { DocumentNode, gql, useMutation, useQuery } from '@apollo/client'
 import { QueryHookOptions } from '@apollo/client/react/types/types'
 import {
   CreateOneWorkflowTriggerInput,
-  DeleteOneInput,
+  DeleteOneWorkflowTriggerInput,
   UpdateOneWorkflowTriggerInput,
   WorkflowTrigger,
   WorkflowTriggerConnection,
@@ -76,21 +76,24 @@ export function useUpdateOneWorkflowTrigger() {
 
 export function useDeleteOneWorkflowTrigger() {
   const mutation = gql`
-    mutation ($input: DeleteOneInput!) {
+    mutation ($input: DeleteOneWorkflowTriggerInput!) {
       deleteOneWorkflowTrigger(input: $input) {
         id
       }
     }
   `
-  return useMutation<{ deleteOneWorkflowTrigger: WorkflowTrigger }, { input: DeleteOneInput }>(mutation, {
-    update: (cache, { data }) => {
-      if (data?.deleteOneWorkflowTrigger.id) {
-        cache.evict({
-          id: data.deleteOneWorkflowTrigger.id,
-        })
-      }
+  return useMutation<{ deleteOneWorkflowTrigger: WorkflowTrigger }, { input: DeleteOneWorkflowTriggerInput }>(
+    mutation,
+    {
+      update: (cache, { data }) => {
+        if (data?.deleteOneWorkflowTrigger.id) {
+          cache.evict({
+            id: data.deleteOneWorkflowTrigger.id,
+          })
+        }
+      },
     },
-  })
+  )
 }
 
 export function useCheckWorkflowTrigger() {

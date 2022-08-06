@@ -1,9 +1,8 @@
 import { DocumentNode, gql, useMutation, useQuery } from '@apollo/client'
 import { QueryHookOptions } from '@apollo/client/react/types/types'
-import { getEntityQuery, getListEntitiesQuery } from './GraphQLHooks'
 import {
   CreateOneWorkflowActionInput,
-  DeleteOneInput,
+  DeleteOneWorkflowActionInput,
   UpdateOneWorkflowActionInput,
   WorkflowAction,
   WorkflowActionConnection,
@@ -11,6 +10,7 @@ import {
   WorkflowActionSort,
 } from '../../graphql'
 import { QueryById, QueryMany } from '../typings/GraphQL'
+import { getEntityQuery, getListEntitiesQuery } from './GraphQLHooks'
 
 export function useGetWorkflowActionById(
   fragment: DocumentNode,
@@ -72,13 +72,13 @@ export function useUpdateOneWorkflowAction() {
 
 export function useDeleteOneWorkflowAction() {
   const mutation = gql`
-    mutation ($input: DeleteOneInput!) {
+    mutation ($input: DeleteOneWorkflowActionInput!) {
       deleteOneWorkflowAction(input: $input) {
         id
       }
     }
   `
-  return useMutation<{ deleteOneWorkflowAction: WorkflowAction }, { input: DeleteOneInput }>(mutation, {
+  return useMutation<{ deleteOneWorkflowAction: WorkflowAction }, { input: DeleteOneWorkflowActionInput }>(mutation, {
     update: (cache, { data }) => {
       if (data?.deleteOneWorkflowAction.id) {
         cache.evict({
