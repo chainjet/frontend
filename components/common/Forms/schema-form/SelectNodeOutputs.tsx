@@ -1,9 +1,8 @@
-import React from 'react'
-import { WorkflowOutput } from '../../../../src/typings/Workflow'
 import { DownOutlined } from '@ant-design/icons'
 import { Avatar, Modal, Tree } from 'antd'
-import { DataNode, Key } from 'rc-tree/lib/interface'
 import { JSONSchema7, JSONSchema7TypeName } from 'json-schema'
+import { DataNode, Key } from 'rc-tree/lib/interface'
+import { WorkflowOutput } from '../../../../src/typings/Workflow'
 
 interface Props {
   visible: boolean
@@ -84,7 +83,17 @@ export function createOutputsTree(schema: JSONSchema7, parentKey: string): DataN
         return dataNode
       }
       if (propertyType?.includes('array')) {
-        return dataNode // TODO
+        if (!property.items || property.items === true) {
+          return dataNode
+        }
+        if (Array.isArray(property.items)) {
+          return dataNode // TODO
+        }
+        return {
+          ...dataNode,
+          title: `${key} <list>`,
+          children: createOutputsTree(property.items, '' + dataNode.key + '[0]'),
+        }
       }
       return {
         ...dataNode,
