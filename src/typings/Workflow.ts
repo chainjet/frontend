@@ -6,6 +6,6 @@ export type WorkflowNode = WorkflowTrigger | WorkflowAction
 export type WorkflowOutput = {
   nodeId: string
   nodeName: string
-  nodeLogo?: string
+  nodeLogo?: string | null
   schema: JSONSchema7
 }

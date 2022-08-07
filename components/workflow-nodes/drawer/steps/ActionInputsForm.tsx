@@ -44,9 +44,9 @@ const actionInputsFormFragment = gql`
 const triggerFragment = gql`
   fragment ActionInputsFormTrigger on WorkflowTrigger {
     id
+    name
     schemaResponse
     integrationTrigger {
-      name
       schemaResponse
       integration {
         id
@@ -63,10 +63,10 @@ const triggerFragment = gql`
 const actionFragment = gql`
   fragment ActionInputsFormAction on WorkflowAction {
     id
+    name
     schemaResponse
     integrationAction {
       id
-      name
       schemaResponse
       integration {
         id
@@ -191,7 +191,7 @@ export function ActionInputsForm(props: Props) {
     }
     parentOutputs.push({
       nodeId: trigger.id,
-      nodeName: trigger.integrationTrigger.name,
+      nodeName: trigger.name,
       nodeLogo: trigger.integrationTrigger.integration.logo,
       schema,
     })
@@ -209,7 +209,7 @@ export function ActionInputsForm(props: Props) {
     }
     parentOutputs.push({
       nodeId: action.id,
-      nodeName: action.integrationAction.name,
+      nodeName: action.name,
       nodeLogo: action.integrationAction.integration.logo,
       schema,
     })
