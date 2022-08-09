@@ -1,30 +1,30 @@
-import React, { KeyboardEvent, useEffect, useState } from 'react'
-import { isServer } from '../../../src/utils/environment'
-import createEngine, { DagreEngine, DefaultLinkModel, DiagramModel } from '@projectstorm/react-diagrams'
 import { CanvasWidget, InputType } from '@projectstorm/react-canvas-core'
-import './WorkflowDiagram.less'
-import { DiagramNodeModel } from './diagram-node/DiagramNodeModel'
-import { DiagramNodeFactory } from './diagram-node/DiagramNodeFactory'
-import { WorkflowNode } from '../../../src/typings/Workflow'
+import createEngine, { DagreEngine, DefaultLinkModel, DiagramModel } from '@projectstorm/react-diagrams'
+import { DiagramEngine, NodeModel } from '@projectstorm/react-diagrams-core'
+import { KeyboardEvent, useEffect, useState } from 'react'
 import { Workflow, WorkflowAction, WorkflowTrigger } from '../../../graphql'
+import { WorkflowNode } from '../../../src/typings/Workflow'
+import { isServer } from '../../../src/utils/environment'
+import { getActionAncestryList } from '../../../src/utils/workflow-action.utils'
+import { getIntegrationNodeFromWorkflowNode } from '../../../src/utils/workflow.utils'
 import { BlockPageScroll } from '../../utils/BlockPageScroll'
+import { CreateWorkflowActionDrawer } from '../drawer/CreateWorkflowActionDrawer'
+import { CreateWorkflowTriggerDrawer } from '../drawer/CreateWorkflowTriggerDrawer'
+import { UpdateWorkflowActionDrawer } from '../drawer/UpdateWorkflowActionDrawer'
+import { UpdateWorkflowTriggerDrawer } from '../drawer/UpdateWorkflowTriggerDrawer'
+import { DeleteWorkflowActionModal } from '../modals/DeleteWorkflowActionModal'
+import { DeleteWorkflowTriggerModal } from '../modals/DeleteWorkflowTriggerModal'
 import { AddTriggerActionNodeFactory } from './add-trigger-action-node/AddTriggerActionNodeFactory'
 import { AddTriggerActionNodeModel } from './add-trigger-action-node/AddTriggerActionNodeModel'
-import { DiagramEngine, NodeModel } from '@projectstorm/react-diagrams-core'
-import { CreateWorkflowActionDrawer } from '../drawer/CreateWorkflowActionDrawer'
-import { UpdateWorkflowActionDrawer } from '../drawer/UpdateWorkflowActionDrawer'
-import { DeleteWorkflowActionModal } from '../modals/DeleteWorkflowActionModal'
-import { CreateWorkflowTriggerDrawer } from '../drawer/CreateWorkflowTriggerDrawer'
-import { UpdateWorkflowTriggerDrawer } from '../drawer/UpdateWorkflowTriggerDrawer'
-import { DeleteWorkflowTriggerModal } from '../modals/DeleteWorkflowTriggerModal'
-import { getActionAncestryList } from '../../../src/utils/workflow-action.utils'
 import { DecisionNodeFactory } from './decision-node/DecisionNodeFactory'
-import { getIntegrationNodeFromWorkflowNode } from '../../../src/utils/workflow.utils'
 import { DecisionNodeModel } from './decision-node/DecisionNodeModel'
+import { DiagramNodeFactory } from './diagram-node/DiagramNodeFactory'
+import { DiagramNodeModel } from './diagram-node/DiagramNodeModel'
+import './WorkflowDiagram.less'
 
 interface WorkflowDiagramProps {
   workflow: Workflow
-  workflowTrigger?: WorkflowTrigger
+  workflowTrigger?: WorkflowTrigger | null
   workflowActions: WorkflowAction[]
   onCreateWorkflowTrigger: (workflowTrigger: WorkflowTrigger) => void
   onUpdateWorkflowTrigger: (workflowTrigger: WorkflowTrigger) => void
@@ -261,7 +261,7 @@ function createEmptyWorkflowDiagram(
 interface CreateWorkflowTreeOpts {
   model: DiagramModel
   workflow: Workflow
-  workflowTrigger: WorkflowTrigger | undefined
+  workflowTrigger?: WorkflowTrigger | null
   workflowActions: WorkflowAction[]
   onCreateTriggerClick: (node?: WorkflowNode) => void
   onUpdateTriggerClick: (node: WorkflowNode) => void
