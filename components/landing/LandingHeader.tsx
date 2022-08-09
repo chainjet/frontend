@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import TweenOne from 'rc-tween-one'
-import { IAnimObject } from 'rc-tween-one/typings/AnimObject'
-import QueueAnim from 'rc-queue-anim'
+import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
+import QueueAnim from 'rc-queue-anim'
+import TweenOne from 'rc-tween-one'
+import { IAnimObject } from 'rc-tween-one/typings/AnimObject'
+import { useState } from 'react'
 import './LandingHeader.less'
 
 export function LandingHeader() {
@@ -77,7 +77,7 @@ export function LandingHeader() {
         <TweenOne className="header-logo" animation={{ opacity: 0, type: 'from' }}>
           <Link href={'/'} key="logo">
             <a onClick={() => mobileClick()}>
-              <img className="logo-img" alt="ChainJet" height="80" src="/logo-white.svg" />
+              {/* <img className="logo-img" alt="ChainJet" height="80" src="/logo-white.svg" /> */}
             </a>
           </Link>
         </TweenOne>

@@ -21,7 +21,7 @@ export default class ChainJetApp extends App {
           <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
           <meta httpEquiv="x-ua-compatible" content="ie=edge" />
 
-          <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png" />
+          {/* <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png" />
           <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png" />
           <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png" />
           <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png" />
@@ -36,12 +36,12 @@ export default class ChainJetApp extends App {
           <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
           <link rel="manifest" href="/manifest.json" />
           <meta name="msapplication-TileColor" content="#ffffff" />
-          <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
+          <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" /> */}
 
           <meta property="og:site_name" content="ChainJet" />
           <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:site" content="@flowoid" />
-          <meta name="twitter:creator" content="@flowoid" />
+          <meta name="twitter:site" content="@chainjetio" />
+          <meta name="twitter:creator" content="@chainjetio" />
 
           {process.env.SLACK_APP_ID && <meta name="slack-app-id" content={process.env.SLACK_APP_ID}></meta>}
         </Head>

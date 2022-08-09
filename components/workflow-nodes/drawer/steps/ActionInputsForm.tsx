@@ -185,7 +185,7 @@ export function ActionInputsForm(props: Props) {
     schema = {
       ...schema,
       definitions: {
-        ...(schema.definitions ?? {}),
+        ...(schema?.definitions ?? {}),
         ...(trigger.credentials?.schemaRefs ?? {}),
       },
     }
@@ -230,7 +230,7 @@ export function ActionInputsForm(props: Props) {
     schema = {
       ...schema,
       definitions: {
-        ...(schema.definitions ?? {}),
+        ...(schema?.definitions ?? {}),
         ...accountCredential?.schemaRefs,
       },
     }
