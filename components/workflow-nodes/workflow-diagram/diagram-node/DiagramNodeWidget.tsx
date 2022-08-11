@@ -1,18 +1,17 @@
-import React, { useState } from 'react'
-import { DiagramEngine, PortWidget } from '@projectstorm/react-diagrams-core'
-import { DiagramNodeModel } from './DiagramNodeModel'
 import { DeleteTwoTone, EditTwoTone, PlayCircleTwoTone, PlusOutlined } from '@ant-design/icons'
+import { DiagramEngine, PortWidget } from '@projectstorm/react-diagrams-core'
 import { Button, Card, Row, Tooltip } from 'antd'
+import Meta from 'antd/es/card/Meta'
+import { useState } from 'react'
+import { IntegrationTrigger } from '../../../../graphql'
+import { useCheckWorkflowTrigger } from '../../../../src/services/WorkflowTriggerHooks'
 import {
   getIntegrationFromWorkflowNode,
   getIntegrationNodeFromWorkflowNode,
   workflowNodeIsTrigger,
 } from '../../../../src/utils/workflow.utils'
-import Meta from 'antd/es/card/Meta'
 import { IntegrationAvatar } from '../../../integrations/IntegrationAvatar'
-import { useCheckWorkflowTrigger } from '../../../../src/services/WorkflowTriggerHooks'
-import { capitalize } from '../../../../src/utils/strings'
-import { IntegrationTrigger } from '../../../../graphql'
+import { DiagramNodeModel } from './DiagramNodeModel'
 
 interface DiagramNodeWidgetProps {
   node: DiagramNodeModel
@@ -85,7 +84,7 @@ export const DiagramNodeWidget = (props: DiagramNodeWidgetProps) => {
         size="small"
         actions={[
           ...actions,
-          <Tooltip title={`Update ${nodeType}`} placement="bottom">
+          <Tooltip title={`Update ${nodeType}`} placement="bottom" key={actions.length}>
             <Button
               type="link"
               title={`Update ${nodeType}`}
@@ -94,7 +93,7 @@ export const DiagramNodeWidget = (props: DiagramNodeWidgetProps) => {
               onClick={() => node.nodeOptions.onUpdateClick(workflowNode)}
             />
           </Tooltip>,
-          <Tooltip title={`Delete ${nodeType}`} placement="bottom">
+          <Tooltip title={`Delete ${nodeType}`} placement="bottom" key={actions.length + 1}>
             <Button
               type="link"
               title={`Delete ${nodeType}`}
