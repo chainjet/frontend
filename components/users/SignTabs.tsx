@@ -32,8 +32,8 @@ export const SignTabs = (props: Props) => {
         },
       })
       await redirectAfterAuth('/')
-    } catch (e) {
-      setError(e.message)
+    } catch (e: any) {
+      setError(e?.message)
     } finally {
       setLoading(false)
     }
@@ -65,8 +65,8 @@ export const SignTabs = (props: Props) => {
       } else {
         await redirectAfterAuth('/')
       }
-    } catch (e) {
-      setError(e.message)
+    } catch (e: any) {
+      setError(e?.message)
     } finally {
       setLoading(false)
     }

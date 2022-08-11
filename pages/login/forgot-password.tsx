@@ -24,8 +24,8 @@ const ForgotPasswordPage = () => {
         },
       })
       setEmailSent(true)
-    } catch (e) {
-      setError(e.message)
+    } catch (e: any) {
+      setError(e?.message)
     } finally {
       setLoading(false)
     }

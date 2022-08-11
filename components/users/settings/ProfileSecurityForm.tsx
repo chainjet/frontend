@@ -1,10 +1,9 @@
-import { LinkOutlined, LockTwoTone, MailOutlined, ShopOutlined, UserOutlined } from '@ant-design/icons'
-import { gql } from '@apollo/client'
+import { LockTwoTone } from '@ant-design/icons'
 import { Alert, Button, Form, Input } from 'antd'
 import { Store } from 'antd/lib/form/interface'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { User } from '../../../graphql'
-import { useChangePassword, useUpdateOneUser } from '../../../src/services/UserHooks'
+import { useChangePassword } from '../../../src/services/UserHooks'
 
 interface Props {
   user: User
@@ -33,8 +32,8 @@ export function ProfileSecurityForm(props: Props) {
         },
       })
       setPasswordUpdated(true)
-    } catch (e) {
-      setError(e.message)
+    } catch (e: any) {
+      setError(e?.message)
     } finally {
       setUpdateLoading(false)
     }

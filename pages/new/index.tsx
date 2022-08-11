@@ -31,8 +31,8 @@ function NewProjectPage() {
       } else {
         setError('Unexpected error, please try again')
       }
-    } catch (e) {
-      setError(e.message)
+    } catch (e: any) {
+      setError(e?.message)
     }
   }
 

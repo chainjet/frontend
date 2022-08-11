@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 import { Alert, Button } from 'antd'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { User } from '../../../graphql'
 import { useGenerateApiKey } from '../../../src/services/UserHooks'
 
@@ -21,8 +21,8 @@ export function ProfileApiKeyForm(props: Props) {
     try {
       const res = await generateApiKey()
       setApiKey(res.data?.generateApiKey?.apiKey)
-    } catch (e) {
-      setError(e.message)
+    } catch (e: any) {
+      setError(e?.message)
     } finally {
       setGeneratingApiKey(false)
     }

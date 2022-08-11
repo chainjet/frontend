@@ -42,8 +42,8 @@ const PasswordResetPage = (props: Props) => {
       } else {
         await Router.push('/login?password-changed=1')
       }
-    } catch (e) {
-      setError(e.message)
+    } catch (e: any) {
+      setError(e?.message)
     } finally {
       setLoading(false)
     }

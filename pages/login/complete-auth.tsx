@@ -69,8 +69,8 @@ function CompleteAuthPage(props: Props) {
       } else {
         await router.push('/')
       }
-    } catch (e) {
-      setError(e.message)
+    } catch (e: any) {
+      setError(e?.message)
     } finally {
       setLoading(false)
     }

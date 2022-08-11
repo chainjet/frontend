@@ -98,8 +98,8 @@ function WorkflowSettingsPage(props: Props) {
         },
       })
       await Router.push('/[username]/[project]/workflow/[workflow]', `/${res.data?.updateOneWorkflow.slug}`)
-    } catch (e) {
-      setUpdateError(e.message)
+    } catch (e: any) {
+      setUpdateError(e?.message)
     }
     setUpdateLoading(false)
   }

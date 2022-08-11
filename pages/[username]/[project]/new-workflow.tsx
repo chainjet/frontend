@@ -68,7 +68,7 @@ function NewWorkflowPage(props: Props) {
       } else {
         setFormError('Unexpected error, please try again')
       }
-    } catch (e) {
+    } catch (e: any) {
       setFormError(e.message)
     }
   }

@@ -74,8 +74,8 @@ function ProjectSettingsPage(props: Props) {
         },
       })
       await Router.push('/[username]/[project]', `/${res.data?.updateOneProject.slug}`)
-    } catch (e) {
-      setUpdateError(e.message)
+    } catch (e: any) {
+      setUpdateError(e?.message)
     }
     setUpdateLoading(false)
   }

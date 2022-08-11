@@ -2,7 +2,7 @@ import { LinkOutlined, ShopOutlined, UserOutlined } from '@ant-design/icons'
 import { gql } from '@apollo/client'
 import { Alert, Button, Form, Input } from 'antd'
 import { Store } from 'antd/lib/form/interface'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { User } from '../../../graphql'
 import { useUpdateOneUser } from '../../../src/services/UserHooks'
 
@@ -28,8 +28,8 @@ export function ProfilePublicInfoForm(props: Props) {
           },
         },
       })
-    } catch (e) {
-      setError(e.message)
+    } catch (e: any) {
+      setError(e?.message)
     } finally {
       setUpdateLoading(false)
     }

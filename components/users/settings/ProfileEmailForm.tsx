@@ -1,8 +1,8 @@
-import { LinkOutlined, MailOutlined, ShopOutlined, UserOutlined } from '@ant-design/icons'
+import { MailOutlined } from '@ant-design/icons'
 import { gql } from '@apollo/client'
 import { Alert, Button, Form, Input } from 'antd'
 import { Store } from 'antd/lib/form/interface'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { User } from '../../../graphql'
 import { useUpdateOneUser } from '../../../src/services/UserHooks'
 
@@ -33,8 +33,8 @@ export function ProfileEmailForm(props: Props) {
       if (user.email !== values.email) {
         setEmailUpdated(true)
       }
-    } catch (e) {
-      setError(e.message)
+    } catch (e: any) {
+      setError(e?.message)
     } finally {
       setUpdateLoading(false)
     }
