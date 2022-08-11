@@ -18,7 +18,7 @@
     "*.{md,css}": "prettier --write"
   },
   "dependencies": {
-    "@ant-design/icons": "^4.2.2",
+    "@ant-design/icons": "^4.7.0",
     "@apollo/client": "^3.1.2",
     "@apollo/react-common": "^3.1.4",
     "@apollo/react-hooks": "^4.0.0",
@@ -30,7 +30,7 @@
     "@rjsf/antd": "^4.2.2",
     "@rjsf/core": "^4.2.2",
     "@zeit/next-less": "^1.0.1",
-    "antd": "^4.9.4",
+    "antd": "^4.22.4",
     "babel-plugin-import": "^1.13.0",
     "classnames": "^2.2.6",
     "closest": "^0.0.1",
