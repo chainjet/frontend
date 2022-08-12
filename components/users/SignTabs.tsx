@@ -34,7 +34,8 @@ export const SignTabs = (props: Props) => {
       })
       GoogleAnalyticsService.sendEvent({
         action: 'login',
-        category: 'password',
+        category: 'engagement',
+        label: 'password',
       })
       await redirectAfterAuth('/')
     } catch (e: any) {
@@ -66,8 +67,9 @@ export const SignTabs = (props: Props) => {
       })
 
       GoogleAnalyticsService.sendEvent({
-        action: 'register',
-        category: 'password',
+        action: 'sign_up',
+        category: 'engagement',
+        label: 'password',
       })
       if (res?.data?.register?.project?.slug) {
         await redirectAfterAuth(`/${res.data.register.project.slug}`)

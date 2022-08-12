@@ -1,5 +1,6 @@
 import ReactGA from 'react-ga4'
 
+// Docs: https://developers.google.com/analytics/devguides/collection/gtagjs/events
 type UaEventOptions = {
   action: string
   category: string
@@ -9,12 +10,14 @@ type UaEventOptions = {
   transport?: 'beacon' | 'xhr' | 'image'
 }
 
+const trackingId = process.env.NEXT_PUBLIC_GA_TRACKING_CODE
+
 export const GoogleAnalyticsService = {
   _initialized: false,
 
   _initialize() {
-    ReactGA.initialize([{ trackingId: process.env.NEXT_PUBLIC_GA_TRACKING_CODE || 'G-0000000000' }], {
-      testMode: !process.env.NEXT_PUBLIC_GA_TRACKING_CODE,
+    ReactGA.initialize([{ trackingId: trackingId || 'G-0000000000' }], {
+      testMode: !trackingId,
     })
     this._initialized = true
   },
@@ -36,6 +39,10 @@ export const GoogleAnalyticsService = {
       this._initialize()
     }
 
-    ReactGA.event(event)
+    if (trackingId) {
+      ReactGA.event(event)
+    } else {
+      console.log(`[GA Event]`, event)
+    }
   },
 }

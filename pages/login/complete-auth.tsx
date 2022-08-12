@@ -1,30 +1,33 @@
 import { MailOutlined, UserOutlined } from '@ant-design/icons'
-import { Alert, Button, Form, Input, Typography } from 'antd'
+import { Alert, Button, Form, Input } from 'antd'
 import { Store } from 'antd/es/form/interface'
 import { NextPageContext } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Loading } from '../../components/common/RequestStates/Loading'
 import { SignContainer } from '../../components/users/SignContainer'
 import { withApollo } from '../../src/apollo'
+import { GoogleAnalyticsService } from '../../src/services/GoogleAnalyticsService'
 import { useCompleteExternalAuth } from '../../src/services/UserHooks'
 import { getQueryParam } from '../../src/utils/nextUtils'
 
 interface Props {
   id: string
   code: string
+  provider: string
   completeUsername?: boolean
   completeEmail?: boolean
   email?: string
 }
 
 function CompleteAuthPage(props: Props) {
-  const { id, code, completeUsername, completeEmail, email } = props
+  const { id, code, provider, completeUsername, completeEmail, email } = props
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [completeExternalAuth] = useCompleteExternalAuth()
   const router = useRouter()
+  const [gaEventSent, setGaEventSent] = useState(false)
 
   useEffect(() => {
     ;(async () => {
@@ -38,6 +41,16 @@ function CompleteAuthPage(props: Props) {
             username: '',
           },
         })
+
+        if (!gaEventSent) {
+          GoogleAnalyticsService.sendEvent({
+            action: 'login',
+            category: 'engagement',
+            label: provider,
+          })
+          setGaEventSent(true)
+        }
+
         if (res.data.completeExternalAuth.project) {
           await router.push(`/${res.data.completeExternalAuth.project.slug}`)
         } else {
@@ -45,7 +58,7 @@ function CompleteAuthPage(props: Props) {
         }
       }
     })()
-  }, [code, completeEmail, completeExternalAuth, completeUsername, id, router])
+  }, [code, completeEmail, completeExternalAuth, completeUsername, gaEventSent, id, provider, router])
 
   // Authentication was submitted by useEffect
   if (!completeUsername && !completeEmail) {
@@ -64,6 +77,13 @@ function CompleteAuthPage(props: Props) {
           username: values.username,
         },
       })
+
+      GoogleAnalyticsService.sendEvent({
+        action: 'sign_up',
+        category: 'engagement',
+        label: provider,
+      })
+
       if (res.data.completeExternalAuth.project) {
         await router.push(`/${res.data.completeExternalAuth.project.slug}`)
       } else {
@@ -130,6 +150,7 @@ CompleteAuthPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> 
   return {
     id: getQueryParam(ctx, 'id'),
     code: getQueryParam(ctx, 'code'),
+    provider: getQueryParam(ctx, 'provider'),
     completeUsername: !!getQueryParam(ctx, 'completeUsername'),
     completeEmail: !!getQueryParam(ctx, 'completeEmail'),
     email: getQueryParam(ctx, 'email'),
