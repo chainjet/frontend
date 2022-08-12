@@ -1,7 +1,6 @@
-import { GithubOutlined, GoogleOutlined } from '@ant-design/icons'
+import { GoogleOutlined } from '@ant-design/icons'
 import { Button, Space } from 'antd'
 import { CSSProperties, useState } from 'react'
-import { ImFacebook } from 'react-icons/im'
 
 interface Props {
   message: string
@@ -36,7 +35,7 @@ export function ExteralLoginButtons(props: Props) {
           {message} Google
         </Button>
       </a>
-      <a
+      {/* <a
         href={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/account-credentials/oauth/facebook?login=true`}
         onClick={() => setLoading('facebook')}
       >
@@ -51,7 +50,7 @@ export function ExteralLoginButtons(props: Props) {
         <Button block type="primary" icon={<GithubOutlined />} style={githubButtonStyle} loading={loading === 'github'}>
           {message} GitHub
         </Button>
-      </a>
+      </a> */}
     </Space>
   )
 }

@@ -45,7 +45,7 @@ function CompleteAuthPage(props: Props) {
         }
       }
     })()
-  }, [])
+  }, [code, completeEmail, completeExternalAuth, completeUsername, id, router])
 
   // Authentication was submitted by useEffect
   if (!completeUsername && !completeEmail) {

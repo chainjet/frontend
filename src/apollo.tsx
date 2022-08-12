@@ -70,7 +70,8 @@ export function withApollo(PageComponent: any, { useLayout = true, ssr = true } 
           (!tokens.accessTokenExpiration || tokens.accessTokenExpiration < new Date().getTime())
         ) {
           if (viewer) {
-            await refreshCredentials(ctx, viewer.username, tokens)
+            // TODO refresh credentials?
+            // await refreshCredentials(ctx, viewer.username, tokens)
             tokens = JSON.parse(tokensJson)
           }
         }

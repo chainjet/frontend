@@ -4,6 +4,7 @@ import { Store } from 'antd/lib/form/interface'
 import Link from 'next/link'
 import Router from 'next/router'
 import { useState } from 'react'
+import { GoogleAnalyticsService } from '../../src/services/GoogleAnalyticsService'
 import { useLogin, useRegister } from '../../src/services/UserHooks'
 import { ExteralLoginButtons } from '../common/ExternalLoginButtons'
 import { SignContainer } from './SignContainer'
@@ -30,6 +31,10 @@ export const SignTabs = (props: Props) => {
           username: values.username,
           password: values.password,
         },
+      })
+      GoogleAnalyticsService.sendEvent({
+        action: 'login',
+        category: 'password',
       })
       await redirectAfterAuth('/')
     } catch (e: any) {
@@ -60,6 +65,10 @@ export const SignTabs = (props: Props) => {
         },
       })
 
+      GoogleAnalyticsService.sendEvent({
+        action: 'register',
+        category: 'password',
+      })
       if (res?.data?.register?.project?.slug) {
         await redirectAfterAuth(`/${res.data.register.project.slug}`)
       } else {

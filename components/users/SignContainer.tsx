@@ -1,5 +1,3 @@
-import Link from 'next/link'
-import React from 'react'
 import './SignContainer.less'
 
 interface Props {
@@ -11,11 +9,11 @@ export const SignContainer = (props: Props) => {
     <div className="sign-container">
       <div className="sign-tabs-container">
         <div style={{ marginLeft: 55 }}>
-          <Link href="/">
+          {/* <Link href="/">
             <a>
               <img src="/logo.svg" style={{ width: 200 }} />
             </a>
-          </Link>
+          </Link> */}
         </div>
 
         {props.children}
