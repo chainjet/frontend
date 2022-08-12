@@ -1,4 +1,3 @@
-import React from 'react';
 export const Banner50DataSource = {
   wrapper: { className: 'home-page-wrapper banner5 kgzbus0bzmq-editor_css' },
   page: { className: 'home-page banner5-page' },
@@ -15,10 +14,7 @@ export const Banner50DataSource = {
                   <span>
                     <span>
                       <span>
-                        <p>
-                          Blockchain automation in minutes, without writing code
-                          or paying $50,000+
-                        </p>
+                        <p>Blockchain automation in minutes, without writing code or paying $50,000+</p>
                       </span>
                     </span>
                   </span>
@@ -44,10 +40,12 @@ export const Banner50DataSource = {
                           <span>
                             <span>
                               <span>
-                                <p>
-                                  Connect over 300 integrations to automate your
-                                  routine and unlock your business potential.
-                                </p>
+                                <span>
+                                  <p>
+                                    Connect over 300 integrations to automate your routine and unlock your business
+                                    potential.
+                                  </p>
+                                </span>
                               </span>
                             </span>
                           </span>
@@ -90,11 +88,8 @@ export const Banner50DataSource = {
       },
     ],
   },
-  image: {
-    className: 'kgb40j6rvja-editor_css banner5-image',
-    children: 'https://flowoid.com/images/landing/flow.png',
-  },
-};
+  image: { className: 'kgb40j6rvja-editor_css banner5-image', children: '#' },
+}
 export const Feature00DataSource = {
   wrapper: { className: 'home-page-wrapper content0-wrapper' },
   page: { className: 'home-page content0' },
@@ -126,7 +121,7 @@ export const Feature00DataSource = {
             {
               name: 'image',
               className: 'content0-block-icon',
-              children: 'https://flowoid.com/images/landing/trigger.svg',
+              children: 'https://chainjet.io/images/landing/trigger.svg',
             },
             {
               name: 'title',
@@ -143,8 +138,8 @@ export const Feature00DataSource = {
                 <span>
                   <span>
                     <p>
-                      A trigger indicates when a workflow should be executed. It
-                      can be based on a schedule or as a response to an event.
+                      A trigger indicates when a workflow should be executed. It can be based on a schedule or as a
+                      response to an event.
                     </p>
                   </span>
                 </span>
@@ -164,7 +159,7 @@ export const Feature00DataSource = {
             {
               name: 'image',
               className: 'content0-block-icon',
-              children: 'https://flowoid.com/images/landing/actions.svg',
+              children: 'https://chainjet.io/images/landing/actions.svg',
             },
             {
               name: 'title',
@@ -179,10 +174,7 @@ export const Feature00DataSource = {
               name: 'content',
               children: (
                 <span>
-                  <p>
-                    Define one or more actions to be executed when your trigger
-                    condition is satisfied.
-                  </p>
+                  <p>Define one or more actions to be executed when your trigger condition is satisfied.</p>
                 </span>
               ),
             },
@@ -200,8 +192,7 @@ export const Feature00DataSource = {
             {
               name: 'image',
               className: 'content0-block-icon',
-              children:
-                'https://flowoid.com/images/landing/conditional-logic.svg',
+              children: 'https://chainjet.io/images/landing/conditional-logic.svg',
             },
             {
               name: 'title',
@@ -218,10 +209,7 @@ export const Feature00DataSource = {
               name: 'content',
               children: (
                 <span>
-                  <p>
-                    Add conditional decisions to create automation that adapts
-                    to your specific needs.
-                  </p>
+                  <p>Add conditional decisions to create automation that adapts to your specific needs.</p>
                 </span>
               ),
             },
@@ -230,7 +218,7 @@ export const Feature00DataSource = {
       },
     ],
   },
-};
+}
 export const Feature30DataSource = {
   wrapper: {
     className: 'home-page-wrapper content3-wrapper kgzbbybl1or-editor_css',
@@ -264,8 +252,7 @@ export const Feature30DataSource = {
         children: {
           icon: {
             className: 'content3-icon',
-            children:
-              'https://flowoid.s3.amazonaws.com/icons/full-integration-support.svg',
+            children: 'https://flowoid.s3.amazonaws.com/icons/full-integration-support.svg',
           },
           textWrapper: { className: 'content3-text' },
           title: {
@@ -273,7 +260,9 @@ export const Feature30DataSource = {
             children: (
               <span>
                 <span>
-                  <p>Full integrations support</p>
+                  <span>
+                    <p>Web2 &lt;=&gt; Web3</p>
+                  </span>
                 </span>
               </span>
             ),
@@ -283,11 +272,14 @@ export const Feature30DataSource = {
             children: (
               <span>
                 <span>
-                  <p>
-                    When we support an integration, we support every operation
-                    and every parameter. We want to solve problems, no create
-                    limitations.
-                  </p>
+                  <span>
+                    <span>
+                      <p>
+                        Flow information from web2 to web3 and from web3 to web2. Even between web3 dApps on different
+                        blockchains.
+                      </p>
+                    </span>
+                  </span>
                 </span>
               </span>
             ),
@@ -322,9 +314,8 @@ export const Feature30DataSource = {
                     <span>
                       <span>
                         <p>
-                          We include unlimited multi-step workflows even on the
-                          free plan. A workflow can have any number of
-                          operations and logic decisions.
+                          We include unlimited multi-step workflows even on the free plan. A workflow can have any
+                          number of operations and logic decisions.
                         </p>
                       </span>
                     </span>
@@ -343,8 +334,7 @@ export const Feature30DataSource = {
         children: {
           icon: {
             className: 'content3-icon',
-            children:
-              'https://flowoid.s3.amazonaws.com/icons/machine-learning.svg',
+            children: 'https://flowoid.s3.amazonaws.com/icons/machine-learning.svg',
           },
           textWrapper: { className: 'content3-text' },
           title: {
@@ -368,9 +358,8 @@ export const Feature30DataSource = {
                 <span>
                   <span>
                     <p>
-                      Our Machine Learning integrations can be the key for your
-                      business success. Sentiment analysis, forecasts, anomaly
-                      detection and translation have never been so simple.
+                      Our Machine Learning integrations can be the key for your business success. Sentiment analysis,
+                      forecasts, anomaly detection and translation have never been so simple.
                     </p>
                   </span>
                 </span>
@@ -381,7 +370,7 @@ export const Feature30DataSource = {
       },
     ],
   },
-};
+}
 export const Content50DataSource = {
   wrapper: {
     className: 'home-page-wrapper content5-wrapper kgb94utd529-editor_css',
@@ -406,8 +395,7 @@ export const Content50DataSource = {
         children: (
           <span>
             <p>
-              We support over <a href="/integrations">300 integrations</a> and
-              we are constantly adding new ones.
+              We support over <a href="/integrations">300 integrations</a> and we are constantly adding new ones.
             </p>
           </span>
         ),
@@ -425,17 +413,18 @@ export const Content50DataSource = {
         xs: 24,
         children: {
           wrapper: { className: 'content5-block-content' },
-          img: {
-            children: 'https://flowoid.com/images/landing/aws.svg',
-            className: 'kgb81nphoo-editor_css',
-          },
+          img: { children: '', className: 'kgb81nphoo-editor_css' },
           content: {
             children: (
               <span>
                 <span>
                   <span>
                     <span>
-                      <p>Amazon Web Services</p>
+                      <span>
+                        <span>
+                          <p>1inch</p>
+                        </span>
+                      </span>
                     </span>
                   </span>
                 </span>
@@ -451,17 +440,17 @@ export const Content50DataSource = {
         xs: 24,
         children: {
           wrapper: { className: 'content5-block-content' },
-          img: {
-            children:
-              'https://flowoid.com/images/landing/google-workspaces.jpg',
-            className: 'kgb8gihmudi-editor_css',
-          },
+          img: { children: '', className: 'kgb8gihmudi-editor_css' },
           content: {
             children: (
               <span>
                 <span>
                   <span>
-                    <p>Google Workspace</p>
+                    <span>
+                      <span>
+                        <p>Coinbase</p>
+                      </span>
+                    </span>
                   </span>
                 </span>
               </span>
@@ -476,14 +465,19 @@ export const Content50DataSource = {
         xs: 24,
         children: {
           wrapper: { className: 'content5-block-content' },
-          img: {
-            children: 'https://flowoid.com/logos/github.svg',
-            className: 'kgb82eq1hw7-editor_css',
-          },
+          img: { children: '', className: 'kgb82eq1hw7-editor_css' },
           content: {
             children: (
               <span>
-                <p>GitHub</p>
+                <span>
+                  <span>
+                    <span>
+                      <span>
+                        <p>CoinMarketCap</p>
+                      </span>
+                    </span>
+                  </span>
+                </span>
               </span>
             ),
           },
@@ -503,7 +497,9 @@ export const Content50DataSource = {
           content: {
             children: (
               <span>
-                <p>GitLab</p>
+                <span>
+                  <p>Dex Screener</p>
+                </span>
               </span>
             ),
           },
@@ -526,7 +522,9 @@ export const Content50DataSource = {
                 <span>
                   <span>
                     <span>
-                      <p>SendGrid</p>
+                      <span>
+                        <p>Moralis</p>
+                      </span>
                     </span>
                   </span>
                 </span>
@@ -536,20 +534,22 @@ export const Content50DataSource = {
         },
       },
       {
-        name: 'block5',
+        name: 'block~l6qgcu2xkct',
         className: 'block',
         md: 6,
         xs: 24,
         children: {
           wrapper: { className: 'content5-block-content' },
           img: {
-            children: 'https://flowoid.com/logos/docusign.png',
-            className: 'kgb8oectnqb-editor_css',
+            children: 'https://chainjet.io/images/landing/aws.svg',
+            className: 'kgb8rtqzd26-editor_css',
           },
           content: {
             children: (
               <span>
-                <p>DocuSign</p>
+                <span>
+                  <p>GitHub</p>
+                </span>
               </span>
             ),
           },
@@ -563,13 +563,15 @@ export const Content50DataSource = {
         children: {
           wrapper: { className: 'content5-block-content' },
           img: {
-            children: 'https://flowoid.com/logos/twilio.svg',
+            children: 'https://chainjet.io/images/landing/google-workspaces.jpg',
             className: 'kgb8qxc4ic-editor_css',
           },
           content: {
             children: (
               <span>
-                <p>Twilio</p>
+                <span>
+                  <p>Google Workspace</p>
+                </span>
               </span>
             ),
           },
@@ -583,13 +585,15 @@ export const Content50DataSource = {
         children: {
           wrapper: { className: 'content5-block-content' },
           img: {
-            children: 'https://flowoid.com/logos/circleci.svg',
+            children: 'https://chainjet.io/logos/github.svg',
             className: 'kgb8rtqzd26-editor_css',
           },
           content: {
             children: (
               <span>
-                <p>CircleCI</p>
+                <span>
+                  <p>GitHub</p>
+                </span>
               </span>
             ),
           },
@@ -597,7 +601,7 @@ export const Content50DataSource = {
       },
     ],
   },
-};
+}
 export const Pricing10DataSource = {
   wrapper: { className: 'home-page-wrapper pricing1-wrapper' },
   page: { className: 'home-page pricing1' },
@@ -653,27 +657,45 @@ export const Pricing10DataSource = {
                                     <span>
                                       <span>
                                         <span>
-                                          500 operations per month<br />
-                                        </span>
-                                      </span>
-                                    </span>
-                                  </span>
-                                </span>
-                                <p>
-                                  <span>
-                                    <span>
-                                      <span>
-                                        <span>
                                           <span>
-                                            2 active workflows<br />Multi-step
-                                            workflows<br />Custom logic with
-                                            decision paths
+                                            <span>
+                                              500 operations per month
+                                              <br />
+                                            </span>
                                           </span>
                                         </span>
                                       </span>
                                     </span>
+                                    <p>
+                                      <span>
+                                        <span>
+                                          <span>
+                                            <span>
+                                              <span>U</span>
+                                            </span>
+                                          </span>
+                                        </span>
+                                      </span>
+                                      <span>nlimited</span>
+                                      <span>&nbsp;workflows</span>
+                                    </p>
+                                    <p>
+                                      <span>
+                                        <span>
+                                          <span>
+                                            <span>
+                                              <span>
+                                                Multi-step workflows
+                                                <br />
+                                                Custom logic with decision paths
+                                              </span>
+                                            </span>
+                                          </span>
+                                        </span>
+                                      </span>
+                                    </p>
                                   </span>
-                                </p>
+                                </span>
                               </span>
                             </span>
                           </span>
@@ -768,18 +790,29 @@ export const Pricing10DataSource = {
                               <span>
                                 <span>
                                   <span>
-                                    5,000 operations per month<br />10 active
-                                    workflows<br />
+                                    <span>
+                                      <span>
+                                        <span>
+                                          <span>
+                                            10,000 operations per month
+                                            <br />
+                                            Unlimited workflows
+                                            <br />
+                                          </span>
+                                        </span>
+                                      </span>
+                                    </span>
                                   </span>
+                                  <p>
+                                    Multi-step workflows
+                                    <br />
+                                    <span>Custom logic with decision paths</span>
+                                  </p>
+                                  <br />
                                 </span>
                               </span>
                             </span>
                           </span>
-                          <p>
-                            Multi-step workflows<br />
-                            <span>Custom logic with decision paths</span>
-                          </p>
-                          <br />
                         </span>
                       </span>
                     </span>
@@ -807,7 +840,7 @@ export const Pricing10DataSource = {
       },
     ],
   },
-};
+}
 export const Content10DataSource = {
   wrapper: { className: 'home-page-wrapper content1-wrapper' },
   OverPack: { className: 'home-page content1', playScale: 0.3 },
@@ -832,16 +865,13 @@ export const Content10DataSource = {
       <span>
         <span>
           <span>
-            <p>
-              Workflows can automate all your manual processes allowing you to
-              work on what is really important.
-            </p>
+            <p>Workflows can automate all your manual processes allowing you to work on what is really important.</p>
           </span>
         </span>
       </span>
     ),
   },
-};
+}
 export const Footer10DataSource = {
   wrapper: { className: 'home-page-wrapper footer1-wrapper' },
   OverPack: { className: 'footer1', playScale: 0.2 },
@@ -889,7 +919,9 @@ export const Footer10DataSource = {
           children: (
             <span>
               <span>
-                <p>Follow Us</p>
+                <span>
+                  <p>Communities</p>
+                </span>
               </span>
             </span>
           ),
@@ -916,13 +948,15 @@ export const Footer10DataSource = {
             },
             {
               name: 'link1',
-              href: 'https://facebook.com/flowoid',
+              href: 'https://discord.gg/gPqd9aTy',
               children: (
                 <span>
                   <span>
                     <span>
                       <span>
-                        <p>Facebook</p>
+                        <span>
+                          <p>Discord</p>
+                        </span>
                       </span>
                     </span>
                   </span>
@@ -931,18 +965,20 @@ export const Footer10DataSource = {
             },
             {
               name: 'link2',
-              href: 'https://instagram.com/flowoid',
+              href: 'https://www.reddit.com/r/chainjet',
               children: (
                 <span>
                   <span>
-                    <p>Instagram</p>
+                    <span>
+                      <p>Reddit</p>
+                    </span>
                   </span>
                 </span>
               ),
             },
             {
               name: 'link3',
-              href: 'https://medium.com/flowoid',
+              href: '#',
               children: (
                 <span>
                   <span>
@@ -1028,7 +1064,7 @@ export const Footer10DataSource = {
         childWrapper: {
           children: [
             {
-              href: 'https://github.com/flowoid/roadmap/issues',
+              href: '#',
               name: 'link0',
               children: (
                 <span>
@@ -1039,7 +1075,7 @@ export const Footer10DataSource = {
               ),
             },
             {
-              href: 'mailto:admin@flowoid.com',
+              href: 'mailto:support@chainjet.io',
               name: 'link1',
               children: (
                 <span>
@@ -1048,7 +1084,7 @@ export const Footer10DataSource = {
               ),
             },
             {
-              href: 'https://m.me/flowoid',
+              href: 'https://www.reddit.com/r/chainjet',
               name: 'link2',
               children: (
                 <span>
@@ -1075,4 +1111,4 @@ export const Footer10DataSource = {
       </span>
     ),
   },
-};
+}
