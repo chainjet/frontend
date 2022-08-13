@@ -9,8 +9,6 @@ require('dotenv').config()
 const themeVariables = lessToJS(fs.readFileSync(path.resolve(__dirname, './assets/antd-custom.less'), 'utf8'))
 
 module.exports = withLess({
-  webpack5: false,
-
   env: {
     GA_TRACKING_CODE: process.env.GA_TRACKING_CODE,
     SLACK_APP_ID: process.env.SLACK_APP_ID,
