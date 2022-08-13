@@ -5,7 +5,7 @@ import QueueAnim from 'rc-queue-anim'
 import TweenOne from 'rc-tween-one'
 import { IAnimObject } from 'rc-tween-one/typings/AnimObject'
 import { useState } from 'react'
-import './LandingHeader.less'
+require('./LandingHeader.less')
 
 export function LandingHeader() {
   const router = useRouter()

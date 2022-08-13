@@ -16,7 +16,7 @@ import { withApollo } from '../../../../src/apollo'
 import { useGetWorkflows } from '../../../../src/services/WorkflowHooks'
 import { useUpdateOneWorkflowTrigger } from '../../../../src/services/WorkflowTriggerHooks'
 import { getQueryParam } from '../../../../src/utils/nextUtils'
-import './workflow.less'
+require('./workflow.less')
 
 interface Props {
   username: string

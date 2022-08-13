@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import { ArrowLeftOutlined } from '@ant-design/icons'
 import { gql } from '@apollo/client'
 import { Input, List, Tag, Typography } from 'antd'
-import './SelectWorkflowNode.less'
+import { useState } from 'react'
 import { IntegrationAction, IntegrationTrigger, OperationCategory } from '../../../../graphql'
 import { capitalize } from '../../../../src/utils/strings'
-import { ArrowLeftOutlined } from '@ant-design/icons'
+require('./SelectWorkflowNode.less')
 
 interface Props<T extends IntegrationTrigger | IntegrationAction> {
   nodeType: 'trigger' | 'action'

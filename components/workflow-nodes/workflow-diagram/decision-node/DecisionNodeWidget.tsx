@@ -2,8 +2,8 @@ import { DeleteTwoTone, EditTwoTone, PlusOutlined } from '@ant-design/icons'
 import { DiagramEngine, PortWidget } from '@projectstorm/react-diagrams-core'
 import { Button, Col, Row } from 'antd'
 import { WorkflowAction } from '../../../../graphql'
-import './DecisionNode.less'
 import { DecisionNodeModel } from './DecisionNodeModel'
+require('./DecisionNode.less')
 
 interface DiagramNodeWidgetProps {
   node: DecisionNodeModel

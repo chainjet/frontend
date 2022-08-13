@@ -4,7 +4,6 @@ import { DiagramEngine, NodeModel } from '@projectstorm/react-diagrams-core'
 import { KeyboardEvent, useEffect, useState } from 'react'
 import { Workflow, WorkflowAction, WorkflowTrigger } from '../../../graphql'
 import { WorkflowNode } from '../../../src/typings/Workflow'
-import { isServer } from '../../../src/utils/environment'
 import { getActionAncestryList } from '../../../src/utils/workflow-action.utils'
 import { getIntegrationNodeFromWorkflowNode } from '../../../src/utils/workflow.utils'
 import { BlockPageScroll } from '../../utils/BlockPageScroll'
@@ -20,7 +19,7 @@ import { DecisionNodeFactory } from './decision-node/DecisionNodeFactory'
 import { DecisionNodeModel } from './decision-node/DecisionNodeModel'
 import { DiagramNodeFactory } from './diagram-node/DiagramNodeFactory'
 import { DiagramNodeModel } from './diagram-node/DiagramNodeModel'
-import './WorkflowDiagram.less'
+require('./WorkflowDiagram.less')
 
 interface WorkflowDiagramProps {
   workflow: Workflow

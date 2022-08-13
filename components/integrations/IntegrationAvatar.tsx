@@ -1,7 +1,6 @@
-import React from 'react'
-import { Integration } from '../../graphql'
 import { Avatar } from 'antd'
-import './IntegrationAvatar.less'
+import { Integration } from '../../graphql'
+require('./IntegrationAvatar.less')
 
 interface Props {
   integration: Integration

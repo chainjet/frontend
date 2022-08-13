@@ -12,7 +12,7 @@ import { useRouter } from 'next/router'
 import React, { CSSProperties, useState } from 'react'
 import { GoKey } from 'react-icons/go'
 import { useLogout, useViewer } from '../../../src/services/UserHooks'
-import './PageLayout.less'
+require('./PageLayout.less')
 
 interface Props {
   children: JSX.Element

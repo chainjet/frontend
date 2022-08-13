@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import './SignContainer.less'
+require('./SignContainer.less')
 
 interface Props {
   children: JSX.Element

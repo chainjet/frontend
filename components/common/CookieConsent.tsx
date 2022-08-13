@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import * as React from 'react'
-import './CookieConsent.less'
+require('./CookieConsent.less')
 
 declare global {
   interface Window {
