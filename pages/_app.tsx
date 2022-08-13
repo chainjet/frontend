@@ -4,6 +4,7 @@ import CookieConsent from '../components/common/CookieConsent'
 import { CrispChat } from '../components/common/CrispChat'
 import GoogleAnalytics from '../components/common/GoogleAnalytics'
 import { isBrowser, isServer } from '../src/utils/environment'
+import '../styles/globals.css'
 
 export default class ChainJetApp extends App {
   render() {
