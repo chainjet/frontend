@@ -6,6 +6,7 @@ import TweenOne from 'rc-tween-one'
 import { IAnimObject } from 'rc-tween-one/typings/AnimObject'
 import { useState } from 'react'
 require('./LandingHeader.less')
+require('./generated/less/antMotionStyle.less')
 
 export function LandingHeader() {
   const router = useRouter()
