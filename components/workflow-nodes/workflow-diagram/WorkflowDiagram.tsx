@@ -37,9 +37,6 @@ interface WorkflowDiagramProps {
 // Fragments are defined on WorkflowDiagramFragments because react-diagram modules can't be directly imported with ssr
 
 const WorkflowDiagram = (props: WorkflowDiagramProps) => {
-  if (isServer) {
-    return <></>
-  }
   const { workflow, workflowTrigger, workflowActions } = props
   const [diagramEngine, setDiagramEngine] = useState<DiagramEngine>()
 
@@ -143,7 +140,7 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
       includeLinks: true,
     })
     dagreEngine.redistribute(model)
-  }, [props.workflowTrigger, props.workflowActions])
+  }, [props.workflowTrigger, props.workflowActions, diagramEngine, workflow, workflowTrigger, workflowActions])
 
   if (!diagramEngine) {
     return <></>

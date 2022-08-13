@@ -1,5 +1,5 @@
 /* eslint-disable */
-const withLess = require('@zeit/next-less')
+const withLess = require('next-plugin-antd-less')
 const lessToJS = require('less-vars-to-js')
 const fs = require('fs')
 const path = require('path')
@@ -9,6 +9,7 @@ require('dotenv').config()
 const themeVariables = lessToJS(fs.readFileSync(path.resolve(__dirname, './assets/antd-custom.less'), 'utf8'))
 
 module.exports = withLess({
+  webpack5: false,
   env: {
     GA_TRACKING_CODE: process.env.GA_TRACKING_CODE,
     SLACK_APP_ID: process.env.SLACK_APP_ID,

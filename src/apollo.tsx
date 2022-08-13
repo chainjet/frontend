@@ -1,7 +1,6 @@
 import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache, NormalizedCacheObject } from '@apollo/react-hooks'
 import fetch from 'isomorphic-unfetch'
 import { NextPageContext } from 'next'
-import Head from 'next/head'
 import { destroyCookie, parseCookies, setCookie } from 'nookies'
 import PageLayout from '../components/common/PageLayout/PageLayout'
 import ViewerContextProvider from '../components/providers/ViewerContextProvider'
@@ -114,10 +113,6 @@ export function withApollo(PageComponent: any, { useLayout = true, ssr = true } 
             // https://www.apollographql.com/docs/react/api/react-apollo.html#graphql-query-data-error
             console.error('Error while running `getDataFromTree`', error)
           }
-
-          // getDataFromTree does not call componentWillUnmount
-          // head side effect therefore need to be cleared manually
-          Head.rewind()
         }
       }
 

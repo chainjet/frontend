@@ -1,22 +1,22 @@
-import { Loading } from '../../../../components/common/RequestStates/Loading'
-import { PageWrapper } from '../../../../components/common/PageLayout/PageWrapper'
-import { NextPageContext } from 'next'
-import { withApollo } from '../../../../src/apollo'
-import React, { useState } from 'react'
-import { gql } from '@apollo/client'
-import { WorkflowDiagramContainer } from '../../../../components/workflow-nodes/WorkflowDiagramContainer'
-import { RequestError } from '../../../../components/common/RequestStates/RequestError'
-import { useGetWorkflows } from '../../../../src/services/WorkflowHooks'
-import './workflow.less'
-import Router from 'next/router'
-import { Button, Switch } from 'antd'
-import { WorkflowDiagramFragments } from '../../../../components/workflow-nodes/workflow-diagram/WorkflowDiagramFragments'
 import { HistoryOutlined, SettingOutlined } from '@ant-design/icons'
+import { gql } from '@apollo/client'
+import { Button, Switch } from 'antd'
+import { NextPageContext } from 'next'
+import Head from 'next/head'
+import Router from 'next/router'
+import { useState } from 'react'
+import { PageWrapper } from '../../../../components/common/PageLayout/PageWrapper'
+import { Loading } from '../../../../components/common/RequestStates/Loading'
+import { RequestError } from '../../../../components/common/RequestStates/RequestError'
+import { WorkflowDiagramFragments } from '../../../../components/workflow-nodes/workflow-diagram/WorkflowDiagramFragments'
+import { WorkflowDiagramContainer } from '../../../../components/workflow-nodes/WorkflowDiagramContainer'
 import { WorkflowRunHistoryModal } from '../../../../components/workflow-runs/WorkflowRunHistoryModal'
 import { WorkflowRunsTable } from '../../../../components/workflow-runs/WorkflowRunsTable'
-import { getQueryParam } from '../../../../src/utils/nextUtils'
-import Head from 'next/head'
+import { withApollo } from '../../../../src/apollo'
+import { useGetWorkflows } from '../../../../src/services/WorkflowHooks'
 import { useUpdateOneWorkflowTrigger } from '../../../../src/services/WorkflowTriggerHooks'
+import { getQueryParam } from '../../../../src/utils/nextUtils'
+import './workflow.less'
 
 interface Props {
   username: string
@@ -159,4 +159,4 @@ WorkflowPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> => {
   }
 }
 
-export default withApollo(WorkflowPage)
+export default withApollo(WorkflowPage, { ssr: false })
