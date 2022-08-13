@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import './SignContainer.less'
 
 interface Props {
@@ -8,12 +9,12 @@ export const SignContainer = (props: Props) => {
   return (
     <div className="sign-container">
       <div className="sign-tabs-container">
-        <div style={{ marginLeft: 55 }}>
-          {/* <Link href="/">
+        <div className="flex justify-center mb-4">
+          <Link href="/">
             <a>
-              <img src="/logo.svg" style={{ width: 200 }} />
+              <img src="/logo.svg" width={400} alt="ChainJet Logo" />
             </a>
-          </Link> */}
+          </Link>
         </div>
 
         {props.children}

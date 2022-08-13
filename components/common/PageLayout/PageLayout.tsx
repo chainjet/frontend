@@ -1,7 +1,3 @@
-import React, { CSSProperties, useEffect, useState } from 'react'
-import Link from 'next/link'
-import { GoKey } from 'react-icons/go'
-import './PageLayout.less'
 import Icon, {
   LogoutOutlined,
   MenuFoldOutlined,
@@ -9,10 +5,14 @@ import Icon, {
   ProjectOutlined,
   SettingOutlined,
 } from '@ant-design/icons'
-import { useLogout, useViewer } from '../../../src/services/UserHooks'
 import { Dropdown, Layout, Menu } from 'antd'
-import { useRouter } from 'next/router'
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import React, { CSSProperties, useState } from 'react'
+import { GoKey } from 'react-icons/go'
+import { useLogout, useViewer } from '../../../src/services/UserHooks'
+import './PageLayout.less'
 
 interface Props {
   children: JSX.Element
@@ -38,11 +38,13 @@ export default function PageLayout({ children }: Props) {
   const renderLogo = () => {
     const style: CSSProperties = {
       transition: 'all 0.3s',
-      ...(siderCollapsed ? { height: 65 } : { height: 80, marginLeft: 30 }),
+      ...(siderCollapsed ? { height: 65 } : { height: 80 }),
     }
     return (
       <Link href="/">
-        <a>{/* <img src="/logo-white.svg" style={style} /> */}</a>
+        <a>
+          <img src={siderCollapsed ? '/icon.svg' : '/logo.svg'} style={style} alt="ChainJet Logo" />
+        </a>
       </Link>
     )
   }

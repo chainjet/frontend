@@ -77,7 +77,7 @@ export function LandingHeader() {
         <TweenOne className="header-logo" animation={{ opacity: 0, type: 'from' }}>
           <Link href={'/'} key="logo">
             <a onClick={() => mobileClick()}>
-              {/* <img className="logo-img" alt="ChainJet" height="80" src="/logo-white.svg" /> */}
+              <img className="mt-1" width={200} src="/logo.svg" alt="ChainJet Logo" />
             </a>
           </Link>
         </TweenOne>
