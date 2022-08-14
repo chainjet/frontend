@@ -14,7 +14,11 @@ export const Banner50DataSource = {
                   <span>
                     <span>
                       <span>
-                        <p>Blockchain automation in minutes, without writing code or paying $50,000+</p>
+                        <span>
+                          <span>
+                            <p>Blockchain automation in minutes, without writing code or paying $50,000+</p>
+                          </span>
+                        </span>
                       </span>
                     </span>
                   </span>
@@ -41,10 +45,12 @@ export const Banner50DataSource = {
                             <span>
                               <span>
                                 <span>
-                                  <p>
-                                    Connect over 300 integrations to automate your routine and unlock your business
-                                    potential.
-                                  </p>
+                                  <span>
+                                    <p>
+                                      Connect over 300 integrations to automate your routine and unlock your business
+                                      potential.
+                                    </p>
+                                  </span>
                                 </span>
                               </span>
                             </span>
@@ -88,7 +94,7 @@ export const Banner50DataSource = {
       },
     ],
   },
-  image: { className: 'kgb40j6rvja-editor_css banner5-image', children: '#' },
+  image: { className: 'banner5-image kgb40j6rvja-editor_css', children: 'https://i.imgur.com/qSzWP3o.png' },
 }
 export const Feature00DataSource = {
   wrapper: { className: 'home-page-wrapper content0-wrapper' },
@@ -407,98 +413,23 @@ export const Content50DataSource = {
     gutter: 16,
     children: [
       {
-        name: 'block0',
-        className: 'block',
-        md: 6,
-        xs: 24,
-        children: {
-          wrapper: { className: 'content5-block-content' },
-          img: { children: '', className: 'kgb81nphoo-editor_css' },
-          content: {
-            children: (
-              <span>
-                <span>
-                  <span>
-                    <span>
-                      <span>
-                        <span>
-                          <p>1inch</p>
-                        </span>
-                      </span>
-                    </span>
-                  </span>
-                </span>
-              </span>
-            ),
-          },
-        },
-      },
-      {
-        name: 'block1',
-        className: 'block',
-        md: 6,
-        xs: 24,
-        children: {
-          wrapper: { className: 'content5-block-content' },
-          img: { children: '', className: 'kgb8gihmudi-editor_css' },
-          content: {
-            children: (
-              <span>
-                <span>
-                  <span>
-                    <span>
-                      <span>
-                        <p>Coinbase</p>
-                      </span>
-                    </span>
-                  </span>
-                </span>
-              </span>
-            ),
-          },
-        },
-      },
-      {
-        name: 'block2',
-        className: 'block',
-        md: 6,
-        xs: 24,
-        children: {
-          wrapper: { className: 'content5-block-content' },
-          img: { children: '', className: 'kgb82eq1hw7-editor_css' },
-          content: {
-            children: (
-              <span>
-                <span>
-                  <span>
-                    <span>
-                      <span>
-                        <p>CoinMarketCap</p>
-                      </span>
-                    </span>
-                  </span>
-                </span>
-              </span>
-            ),
-          },
-        },
-      },
-      {
-        name: 'block3',
+        name: 'block~l6qqf2ct96c',
         className: 'block',
         md: 6,
         xs: 24,
         children: {
           wrapper: { className: 'content5-block-content' },
           img: {
-            children: 'https://flowoid.com/logos/gitlab.svg',
-            className: 'kgb8kaszn7-editor_css',
+            children: 'https://raw.githubusercontent.com/chainjet/assets/master/dapps/app.1inch.io.png',
+            className: 'kgb8rtqzd26-editor_css',
           },
           content: {
             children: (
               <span>
                 <span>
-                  <p>Dex Screener</p>
+                  <span>
+                    <p>1inch</p>
+                  </span>
                 </span>
               </span>
             ),
@@ -506,15 +437,63 @@ export const Content50DataSource = {
         },
       },
       {
-        name: 'block4',
+        name: 'block~l6qvymtd2y',
         className: 'block',
         md: 6,
         xs: 24,
         children: {
           wrapper: { className: 'content5-block-content' },
           img: {
-            children: 'https://flowoid.com/logos/sendgrid.svg',
-            className: 'kgb8mxtd05p-editor_css',
+            children: 'https://raw.githubusercontent.com/chainjet/assets/master/integrations/coinbase.svg',
+            className: 'kgb8rtqzd26-editor_css',
+          },
+          content: {
+            children: (
+              <span>
+                <span>
+                  <span>
+                    <p>Coinbase</p>
+                  </span>
+                </span>
+              </span>
+            ),
+          },
+        },
+      },
+      {
+        name: 'block~l6t93w6z6ec',
+        className: 'block',
+        md: 6,
+        xs: 24,
+        children: {
+          wrapper: { className: 'content5-block-content' },
+          img: {
+            children: 'https://raw.githubusercontent.com/chainjet/assets/master/integrations/coinmarketcap.svg',
+            className: 'kgb8rtqzd26-editor_css',
+          },
+          content: {
+            children: (
+              <span>
+                <span>
+                  <span>
+                    <p>CoinMarketCap</p>
+                  </span>
+                </span>
+              </span>
+            ),
+          },
+        },
+      },
+      {
+        name: 'block~l6t947haqet',
+        className: 'block',
+        md: 6,
+        xs: 24,
+        children: {
+          wrapper: { className: 'content5-block-content' },
+          img: {
+            children: 'https://raw.githubusercontent.com/chainjet/assets/master/integrations/dexscreener.png',
+            className: 'kgb8rtqzd26-editor_css',
           },
           content: {
             children: (
@@ -522,9 +501,33 @@ export const Content50DataSource = {
                 <span>
                   <span>
                     <span>
-                      <span>
-                        <p>Moralis</p>
-                      </span>
+                      <p>Dex Screener</p>
+                    </span>
+                  </span>
+                </span>
+              </span>
+            ),
+          },
+        },
+      },
+      {
+        name: 'block~l6t9482low',
+        className: 'block',
+        md: 6,
+        xs: 24,
+        children: {
+          wrapper: { className: 'content5-block-content' },
+          img: {
+            children: 'https://raw.githubusercontent.com/chainjet/assets/master/integrations/moralis.png',
+            className: 'kgb8rtqzd26-editor_css',
+          },
+          content: {
+            children: (
+              <span>
+                <span>
+                  <span>
+                    <span>
+                      <p>Moralis</p>
                     </span>
                   </span>
                 </span>
@@ -548,7 +551,9 @@ export const Content50DataSource = {
             children: (
               <span>
                 <span>
-                  <p>GitHub</p>
+                  <span>
+                    <p>Amazon Web Services</p>
+                  </span>
                 </span>
               </span>
             ),
@@ -585,7 +590,7 @@ export const Content50DataSource = {
         children: {
           wrapper: { className: 'content5-block-content' },
           img: {
-            children: 'https://chainjet.io/logos/github.svg',
+            children: 'https://raw.githubusercontent.com/chainjet/assets/master/integrations/github.svg',
             className: 'kgb8rtqzd26-editor_css',
           },
           content: {
@@ -763,7 +768,9 @@ export const Pricing10DataSource = {
                             <span>
                               <span>
                                 <span>
-                                  <p>$19.99</p>
+                                  <span>
+                                    <p>$19</p>
+                                  </span>
                                 </span>
                               </span>
                             </span>
@@ -1084,7 +1091,7 @@ export const Footer10DataSource = {
               ),
             },
             {
-              href: 'https://www.reddit.com/r/chainjet',
+              href: 'https://discord.gg/gPqd9aTy',
               name: 'link2',
               children: (
                 <span>
