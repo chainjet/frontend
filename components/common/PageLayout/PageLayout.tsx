@@ -43,7 +43,7 @@ export default function PageLayout({ children }: Props) {
     return (
       <Link href="/">
         <a>
-          <img src={siderCollapsed ? '/icon.svg' : '/logo.svg'} style={style} alt="ChainJet Logo" />
+          <img src={siderCollapsed ? '/icon.svg' : '/logo.svg'} style={style} alt="ChainJet Logo" width="100%" />
         </a>
       </Link>
     )
