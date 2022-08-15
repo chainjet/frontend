@@ -1,4 +1,4 @@
-import Icon, {
+import {
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -52,21 +52,12 @@ export default function PageLayout({ children }: Props) {
   const renderHeaderContent = () => {
     if (viewer) {
       const menu = (
-        <Menu>
-          {/* <Menu.Item key='profile' onClick={handleProfileClick}>
-            <UserOutlined />
-            Profile
-          </Menu.Item> */}
-          <Menu.Item key="settings" onClick={handleSettingsClick}>
-            <SettingOutlined />
-            Settings
-          </Menu.Item>
-          <Menu.Divider />
-          <Menu.Item key="logout" onClick={handleLogoutClick}>
-            <LogoutOutlined />
-            Logout
-          </Menu.Item>
-        </Menu>
+        <Menu
+          items={[
+            { key: 'settings', label: 'Settings', icon: <SettingOutlined />, onClick: handleSettingsClick },
+            { key: 'logout', label: 'Logout', icon: <LogoutOutlined />, onClick: handleLogoutClick },
+          ]}
+        />
       )
 
       return (
@@ -86,14 +77,15 @@ export default function PageLayout({ children }: Props) {
       <Layout.Sider trigger={null} collapsible collapsed={siderCollapsed} collapsedWidth={hasMobileSider ? 0 : 80}>
         {renderLogo()}
 
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={[router.pathname]}>
-          <Menu.Item key="/" icon={<ProjectOutlined />}>
-            <Link href="/">Projects</Link>
-          </Menu.Item>
-          <Menu.Item key="/credentials" icon={<Icon component={GoKey} />}>
-            <Link href="/credentials">Credentials</Link>
-          </Menu.Item>
-        </Menu>
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={[router.pathname]}
+          items={[
+            { key: '/', label: <Link href="/">Projects</Link>, icon: <ProjectOutlined /> },
+            { key: '/credentials', label: <Link href="/credentials">Credentials</Link>, icon: <GoKey /> },
+          ]}
+        />
       </Layout.Sider>
 
       <Layout>
