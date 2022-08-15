@@ -5,4 +5,7 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  corePlugins: {
+    preflight: false, // preflight creates issues with antd styles
+  },
 }
