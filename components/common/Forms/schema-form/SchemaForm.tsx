@@ -5,7 +5,6 @@ import dayjs from 'dayjs'
 import localeData from 'dayjs/plugin/localeData'
 import weekday from 'dayjs/plugin/weekday'
 import { JSONSchema7 } from 'json-schema'
-import _ from 'lodash'
 import Head from 'next/head'
 import { useEffect } from 'react'
 import { jsonSchemaDefinitions } from '../../../../src/json-schema/jsonSchemaDefinitions'
@@ -75,7 +74,7 @@ export const SchemaForm = (props: Props) => {
   return (
     <>
       <Head>
-        <link rel="stylesheet" id="theme" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.5.2/antd.min.css" />
+        <link rel="stylesheet" id="theme" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.22.4/antd.min.css" />
       </Head>
       <ThemedForm
         schema={formSchema}
@@ -97,13 +96,11 @@ export const SchemaForm = (props: Props) => {
           onChange?.(data.formData)
           formData = data.formData
         }}
-        // Workaround to fix validation. See:
+        // Skip validation for objects inside arrays due to bug:
         //   - https://github.com/flowoid/flowoid/issues/32
         //   - https://github.com/rjsf-team/react-jsonschema-form/issues/2103
         transformErrors={(errors) => {
-          return errors.filter(
-            (error) => !isEmptyObj(_.get(formData, error.property.split('.').slice(1, -1).join('.'))),
-          )
+          return errors.filter((error) => !error.property.match(/\[\d+\]/))
         }}
       >
         <Button type="primary" htmlType="submit" loading={loading}>
