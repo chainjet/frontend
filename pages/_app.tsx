@@ -1,7 +1,7 @@
 import App from 'next/app'
 import Head from 'next/head'
 import CookieConsent from '../components/common/CookieConsent'
-import { TidioChat } from '../components/common/TidioChat'
+import { CrispChat } from '../components/common/CrispChat'
 import GoogleAnalytics from '../components/common/GoogleAnalytics'
 import '../styles/globals.css'
 
@@ -35,7 +35,7 @@ export default class ChainJetApp extends App {
 
         <GoogleAnalytics />
         <CookieConsent />
-        <TidioChat />
+        <CrispChat />
 
         <Component {...pageProps} />
       </>
