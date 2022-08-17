@@ -955,7 +955,7 @@ export const Footer10DataSource = {
             },
             {
               name: 'link1',
-              href: 'https://discord.gg/gPqd9aTy',
+              href: 'https://discord.gg/QFnSwqj9YH',
               children: (
                 <span>
                   <span>
@@ -1091,7 +1091,7 @@ export const Footer10DataSource = {
               ),
             },
             {
-              href: 'https://discord.gg/gPqd9aTy',
+              href: 'https://discord.gg/QFnSwqj9YH',
               name: 'link2',
               children: (
                 <span>
