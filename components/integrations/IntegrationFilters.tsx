@@ -4,7 +4,7 @@ import { integrationCategories, IntegrationCategory } from '../../src/constants/
 
 interface Props {
   categorySelected: IntegrationCategory | null
-  onCategoryChange: (category: IntegrationCategory | null) => void
+  onCategoryChange: (categoryId: string | null) => void
   getCategoryLink?: (category: IntegrationCategory | null) => string
 }
 
@@ -12,8 +12,7 @@ export function IntegrationFilters(props: Props) {
   const { categorySelected, onCategoryChange, getCategoryLink } = props
 
   const handleItemSelect = (key: string) => {
-    const category = integrationCategories.find((category) => category.id === key)
-    onCategoryChange(category ?? null)
+    onCategoryChange(key ?? null)
   }
 
   return (

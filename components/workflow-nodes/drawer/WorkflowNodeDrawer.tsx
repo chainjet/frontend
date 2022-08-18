@@ -170,14 +170,16 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
       visible={visible}
       width={window.innerWidth}
     >
-      <Steps size="small" current={currentStep}>
-        <Steps.Step title="Select Integration" description="" />
-        <Steps.Step title="Select Operation" description="" />
-        <Steps.Step title="Select Account" description="" />
-        <Steps.Step title="Set Inputs" description="" />
-      </Steps>
+      <div className="hidden sm:block">
+        <Steps size="small" current={currentStep}>
+          <Steps.Step title="Select Integration" description="" />
+          <Steps.Step title="Select Operation" description="" />
+          <Steps.Step title="Select Account" description="" />
+          <Steps.Step title="Set Inputs" description="" />
+        </Steps>
 
-      <Divider />
+        <Divider />
+      </div>
 
       {renderCurrentStep(currentStep)}
     </Drawer>

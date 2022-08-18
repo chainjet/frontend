@@ -1,10 +1,10 @@
 import { gql } from '@apollo/client'
-import { Button, Card, Col, Input, List, Row, Typography } from 'antd'
+import { Button, Card, Col, Input, List, Row, Select, Typography } from 'antd'
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { Integration, IntegrationConnection, IntegrationSortFields, SortDirection } from '../../../../graphql'
-import { IntegrationCategory } from '../../../../src/constants/integration-categories'
+import { integrationCategories, IntegrationCategory } from '../../../../src/constants/integration-categories'
 import { useGetIntegrations } from '../../../../src/services/IntegrationHooks'
 import { IntegrationAvatar } from '../../../integrations/IntegrationAvatar'
 import { IntegrationFilters } from '../../../integrations/IntegrationFilters'
@@ -46,7 +46,7 @@ export const SelectIntegration = (props: Props) => {
   const [categorySelected, setCategorySelected] = useState<IntegrationCategory | null>(initialCategory ?? null)
   const [loadingMore, setLoadingMore] = useState(false)
   const breakpoint = useBreakpoint()
-  const hideCategories = breakpoint.xs // TODO use a select instead of hidding the categories
+  const smallCategoriesSelector = breakpoint.xs
 
   const queryVars = {
     filter: {
@@ -76,7 +76,8 @@ export const SelectIntegration = (props: Props) => {
     setSearch(e.target.value)
   }
 
-  const handleCategoryChange = async (category: IntegrationCategory | null) => {
+  const handleCategoryChange = async (categoryId: string | null) => {
+    const category = integrationCategories.find((c) => c.id === categoryId) ?? null
     setCategorySelected(category)
     onCategoryChange?.(category)
     if (!getCategoryLink) {
@@ -123,12 +124,33 @@ export const SelectIntegration = (props: Props) => {
 
   return (
     <>
-      <div style={{ marginBottom: 24 }}>
+      {smallCategoriesSelector && (
+        <div className="w-full flex items-center gap-2 mb-8">
+          <div>
+            <strong>Category:</strong>
+          </div>
+          <Select className="w-full" defaultValue={categorySelected?.id} onChange={handleCategoryChange}>
+            <Select.Option value={integrationCategories[0].id} key="popular">
+              Popular
+            </Select.Option>
+            <Select.Option value="all" key="all">
+              A-Z
+            </Select.Option>
+            {integrationCategories.slice(1).map((category) => (
+              <Select.Option value={category.id} key={category.id}>
+                {category.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+      )}
+
+      <div className="mb-8">
         <Input.Search placeholder="Find integration" onChange={handleSearchChange} enterButton />
       </div>
 
       <Row>
-        {!hideCategories && (
+        {!smallCategoriesSelector && (
           <Col span={4}>
             <Typography.Title level={5}>Category</Typography.Title>
             <IntegrationFilters
@@ -139,7 +161,7 @@ export const SelectIntegration = (props: Props) => {
           </Col>
         )}
 
-        <Col span={hideCategories ? 24 : 20} style={{ padding: '0px 24px' }}>
+        <Col span={smallCategoriesSelector ? 24 : 20} style={{ padding: '0px 24px' }}>
           <List
             dataSource={integrations}
             loading={loading}
