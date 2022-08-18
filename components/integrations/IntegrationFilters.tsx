@@ -1,29 +1,18 @@
 import { Menu } from 'antd'
 import Link from 'next/link'
-import React from 'react'
-import { IntegrationCategory } from '../../graphql'
-import { useGetIntegrationCategories } from '../../src/services/IntegrationCategoryHooks'
-import { Loading } from '../common/RequestStates/Loading'
+import { integrationCategories, IntegrationCategory } from '../../src/constants/integration-categories'
 
 interface Props {
   categorySelected: IntegrationCategory | null
   onCategoryChange: (category: IntegrationCategory | null) => void
-  useCategoryLink?: (category: IntegrationCategory | null) => string
+  getCategoryLink?: (category: IntegrationCategory | null) => string
 }
 
 export function IntegrationFilters(props: Props) {
-  const { categorySelected, onCategoryChange, useCategoryLink } = props
-  const { data, loading, error } = useGetIntegrationCategories({})
-
-  if (loading) {
-    return <Loading />
-  }
-  if (error || !data?.integrationCategories.length) {
-    return <></> // Don't need to show an error
-  }
+  const { categorySelected, onCategoryChange, getCategoryLink } = props
 
   const handleItemSelect = (key: string) => {
-    const category = data.integrationCategories.find((category) => category.id === key)
+    const category = integrationCategories.find((category) => category.id === key)
     onCategoryChange(category ?? null)
   }
 
@@ -33,19 +22,28 @@ export function IntegrationFilters(props: Props) {
         selectedKeys={[categorySelected ? categorySelected.id : 'all']}
         onSelect={(info) => handleItemSelect(info.key.toString())}
       >
-        <Menu.Item key="all">
-          {useCategoryLink ? (
-            <Link href={useCategoryLink(null)}>
-              <a>All</a>
+        <Menu.Item key="popular">
+          {getCategoryLink ? (
+            <Link href={getCategoryLink(integrationCategories[0])}>
+              <a>Popular</a>
             </Link>
           ) : (
-            'All'
+            'Popular'
           )}
         </Menu.Item>
-        {data.integrationCategories.map((category) => (
+        <Menu.Item key="all">
+          {getCategoryLink ? (
+            <Link href={getCategoryLink(null)}>
+              <a>A-Z</a>
+            </Link>
+          ) : (
+            'A-Z'
+          )}
+        </Menu.Item>
+        {integrationCategories.slice(1).map((category) => (
           <Menu.Item key={category.id}>
-            {useCategoryLink ? (
-              <Link href={useCategoryLink(category)}>
+            {getCategoryLink ? (
+              <Link href={getCategoryLink(category)}>
                 <a>{category.name}</a>
               </Link>
             ) : (

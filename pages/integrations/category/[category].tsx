@@ -1,38 +1,23 @@
-import Head from 'next/head'
-import React from 'react'
-import { withApollo } from '../../../src/apollo'
 import { NextPageContext } from 'next'
-import { getQueryParam } from '../../../src/utils/nextUtils'
-import { useGetIntegrationCategory } from '../../../src/services/IntegrationCategoryHooks'
-import { Loading } from '../../../components/common/RequestStates/Loading'
+import Head from 'next/head'
 import { IntegrationPageContainer } from '../../../components/integrations/IntegrationsPageContainer'
-import Error404Page from '../../404'
-import ErrorPage from '../../_error'
+import { withApollo } from '../../../src/apollo'
+import { integrationCategories } from '../../../src/constants/integration-categories'
 import { getHeadMetatags } from '../../../src/utils/html.utils'
+import { getQueryParam } from '../../../src/utils/nextUtils'
+import Error404Page from '../../404'
 
 interface Props {
-  categoryKey: string
+  categoryId: string
 }
 
 function IntegrationCategoryPage(props: Props) {
-  const { categoryKey } = props
-  const { data, loading, error } = useGetIntegrationCategory({
-    variables: {
-      id: categoryKey,
-    },
-  })
+  const { categoryId } = props
+  const category = integrationCategories.find((category) => category.id === categoryId)
 
-  if (loading) {
-    return <Loading />
-  }
-  if (error) {
-    return <ErrorPage error={error} />
-  }
-  if (!data?.integrationCategory) {
+  if (!category) {
     return <Error404Page /> // TODO soft 404
   }
-
-  const category = data.integrationCategory
 
   return (
     <>
@@ -50,7 +35,7 @@ function IntegrationCategoryPage(props: Props) {
 
 IntegrationCategoryPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> => {
   return {
-    categoryKey: getQueryParam(ctx, 'category').toLowerCase(),
+    categoryId: getQueryParam(ctx, 'category').toLowerCase(),
   }
 }
 

@@ -47,7 +47,7 @@ export function LandingHeader() {
   const navItems = [
     {
       name: 'Integrations',
-      href: '/integrations',
+      href: '/integrations/category/popular',
     },
     {
       name: 'Pricing',

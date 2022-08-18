@@ -1,9 +1,8 @@
-import React from 'react'
+import { gql } from '@apollo/client'
 import { List, Tag, Typography } from 'antd'
 import { Integration, IntegrationTrigger } from '../../graphql'
 import { IntegrationNode } from '../../src/typings/Integration'
 import { IntegrationAvatar } from '../integrations/IntegrationAvatar'
-import { gql } from '@apollo/client'
 
 interface Props {
   integration: Integration
@@ -24,14 +23,14 @@ export function OperationList(props: Props) {
             avatar={<IntegrationAvatar integration={integration} />}
             title={
               (operation as IntegrationTrigger).instant ? (
-                <>
+                <span className="text-xl">
                   {operation.name}{' '}
                   <Tag color="cyan" style={{ marginLeft: 8 }}>
                     Instant
                   </Tag>
-                </>
+                </span>
               ) : (
-                operation.name
+                <span className="text-xl">{operation.name}</span>
               )
             }
             description={

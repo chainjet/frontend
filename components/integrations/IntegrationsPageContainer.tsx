@@ -1,7 +1,6 @@
 import { Card } from 'antd'
 import { useRouter } from 'next/router'
-import React from 'react'
-import { Integration, IntegrationCategory } from '../../graphql'
+import { IntegrationCategory } from '../../src/constants/integration-categories'
 import { LandingFooter } from '../landing/LandingFooter'
 import { LandingHeader } from '../landing/LandingHeader'
 import { SelectIntegration } from '../workflow-nodes/drawer/steps/SelectIntegration'
@@ -31,8 +30,8 @@ export function IntegrationPageContainer(props: Props) {
         <SelectIntegration
           initialCategory={category}
           onCategoryChange={handleCategoryChange}
-          useIntegrationLink={(integration) => `/integrations/${integration.key}`}
-          useCategoryLink={(category) => (category ? `/integrations/category/${category.id}` : '/integrations')}
+          getIntegrationLink={(integration) => `/integrations/${integration.key}`}
+          getCategoryLink={(category) => (category ? `/integrations/category/${category.id}` : '/integrations')}
         />
       </Card>
       <LandingFooter />

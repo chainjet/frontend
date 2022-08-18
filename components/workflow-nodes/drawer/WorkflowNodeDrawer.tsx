@@ -2,6 +2,7 @@ import { Divider, Drawer, Steps } from 'antd'
 import { JSONSchema7 } from 'json-schema'
 import { useState } from 'react'
 import { Integration, IntegrationAction, IntegrationTrigger } from '../../../graphql'
+import { integrationCategories } from '../../../src/constants/integration-categories'
 import { ActionInputsForm } from './steps/ActionInputsForm'
 import { SelectCredentials } from './steps/SelectCredentials'
 import { SelectIntegration } from './steps/SelectIntegration'
@@ -83,7 +84,14 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
     switch (stepIndex) {
       // Select Integration
       case 0:
-        return <SelectIntegration onIntegrationSelect={onIntegrationSelected} nodeType={props.nodeType} />
+        const initialCategory = integrationCategories.find((category) => category.id === 'popular')
+        return (
+          <SelectIntegration
+            onIntegrationSelect={onIntegrationSelected}
+            nodeType={props.nodeType}
+            initialCategory={initialCategory}
+          />
+        )
 
       // Select Operation
       case 1:

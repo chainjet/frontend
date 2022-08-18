@@ -1,27 +1,22 @@
-import React, { useState } from 'react'
-import { useGetIntegrations } from '../../../../src/services/IntegrationHooks'
 import { gql } from '@apollo/client'
-import { Button, Card, Col, Input, List, message, Row, Typography } from 'antd'
-import { SelectCredentials } from './SelectCredentials'
-import {
-  Integration,
-  IntegrationCategory,
-  IntegrationConnection,
-  IntegrationSortFields,
-  SortDirection,
-} from '../../../../graphql'
-import { IntegrationAvatar } from '../../../integrations/IntegrationAvatar'
-import { IntegrationFilters } from '../../../integrations/IntegrationFilters'
+import { Button, Card, Col, Input, List, Row, Typography } from 'antd'
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
 import Link from 'next/link'
+import React, { useState } from 'react'
+import { Integration, IntegrationConnection, IntegrationSortFields, SortDirection } from '../../../../graphql'
+import { IntegrationCategory } from '../../../../src/constants/integration-categories'
+import { useGetIntegrations } from '../../../../src/services/IntegrationHooks'
+import { IntegrationAvatar } from '../../../integrations/IntegrationAvatar'
+import { IntegrationFilters } from '../../../integrations/IntegrationFilters'
+import { SelectCredentials } from './SelectCredentials'
 
 interface Props {
   nodeType?: 'trigger' | 'action'
   initialCategory?: IntegrationCategory
   onIntegrationSelect?: (integration: Integration) => any
   onCategoryChange?: (category: IntegrationCategory | null) => any
-  useIntegrationLink?: (integration: Integration) => string
-  useCategoryLink?: (category: IntegrationCategory | null) => string
+  getIntegrationLink?: (integration: Integration) => string
+  getCategoryLink?: (category: IntegrationCategory | null) => string
 }
 
 const selectIntegrationFragment = gql`
@@ -45,13 +40,13 @@ const selectIntegrationFragment = gql`
 `
 
 export const SelectIntegration = (props: Props) => {
-  const { nodeType, initialCategory, onIntegrationSelect, onCategoryChange, useIntegrationLink, useCategoryLink } =
+  const { nodeType, initialCategory, onIntegrationSelect, onCategoryChange, getIntegrationLink, getCategoryLink } =
     props
   const [search, setSearch] = useState('')
   const [categorySelected, setCategorySelected] = useState<IntegrationCategory | null>(initialCategory ?? null)
   const [loadingMore, setLoadingMore] = useState(false)
   const breakpoint = useBreakpoint()
-  const hideCategories = breakpoint.xs
+  const hideCategories = breakpoint.xs // TODO use a select instead of hidding the categories
 
   const queryVars = {
     filter: {
@@ -84,7 +79,7 @@ export const SelectIntegration = (props: Props) => {
   const handleCategoryChange = async (category: IntegrationCategory | null) => {
     setCategorySelected(category)
     onCategoryChange?.(category)
-    if (!useCategoryLink) {
+    if (!getCategoryLink) {
       document.querySelector('.ant-drawer-body')?.scrollTo({ top: 0 })
       window.scrollTo({ top: 0 })
     }
@@ -139,7 +134,7 @@ export const SelectIntegration = (props: Props) => {
             <IntegrationFilters
               onCategoryChange={handleCategoryChange}
               categorySelected={categorySelected}
-              useCategoryLink={useCategoryLink}
+              getCategoryLink={getCategoryLink}
             />
           </Col>
         )}
@@ -147,7 +142,7 @@ export const SelectIntegration = (props: Props) => {
         <Col span={hideCategories ? 24 : 20} style={{ padding: '0px 24px' }}>
           {search && categorySelected && !integrations.length && (
             <div style={{ marginBottom: 16 }}>
-              No results for "<strong>{search}</strong>" in <strong>{categorySelected.name}</strong>.
+              No results for &quot;<strong>{search}</strong>&quot; in <strong>{categorySelected.name}</strong>.
               <Button type="link" onClick={() => setCategorySelected(null)}>
                 Search all categories
               </Button>
@@ -171,7 +166,7 @@ export const SelectIntegration = (props: Props) => {
             renderItem={(integration) => {
               const integrationContent = (
                 <List.Item onClick={() => onIntegrationSelect?.(integration)}>
-                  <Card hoverable={!!onIntegrationSelect || !!useIntegrationLink} bordered={false}>
+                  <Card hoverable={!!onIntegrationSelect || !!getIntegrationLink} bordered={false}>
                     <Card.Meta
                       avatar={<IntegrationAvatar integration={integration} />}
                       title={integration.name}
@@ -180,9 +175,9 @@ export const SelectIntegration = (props: Props) => {
                   </Card>
                 </List.Item>
               )
-              if (useIntegrationLink) {
+              if (getIntegrationLink) {
                 return (
-                  <Link href={useIntegrationLink(integration)}>
+                  <Link href={getIntegrationLink(integration)}>
                     <a>{integrationContent}</a>
                   </Link>
                 )
