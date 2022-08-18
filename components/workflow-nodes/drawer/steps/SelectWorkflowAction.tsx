@@ -1,6 +1,4 @@
-import React, { useState } from 'react'
-import { SelectWorkflowNode } from './SelectWorkflowNode'
-import { RequestError } from '../../../common/RequestStates/RequestError'
+import { useState } from 'react'
 import {
   Integration,
   IntegrationAction,
@@ -12,6 +10,8 @@ import {
 } from '../../../../graphql'
 import { useGetIntegrationActions } from '../../../../src/services/IntegrationActionHooks'
 import { QueryMany } from '../../../../src/typings/GraphQL'
+import { RequestError } from '../../../common/RequestStates/RequestError'
+import { SelectWorkflowNode } from './SelectWorkflowNode'
 
 interface Props {
   integration: Integration
@@ -31,9 +31,9 @@ export const SelectWorkflowAction = (props: Props) => {
       deprecated: {
         is: false,
       },
+      ...(search ? { name: { iLike: search } } : {}),
     },
     sorting: [{ field: IntegrationActionSortFields.name, direction: SortDirection.ASC }],
-    search,
     paging: {
       first: 120,
     },

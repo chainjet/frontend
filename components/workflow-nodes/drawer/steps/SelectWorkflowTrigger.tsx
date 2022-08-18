@@ -1,7 +1,4 @@
-import React, { useState } from 'react'
-import { SelectWorkflowNode } from './SelectWorkflowNode'
-import { RequestError } from '../../../common/RequestStates/RequestError'
-import { useGetIntegrationTriggers } from '../../../../src/services/IntegrationTriggerHooks'
+import { useState } from 'react'
 import {
   Integration,
   IntegrationTrigger,
@@ -9,6 +6,9 @@ import {
   OperationCategory,
   SortDirection,
 } from '../../../../graphql'
+import { useGetIntegrationTriggers } from '../../../../src/services/IntegrationTriggerHooks'
+import { RequestError } from '../../../common/RequestStates/RequestError'
+import { SelectWorkflowNode } from './SelectWorkflowNode'
 
 interface Props {
   integration: Integration
@@ -28,9 +28,9 @@ export const SelectWorkflowTrigger = (props: Props) => {
       deprecated: {
         is: false,
       },
+      ...(search ? { name: { iLike: search } } : {}),
     },
     sorting: [{ field: IntegrationTriggerSortFields.name, direction: SortDirection.ASC }],
-    search,
     paging: {
       first: 120,
     },

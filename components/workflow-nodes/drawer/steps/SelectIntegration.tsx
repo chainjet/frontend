@@ -61,8 +61,8 @@ export const SelectIntegration = (props: Props) => {
           }
         : {}),
       ...(!search && categorySelected?.id ? { integrationCategories: { eq: categorySelected.id } } : {}),
+      ...(search ? { name: { iLike: search } } : {}),
     },
-    search,
     paging: {
       first: 120,
     },
