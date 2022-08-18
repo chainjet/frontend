@@ -60,7 +60,7 @@ export const SelectIntegration = (props: Props) => {
             },
           }
         : {}),
-      ...(categorySelected?.id ? { integrationCategories: { eq: categorySelected.id } } : {}),
+      ...(!search && categorySelected?.id ? { integrationCategories: { eq: categorySelected.id } } : {}),
     },
     search,
     paging: {
@@ -140,15 +140,6 @@ export const SelectIntegration = (props: Props) => {
         )}
 
         <Col span={hideCategories ? 24 : 20} style={{ padding: '0px 24px' }}>
-          {search && categorySelected && !integrations.length && (
-            <div style={{ marginBottom: 16 }}>
-              No results for &quot;<strong>{search}</strong>&quot; in <strong>{categorySelected.name}</strong>.
-              <Button type="link" onClick={() => setCategorySelected(null)}>
-                Search all categories
-              </Button>
-            </div>
-          )}
-
           <List
             dataSource={integrations}
             loading={loading}
