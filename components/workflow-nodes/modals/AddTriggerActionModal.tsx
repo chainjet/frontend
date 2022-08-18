@@ -1,6 +1,5 @@
-import React from 'react'
-import { List, Modal } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
+import { List, Modal } from 'antd'
 
 interface Props {
   visible: boolean
