@@ -1,3 +1,4 @@
+import { ArrowLeftOutlined } from '@ant-design/icons'
 import { Divider, Drawer, Steps } from 'antd'
 import { JSONSchema7 } from 'json-schema'
 import { useState } from 'react'
@@ -177,6 +178,15 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
     }
   }
 
+  const onPreviousStep = (index: number) => {
+    // if trying to go back to step 2 but auth is not needed, go back to 1
+    if (index === 2 && (!selectedIntegration?.integrationAccount?.id || selectedNode?.skipAuth)) {
+      setCurrentStep(1)
+    } else {
+      setCurrentStep(index)
+    }
+  }
+
   return (
     <Drawer
       title={title}
@@ -188,14 +198,29 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
     >
       <div className="hidden sm:block">
         <Steps size="small" current={currentStep}>
-          <Steps.Step title="Select Integration" description="" />
-          <Steps.Step title="Select Operation" description="" />
-          <Steps.Step title="Select Account" description="" />
-          <Steps.Step title="Set Inputs" description="" />
+          <Steps.Step title="Select Integration" description="" onStepClick={onPreviousStep} />
+          <Steps.Step
+            title="Select Operation"
+            description=""
+            {...(currentStep > 1 ? { onStepClick: onPreviousStep } : {})}
+          />
+          <Steps.Step
+            title="Select Account"
+            description=""
+            {...(currentStep > 2 ? { onStepClick: onPreviousStep } : {})}
+          />
+          <Steps.Step title="Set Inputs" description="" {...(currentStep > 3 ? { onStepClick: onPreviousStep } : {})} />
         </Steps>
 
         <Divider />
       </div>
+
+      {currentStep > 0 && (
+        <div className="flex items-center gap-1 mb-4 cursor-pointer" onClick={() => onPreviousStep(currentStep - 1)}>
+          <ArrowLeftOutlined />
+          <span className="font-bold">Back</span>
+        </div>
+      )}
 
       {renderCurrentStep(currentStep)}
     </Drawer>
