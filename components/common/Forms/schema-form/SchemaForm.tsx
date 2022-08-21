@@ -1,5 +1,5 @@
 import { cloneDeep } from '@apollo/client/utilities'
-import { UiSchema, withTheme } from '@rjsf/core'
+import { UiSchema, WidgetProps, withTheme } from '@rjsf/core'
 import { Button } from 'antd'
 import dayjs from 'dayjs'
 import localeData from 'dayjs/plugin/localeData'
@@ -11,7 +11,7 @@ import { jsonSchemaDefinitions } from '../../../../src/json-schema/jsonSchemaDef
 import { WorkflowOutput } from '../../../../src/typings/Workflow'
 import { isEmptyObj } from '../../../../src/utils/object.utils'
 import { extractUISchema, fixArraysWithoutItems, removeHiddenProperties } from '../../../../src/utils/schema.utils'
-import { TextWidgetFactory } from './TextWidgetFactory'
+import { BaseWidget } from './BaseWidget'
 import TitleField from './TitleField'
 require('./SchemaForm.less')
 
@@ -32,6 +32,27 @@ interface Props {
   onChange?: (inputs: OperationInputs) => any
   onSubmit: (inputs: OperationInputs) => any
   onError?: () => any
+}
+
+// Widgets must be defined outside SchemaForm to prevent rerendering issues
+export const TextWidget = (props: WidgetProps) => {
+  return <BaseWidget {...props} widgetType="text" />
+}
+
+export const PasswordWidget = (props: WidgetProps) => {
+  return <BaseWidget {...props} widgetType="password" />
+}
+
+export const URLWidget = (props: WidgetProps) => {
+  return <BaseWidget {...props} widgetType="url" />
+}
+
+export const EmailWidget = (props: WidgetProps) => {
+  return <BaseWidget {...props} widgetType="email" />
+}
+
+export const TextareaWidget = (props: WidgetProps) => {
+  return <BaseWidget {...props} widgetType="textarea" />
 }
 
 export const SchemaForm = (props: Props) => {
@@ -80,12 +101,13 @@ export const SchemaForm = (props: Props) => {
         schema={formSchema}
         uiSchema={uiSchema}
         formData={initialInputs}
+        formContext={{ outputs }}
         widgets={{
-          TextWidget: TextWidgetFactory({ outputs, widgetType: 'text' }),
-          PasswordWidget: TextWidgetFactory({ outputs, widgetType: 'password' }),
-          URLWidget: TextWidgetFactory({ outputs, widgetType: 'url' }),
-          EmailWidget: TextWidgetFactory({ outputs, widgetType: 'email' }),
-          TextareaWidget: TextWidgetFactory({ outputs, widgetType: 'textarea' }),
+          TextWidget,
+          PasswordWidget,
+          URLWidget,
+          EmailWidget,
+          TextareaWidget,
         }}
         fields={{
           TitleField,
