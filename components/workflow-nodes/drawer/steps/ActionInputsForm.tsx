@@ -99,6 +99,7 @@ export function ActionInputsForm(props: Props) {
   } = props
 
   const [inputs, setInputs] = useState(initialInputs)
+  const [dependencyInputs, setDependencyInputs] = useState(initialInputs)
   const { data, loading, error } = useGetIntegrationActionById(actionInputsFormFragment, {
     variables: {
       id: integrationActionId,
@@ -128,8 +129,14 @@ export function ActionInputsForm(props: Props) {
   })
 
   const integrationAction = data?.integrationAction
-  const asyncSchemaNames =
-    integrationAction?.schemaRequest?.['x-asyncSchemas']?.map((prop: { name: string }) => prop.name) ?? []
+  const asyncSchemas: Array<{ name: string; dependencies: string[] }> =
+    integrationAction?.schemaRequest?.['x-asyncSchemas']
+  const asyncSchemaNames = asyncSchemas?.map((prop: { name: string }) => prop.name) ?? []
+
+  // inputs based on dependencies
+  const dependencyKeys = asyncSchemas
+    ? Array.from(new Set(asyncSchemas.map((prop) => prop.dependencies).flat())).filter((key) => !!key)
+    : []
 
   const asyncSchemaRes = useGetAsyncSchemas({
     skip: !integrationAction || !accountCredentialId || !asyncSchemaNames.length,
@@ -137,13 +144,14 @@ export function ActionInputsForm(props: Props) {
       integrationId: integrationAction?.integration.id ?? '',
       accountCredentialId: accountCredentialId ?? '',
       names: asyncSchemaNames,
+      integrationActionId,
+      inputs: dependencyInputs,
     },
   })
 
   // TODO replace with x-asyncSchema
   const [getContractSchema, { data: contractSchemaData, loading: contractSchemaLoading, error: contractSchemaError }] =
     useLazyGetContractSchema()
-
   useEffect(() => {
     if (
       integrationAction?.key === 'readContract' &&
@@ -240,9 +248,9 @@ export function ActionInputsForm(props: Props) {
     schema = mergePropSchema(schema, asyncSchemaRes?.data?.asyncSchemas.schemas!)
   }
 
-  // TODO hack for Smart Contracts integration
-  //      there should be a property in the integration to define this requirement
   const onChange = (data: Record<string, any>) => {
+    // TODO hack for Smart Contracts integration
+    //      migrate it to use asyncSchemas
     if (
       data.network &&
       isAddress(data.address) &&
@@ -252,6 +260,19 @@ export function ActionInputsForm(props: Props) {
         ...inputs,
         ...data,
       })
+    }
+
+    // update inputs for asyncSchemas dependencies
+    let changed = false
+    let newDependencyInputs: Record<string, any> = {}
+    for (const key of dependencyKeys) {
+      if (data[key] !== dependencyInputs[key]) {
+        changed = true
+      }
+      newDependencyInputs[key] = data[key]
+    }
+    if (changed) {
+      setDependencyInputs(newDependencyInputs)
     }
   }
 
