@@ -27,7 +27,10 @@ export function fixArraysWithoutItems(schema: JSONSchema7): JSONSchema7 {
 export function mergePropSchema(schema: JSONSchema7, propSchemas: { [key: string]: JSONSchema7 }): JSONSchema7 {
   // The schema object can be received as read only, so we need to clone it
   schema = { ...schema }
-  schema.properties = schema.properties ? { ...schema.properties } : {}
+  if (schema.properties) {
+    // do not assign an empty object to an falsy schema.properties
+    schema.properties = { ...schema.properties }
+  }
 
   for (const propKey of Object.keys(propSchemas)) {
     for (const schemaKey of Object.keys(schema?.properties ?? {})) {
