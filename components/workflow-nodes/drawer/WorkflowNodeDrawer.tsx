@@ -155,6 +155,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
           return (
             <TriggerInputsForm
               triggerId={selectedNode.id}
+              accountCredentialId={selectedCredentialID}
               initialInputs={initialNodeInputs || {}}
               extraSchemaProps={extraSchemaProps}
               onSubmitOperationInputs={(inputs) => onSubmitInputs(inputs, selectedNode, selectedCredentialID)}

@@ -4,10 +4,12 @@ import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
 import { useEffect, useState } from 'react'
 import { jsonSchemaDefinitions } from '../../../../src/json-schema/jsonSchemaDefinitions'
+import { useGetAsyncSchemas } from '../../../../src/services/AsyncSchemaHooks'
 import { useGetIntegrationTriggerById } from '../../../../src/services/IntegrationTriggerHooks'
 import { useLazyGetContractSchema } from '../../../../src/services/SmartContractHooks'
 import { retrocycle } from '../../../../src/utils/json.utils'
 import { isEmptyObj } from '../../../../src/utils/object.utils'
+import { mergePropSchema } from '../../../../src/utils/schema.utils'
 import { SchemaForm } from '../../../common/Forms/schema-form/SchemaForm'
 import { DisplayError } from '../../../common/RequestStates/DisplayError'
 import { Loading } from '../../../common/RequestStates/Loading'
@@ -17,6 +19,7 @@ type TriggerInputs = Record<string, any>
 
 interface Props {
   triggerId: string
+  accountCredentialId: string | undefined
   initialInputs: TriggerInputs
   extraSchemaProps?: JSONSchema7
   onSubmitOperationInputs: (inputs: TriggerInputs) => any
@@ -28,11 +31,14 @@ const triggerInputsFormFragment = gql`
     key
     schemaRequest
     instant
+    integration {
+      id
+    }
   }
 `
 
 export function TriggerInputsForm(props: Props) {
-  const { triggerId, extraSchemaProps, onSubmitOperationInputs, initialInputs } = props
+  const { triggerId, extraSchemaProps, onSubmitOperationInputs, accountCredentialId, initialInputs } = props
   const { data, loading, error } = useGetIntegrationTriggerById(triggerInputsFormFragment, {
     variables: {
       id: triggerId,
@@ -41,8 +47,28 @@ export function TriggerInputsForm(props: Props) {
   const [getContractSchema, { data: contractSchemaData, loading: contractSchemaLoading, error: contractSchemaError }] =
     useLazyGetContractSchema()
   const [inputs, setInputs] = useState(initialInputs)
+  const [dependencyInputs, setDependencyInputs] = useState(initialInputs)
 
   const integrationTrigger = data?.integrationTrigger
+  const asyncSchemas: Array<{ name: string; dependencies: string[] }> =
+    integrationTrigger?.schemaRequest?.['x-asyncSchemas']
+  const asyncSchemaNames = asyncSchemas?.map((prop: { name: string }) => prop.name) ?? []
+
+  // inputs based on dependencies
+  const dependencyKeys = asyncSchemas
+    ? Array.from(new Set(asyncSchemas.map((prop) => prop.dependencies).flat())).filter((key) => !!key)
+    : []
+
+  const asyncSchemaRes = useGetAsyncSchemas({
+    skip: !integrationTrigger?.id || !asyncSchemaNames.length,
+    variables: {
+      integrationId: integrationTrigger?.integration.id ?? '',
+      accountCredentialId: accountCredentialId ?? '',
+      names: asyncSchemaNames,
+      integrationTriggerId: integrationTrigger?.id,
+      inputs: dependencyInputs,
+    },
+  })
 
   useEffect(() => {
     // Initialize chainjet_schedule if it's not defined
@@ -116,9 +142,13 @@ export function TriggerInputsForm(props: Props) {
     }
   }
 
-  // TODO hack for Smart Contracts integration
-  //      there should be a property in the integration to define this requirement
+  if (!isEmptyObj(asyncSchemaRes?.data?.asyncSchemas.schemas ?? {})) {
+    schema = mergePropSchema(schema, asyncSchemaRes?.data?.asyncSchemas.schemas!)
+  }
+
   const onChange = (data: Record<string, any>) => {
+    // TODO hack for Smart Contracts integration
+    //      migrate it to use asyncSchemas
     if (
       data.network &&
       isAddress(data.address) &&
@@ -128,6 +158,19 @@ export function TriggerInputsForm(props: Props) {
         ...inputs,
         ...data,
       })
+    }
+
+    // update inputs for asyncSchemas dependencies
+    let changed = false
+    let newDependencyInputs: Record<string, any> = {}
+    for (const key of dependencyKeys) {
+      if (data[key] !== dependencyInputs[key]) {
+        changed = true
+      }
+      newDependencyInputs[key] = data[key]
+    }
+    if (changed) {
+      setDependencyInputs(newDependencyInputs)
     }
   }
 

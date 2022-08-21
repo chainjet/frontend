@@ -139,7 +139,7 @@ export function ActionInputsForm(props: Props) {
     : []
 
   const asyncSchemaRes = useGetAsyncSchemas({
-    skip: !integrationAction || !accountCredentialId || !asyncSchemaNames.length,
+    skip: !integrationAction || !asyncSchemaNames.length,
     variables: {
       integrationId: integrationAction?.integration.id ?? '',
       accountCredentialId: accountCredentialId ?? '',
