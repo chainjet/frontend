@@ -32,14 +32,16 @@ export const BaseWidget = ({
   placeholder,
   readonly,
   // required,
-  schema,
+  // schema,
   value,
   widgetType,
 }: WidgetProps & { widgetType: WidgetType }) => {
   const [inputValue, setInputValue] = useState(value)
   const [addingOutputs, setAddingOutputs] = useState(false)
   const { outputs, readonlyAsDisabled = true } = formContext
-  const isNumberInput = schema.type === 'number' || schema.type === 'integer'
+
+  // inputs with type number don't allow for output interpolation
+  const isNumberInput = false // schema.type === 'number' || schema.type === 'integer'
 
   const parseValue = (value: string | number | boolean | null) => (isNumberInput ? Number(value) || null : value)
 
