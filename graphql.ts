@@ -488,7 +488,7 @@ export interface CreateOneAccountCredentialInput {
 export interface CreateAccountCredentialInput {
     integrationAccount: string;
     name: string;
-    credentials?: Nullable<JSONObject>;
+    credentialInputs?: Nullable<JSONObject>;
     fields?: Nullable<JSONObject>;
 }
 
@@ -503,7 +503,7 @@ export interface UpdateOneAccountCredentialInput {
 
 export interface UpdateAccountCredentialInput {
     name?: Nullable<string>;
-    credentials?: Nullable<JSONObject>;
+    credentialInputs?: Nullable<JSONObject>;
     fields?: Nullable<JSONObject>;
 }
 
@@ -1271,7 +1271,7 @@ export interface IQuery {
     workflowRunAction(id: string): WorkflowRunAction | Promise<WorkflowRunAction>;
     workflowRunActions(paging?: Nullable<CursorPaging>, filter?: Nullable<WorkflowRunActionFilter>, sorting?: Nullable<WorkflowRunActionSort[]>): WorkflowRunActionConnection | Promise<WorkflowRunActionConnection>;
     contractSchema(chainId: number, address: string, type: string): ContractSchema | Promise<ContractSchema>;
-    asyncSchemas(integrationId: string, accountCredentialId: string, names: string[], integrationTriggerId?: Nullable<string>, integrationActionId?: Nullable<string>): AsyncSchema | Promise<AsyncSchema>;
+    asyncSchemas(integrationId: string, accountCredentialId: string, names: string[], inputs?: Nullable<JSONObject>, integrationTriggerId?: Nullable<string>, integrationActionId?: Nullable<string>): AsyncSchema | Promise<AsyncSchema>;
 }
 
 export interface IMutation {

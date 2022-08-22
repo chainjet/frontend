@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react'
 import { gql } from '@apollo/client'
-import { Loading } from '../../../common/RequestStates/Loading'
-import { RequestError } from '../../../common/RequestStates/RequestError'
 import { Button, Select, Typography } from 'antd'
-import { SchemaForm } from '../../../common/Forms/schema-form/SchemaForm'
+import { useEffect, useState } from 'react'
 import { IntegrationAccount } from '../../../../graphql'
 import {
   useCreateOneAccountCredential,
   useGetAccountCredentials,
 } from '../../../../src/services/AccountCredentialHooks'
+import { SchemaForm } from '../../../common/Forms/schema-form/SchemaForm'
+import { Loading } from '../../../common/RequestStates/Loading'
+import { RequestError } from '../../../common/RequestStates/RequestError'
 
 interface Props {
   integrationAccount: IntegrationAccount
@@ -80,7 +80,7 @@ export const SelectCredentials = (props: Props) => {
           accountCredential: {
             name,
             integrationAccount: integrationAccount.id,
-            credentials: credentialInputs,
+            credentialInputs,
             fields: exposedInputs,
           },
         },
