@@ -268,7 +268,7 @@ export function ActionInputsForm(props: Props) {
 
     // x-asyncSchema props with any = true refresh properties on any change
     // for performance we are only doing this for selects
-    const hasPropWithAnyEnabled = asyncSchemas.some((prop) => prop.any)
+    const hasPropWithAnyEnabled = asyncSchemas?.some((prop) => prop.any)
 
     const selectKeys = Object.keys(data).filter((key) => isSelectInput(key, schema))
 
