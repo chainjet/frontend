@@ -12,7 +12,7 @@ import { useGetWorkflowTriggerById } from '../../../../src/services/WorkflowTrig
 import { WorkflowOutput } from '../../../../src/typings/Workflow'
 import { retrocycle } from '../../../../src/utils/json.utils'
 import { isEmptyObj } from '../../../../src/utils/object.utils'
-import { mergePropSchema } from '../../../../src/utils/schema.utils'
+import { getSchemaDefaults, isSelectInput, mergePropSchema } from '../../../../src/utils/schema.utils'
 import { SchemaForm } from '../../../common/Forms/schema-form/SchemaForm'
 import { DisplayError } from '../../../common/RequestStates/DisplayError'
 import { Loading } from '../../../common/RequestStates/Loading'
@@ -127,19 +127,14 @@ export function ActionInputsForm(props: Props) {
       id: accountCredentialId ?? '',
     },
   })
-
   const integrationAction = data?.integrationAction
-  const asyncSchemas: Array<{ name: string; dependencies: string[] }> =
+
+  const asyncSchemas: Array<{ name: string; dependencies?: string[]; any?: boolean }> =
     integrationAction?.schemaRequest?.['x-asyncSchemas']
   const asyncSchemaNames = asyncSchemas?.map((prop: { name: string }) => prop.name) ?? []
 
-  // inputs based on dependencies
-  const dependencyKeys = asyncSchemas
-    ? Array.from(new Set(asyncSchemas.map((prop) => prop.dependencies).flat())).filter((key) => !!key)
-    : []
-
   const asyncSchemaRes = useGetAsyncSchemas({
-    skip: !integrationAction || !asyncSchemaNames.length,
+    skip: !integrationAction?.schemaRequest || !asyncSchemaNames.length,
     variables: {
       integrationId: integrationAction?.integration.id ?? '',
       accountCredentialId: accountCredentialId ?? '',
@@ -148,6 +143,11 @@ export function ActionInputsForm(props: Props) {
       inputs: dependencyInputs,
     },
   })
+
+  // add schema defaults to dependency inputs
+  useEffect(() => {
+    setDependencyInputs(deepmerge(getSchemaDefaults(integrationAction?.schemaRequest ?? {}), initialInputs))
+  }, [initialInputs, integrationAction?.schemaRequest])
 
   // TODO replace with x-asyncSchema
   const [getContractSchema, { data: contractSchemaData, loading: contractSchemaLoading, error: contractSchemaError }] =
@@ -248,6 +248,10 @@ export function ActionInputsForm(props: Props) {
     schema = mergePropSchema(schema, asyncSchemaRes?.data?.asyncSchemas.schemas!)
   }
 
+  if (contractSchemaData?.contractSchema?.schema) {
+    schema = deepmerge(schema, contractSchemaData.contractSchema.schema ?? {})
+  }
+
   const onChange = (data: Record<string, any>) => {
     // TODO hack for Smart Contracts integration
     //      migrate it to use asyncSchemas
@@ -262,23 +266,37 @@ export function ActionInputsForm(props: Props) {
       })
     }
 
+    // x-asyncSchema props with any = true refresh properties on any change
+    // for performance we are only doing this for selects
+    const hasPropWithAnyEnabled = asyncSchemas.some((prop) => prop.any)
+
+    const selectKeys = Object.keys(data).filter((key) => isSelectInput(key, schema))
+
+    // keys with at least one dependency listening
+    const dependencyKeys = asyncSchemas
+      ? (Array.from(new Set(asyncSchemas.map((prop) => prop.dependencies).flat())).filter((key) => !!key) as string[])
+      : []
+
+    // keys that if updated, we refresh asyncSchemas
+    const keyChanges = hasPropWithAnyEnabled ? selectKeys : dependencyKeys
+
     // update inputs for asyncSchemas dependencies
+    // TODO wait ~500ms for the user to end typing
     let changed = false
-    let newDependencyInputs: Record<string, any> = {}
-    for (const key of dependencyKeys) {
+    let newInputs: Record<string, any> = { ...dependencyInputs }
+    for (const key of keyChanges) {
       if (data[key] !== dependencyInputs[key]) {
         changed = true
       }
-      newDependencyInputs[key] = data[key]
+      newInputs[key] = data[key]
     }
     if (changed) {
-      setDependencyInputs(newDependencyInputs)
+      setDependencyInputs(newInputs)
+      setInputs(newInputs)
     }
   }
 
-  if (contractSchemaData?.contractSchema?.schema) {
-    schema = deepmerge(schema, contractSchemaData.contractSchema.schema ?? {})
-  }
+  const isLoading = asyncSchemaRes?.loading || contractSchemaLoading
 
   return (
     <>
@@ -286,10 +304,10 @@ export function ActionInputsForm(props: Props) {
         schema={schema}
         initialInputs={inputs}
         parentOutputs={parentOutputs}
+        loadingSchema={isLoading}
         onSubmit={onSubmitActionInputs}
         onChange={onChange}
       />
-      {contractSchemaLoading && <Loading />}
       {contractSchemaError && <DisplayError error={contractSchemaError} />}
     </>
   )

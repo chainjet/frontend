@@ -11,6 +11,7 @@ import { jsonSchemaDefinitions } from '../../../../src/json-schema/jsonSchemaDef
 import { WorkflowOutput } from '../../../../src/typings/Workflow'
 import { isEmptyObj } from '../../../../src/utils/object.utils'
 import { extractUISchema, fixArraysWithoutItems, removeHiddenProperties } from '../../../../src/utils/schema.utils'
+import { Loading } from '../../RequestStates/Loading'
 import { BaseWidget } from './BaseWidget'
 import TitleField from './TitleField'
 require('./SchemaForm.less')
@@ -29,6 +30,7 @@ interface Props {
   initialInputs: OperationInputs
   parentOutputs?: WorkflowOutput[]
   loading?: boolean
+  loadingSchema?: boolean
   onChange?: (inputs: OperationInputs) => any
   onSubmit: (inputs: OperationInputs) => any
   onError?: () => any
@@ -56,7 +58,7 @@ export const TextareaWidget = (props: WidgetProps) => {
 }
 
 export const SchemaForm = (props: Props) => {
-  const { schema, initialInputs, parentOutputs, loading, onChange, onSubmit, onError } = props
+  const { schema, initialInputs, parentOutputs, loading, loadingSchema, onChange, onSubmit, onError } = props
 
   // Prepare Json Schema
   let formSchema = cloneDeep(schema) ?? {}
@@ -125,9 +127,13 @@ export const SchemaForm = (props: Props) => {
           return errors.filter((error) => !error.property.match(/\[\d+\]/))
         }}
       >
-        <Button type="primary" htmlType="submit" loading={loading}>
-          Submit
-        </Button>
+        {loadingSchema ? (
+          <Loading />
+        ) : (
+          <Button type="primary" htmlType="submit" loading={loading}>
+            Submit
+          </Button>
+        )}
       </ThemedForm>
     </>
   )

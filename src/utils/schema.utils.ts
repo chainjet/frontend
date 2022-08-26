@@ -25,21 +25,23 @@ export function fixArraysWithoutItems(schema: JSONSchema7): JSONSchema7 {
 }
 
 export function mergePropSchema(schema: JSONSchema7, propSchemas: { [key: string]: JSONSchema7 }): JSONSchema7 {
-  // The schema object can be received as read only, so we need to clone it
+  // The javascript object can be received as read only, so we need to clone it
   schema = { ...schema }
   if (schema.properties) {
     // do not assign an empty object to an falsy schema.properties
     schema.properties = { ...schema.properties }
+  } else {
+    return schema
   }
 
   for (const propKey of Object.keys(propSchemas)) {
-    for (const schemaKey of Object.keys(schema?.properties ?? {})) {
-      if (propKey === schemaKey) {
-        schema.properties![schemaKey] = deepmerge(schema.properties![schemaKey] as JSONSchema7, propSchemas[propKey])
-      }
+    if (schema.properties[propKey] && typeof schema.properties[propKey] === 'object') {
+      schema.properties[propKey] = deepmerge(schema.properties[propKey] as JSONSchema7, propSchemas[propKey])
+    } else {
+      schema.properties[propKey] = propSchemas[propKey]
     }
   }
-  return applySchemaChangeRecursively(schema, (schemaRec) => mergePropSchema(schemaRec, propSchemas))
+  return schema
 }
 
 export function extractUISchema(schema: JSONSchema7): UiSchema {
@@ -159,4 +161,34 @@ function applySchemaChangeRecursively<T>(
   }
 
   return schema
+}
+
+/**
+ * Returns an object with the default values for a schema
+ * // TODO only works for first level keys in the object
+ */
+export function getSchemaDefaults(schema: JSONSchema7): Record<string, any> {
+  if (schema.type === 'object') {
+    return Object.entries(schema.properties ?? {}).reduce((prev: Record<string, any>, [key, value]) => {
+      if (value && typeof value === 'object' && value.default) {
+        prev[key] = value.default
+      }
+      return prev
+    }, {})
+  }
+  return {}
+}
+
+/**
+ * Checks whether a given key is a select on the schema properties
+ */
+export function isSelectInput(key: string, schema: JSONSchema7): boolean {
+  if (!schema.properties) {
+    return false
+  }
+  const prop = schema.properties[key]
+  if (!prop || typeof prop !== 'object' || prop.type !== 'string') {
+    return false
+  }
+  return !!prop.enum || !!prop.oneOf
 }
