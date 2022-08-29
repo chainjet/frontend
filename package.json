@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "link-types": "rm -f graphql.ts && cp ../backend/generated/graphql.ts graphql.ts",
+    "link-types": "rm -f graphql.ts && cp ../platform/generated/graphql.ts graphql.ts",
     "dev": "yarn link-types && next dev",
     "build": "next build",
     "start": "next start",
@@ -86,7 +86,7 @@
     "sharp": "0.30.7",
     "typescript": "4.7.4"
   },
-  "graphql": "../backend/generated/schema.graphql",
+  "graphql": "../platform/generated/schema.graphql",
   "jest": {
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/tests/__mocks__/fileMock.js",
