@@ -1,42 +1,23 @@
-# Ant Design Pro Layout example
+<p align="center">
+  <a href="https://chainjet.io" target="blank"><img src="https://chainjet.io/logo.svg" width="320" alt="ChainJet Logo" /></a>
+</p>
+  
+<p align="center">A workflow automation platform specialized on blockchain, with more than 300 integrations.</p>
+<p align="center">
+  <a href="https://twitter.com/chainjetio"><img src="https://img.shields.io/twitter/follow/chainjetio.svg?style=social&label=Follow"></a>
+  <a href="https://discord.gg/QFnSwqj9YH" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
+</p>
 
-This example shows how to use Next.js along with [Ant Design Pro Layout](https://github.com/ant-design/ant-design-pro-layout) of React. This is intended to show the integration of this UI toolkit with the Framework.
+## Description
 
-## Deploy your own
+This project contains the frontend of [ChainJet](https://chainjet.io).
 
-Deploy the example using [Vercel](https://vercel.com):
+## Demo
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/vercel/next.js/tree/canary/examples/with-ant-design-pro-layout-less)
+[:tv: A short video (~3 mins)](https://www.youtube.com/watch?v=zCaqp2JnFA0) showing how to use ChainJet.
 
-## How to use
+## Stay in touch
 
-### Using `create-next-app`
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
-
-```bash
-npx create-next-app --example with-ant-design-pro-layout-less with-ant-design-app
-# or
-yarn create next-app --example with-ant-design-pro-layout-less with-ant-design-app
-```
-
-### Download manually
-
-Download the example:
-
-```bash
-curl https://codeload.github.com/vercel/next.js/tar.gz/canary | tar -xz --strip=2 next.js-canary/examples/with-ant-design-pro-layout-less
-cd with-ant-design-pro-layout-less
-```
-
-Install it and run:
-
-```bash
-npm install
-npm run dev
-# or
-yarn
-yarn dev
-```
-
-Deploy it to the cloud with [Vercel](https://vercel.com/import?filter=next.js&utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+- Website - [https://chainjet.io](https://chainjet.io)
+- Twitter - [@chainjetio](https://twitter.com/chainjetio)
+- Discord - [ChainJet Community](https://discord.gg/QFnSwqj9YH)
