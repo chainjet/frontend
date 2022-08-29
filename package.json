@@ -63,6 +63,7 @@
     "webpack-filter-warnings-plugin": "1.2.1"
   },
   "devDependencies": {
+    "@blunck/next-html": "^1.0.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.0.2",
     "@types/classnames": "^2.2.10",
