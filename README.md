@@ -10,11 +10,19 @@
 
 ## Description
 
-This project contains the frontend of [ChainJet](https://chainjet.io).
+[ChainJet](https://chainjet.io) is a workflow automation platform specialized in blockchain and cloud infrastructure.
 
 ## Demo
 
 [:tv: A short video (~3 mins)](https://www.youtube.com/watch?v=zCaqp2JnFA0) showing how to use ChainJet.
+
+## Cloud solution
+
+:cloud: We offer ChainJet as a managed cloud service, and we have a **free plan**. Get started [here](https://chainjet.io).
+
+## Self-hosted solution
+
+See installation instructions [here](https://github.com/chainjet/platform#self-hosted-solution).
 
 ## Stay in touch
 
