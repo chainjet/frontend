@@ -3,6 +3,7 @@ import { Card, List, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useGetProjects } from '../../../src/services/ProjectHooks'
 import { Loading } from '../../common/RequestStates/Loading'
+import { EventNotificationStep } from './EventNotificationStep'
 import { NftNotificationStep } from './NftNotificationStep'
 import { TokenNotificationStep } from './TokenNotificationStep'
 import { TransactionNotificationStep } from './TransactionNotificationStep'
@@ -48,12 +49,12 @@ export function NotificationWizard() {
         description: 'A notification is sent every time a transaction is made on a given address.',
         component: <TransactionNotificationStep projects={projects ?? []} />,
       },
-      // {
-      //   id: 'event',
-      //   name: 'Event emitted by a smart contract',
-      //   description: 'A notification is sent every time a given smart contract emits an event.',
-      //   component: <TokenNotificationStep projects={projects ?? []} />, // TODO
-      // },
+      {
+        id: 'event',
+        name: 'Event emitted by a smart contract',
+        description: 'A notification is sent every time a given smart contract emits an event.',
+        component: <EventNotificationStep projects={projects ?? []} />,
+      },
     ],
     [projects],
   )

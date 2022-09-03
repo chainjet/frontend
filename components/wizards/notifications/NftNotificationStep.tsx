@@ -13,14 +13,20 @@ export function NftNotificationStep({ projects }: { projects: Project[] }) {
   const [credentialsId, setCredentialsId] = useState<string>()
   const [notificationIntegration, setNotificationIntegration] = useState<Integration>()
   const [error, setError] = useState<string | null>(null)
-  const { createWorflowWithOperations, workflow, loading, error: createError } = useCreateWorkflowWithOperations()
+  const {
+    createWorflowWithOperations,
+    workflow,
+    workflowActions,
+    loading,
+    error: createError,
+  } = useCreateWorkflowWithOperations()
   const router = useRouter()
 
   useEffect(() => {
-    if (workflow?.slug) {
+    if (workflow?.slug && workflowActions?.length) {
       router.push(`/${workflow.slug}`)
     }
-  }, [router, workflow])
+  }, [router, workflow, workflowActions])
 
   const schema: JSONSchema7 = {
     type: 'object',

@@ -1,14 +1,31 @@
+import { gql } from '@apollo/client'
 import { Alert, Button } from 'antd'
-import { JSONSchema7 } from 'json-schema'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { Integration, Project } from '../../../graphql'
+import { ChainId, NETWORK } from '../../../src/constants/networks'
+import { useGetIntegrations } from '../../../src/services/IntegrationHooks'
+import { useGetIntegrationTriggers } from '../../../src/services/IntegrationTriggerHooks'
 import { useCreateWorkflowWithOperations } from '../../../src/services/WizardHooks'
-import { getEtherscanNetworkSchema, getExplorerUrlForIntegration } from '../../../src/utils/blockchain.utils'
-import { SchemaForm } from '../../common/Forms/schema-form/SchemaForm'
+import { Loading } from '../../common/RequestStates/Loading'
+import { TriggerInputsForm } from '../../workflow-nodes/drawer/steps/TriggerInputsForm'
 import { IntegrationNotificationStep } from './IntegrationNotificationStep'
 
-export function TransactionNotificationStep({ projects }: { projects: Project[] }) {
+const integrationFragment = gql`
+  fragment EventNotificationStepIntegrationFragment on Integration {
+    id
+    key
+  }
+`
+
+const integrationTriggerFragment = gql`
+  fragment EventNotificationStepIntegrationTriggerFragment on IntegrationTrigger {
+    id
+    key
+  }
+`
+
+export function EventNotificationStep({ projects }: { projects: Project[] }) {
   const [inputs, setInputs] = useState<Record<string, any>>({})
   const [credentialsId, setCredentialsId] = useState<string>()
   const [notificationIntegration, setNotificationIntegration] = useState<Integration>()
@@ -21,6 +38,27 @@ export function TransactionNotificationStep({ projects }: { projects: Project[] 
     error: createError,
   } = useCreateWorkflowWithOperations()
   const router = useRouter()
+  const { data: integrationData, loading: integrationLoading } = useGetIntegrations(integrationFragment, {
+    variables: {
+      filter: {
+        key: { eq: 'blockchain' },
+      },
+    },
+  })
+  const integration = integrationData?.integrations?.edges?.[0]?.node
+  const { data: integrationTriggerData, loading: integrationTriggerLoading } = useGetIntegrationTriggers(
+    integrationTriggerFragment,
+    {
+      skip: !integration?.id,
+      variables: {
+        filter: {
+          integration: { eq: integration?.id },
+          key: { eq: 'newEvent' },
+        },
+      },
+    },
+  )
+  const integrationTrigger = integrationTriggerData?.integrationTriggers?.edges?.[0]?.node
 
   useEffect(() => {
     if (workflow?.slug && workflowActions?.length) {
@@ -28,39 +66,16 @@ export function TransactionNotificationStep({ projects }: { projects: Project[] 
     }
   }, [router, workflow, workflowActions])
 
-  const schema: JSONSchema7 = {
-    type: 'object',
-    required: projects.length > 1 ? ['project', 'network', 'address'] : ['network', 'address'],
-    properties: {
-      ...(projects.length > 1
-        ? {
-            project: {
-              title: 'Project',
-              type: 'string',
-              default: projects[0].id,
-              oneOf: projects.map((project) => ({ title: project.name, const: project.id })),
-            },
-          }
-        : {}),
-      network: getEtherscanNetworkSchema(),
-      address: {
-        title: 'Receiver address',
-        description: 'The address to get the transactions for',
-        type: 'string',
-      },
-    },
-  }
-
   const getWorkflowActionData = (key: string) => {
     switch (key) {
       case 'email':
         return {
           key: 'sendEmailToYourself',
           inputs: {
-            subject: `New transaction on ${inputs.address}`,
+            subject: `New {{trigger.eventName}} on ${inputs.address}`,
             body:
-              `There was a transaction on an address you are watching.\n\n` +
-              `View it on ${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
+              `There was a new {{trigger.eventName}} event on an address you are watching.\n\n` +
+              `View it on ${NETWORK[inputs.network as ChainId]?.explorerUrl}/tx/{{trigger.transactionHash}}`,
           },
         }
       case 'discord':
@@ -68,7 +83,9 @@ export function TransactionNotificationStep({ projects }: { projects: Project[] 
           key: 'sendMessage',
           inputs: {
             channelId: inputs.channelId,
-            content: `New transaction:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
+            content:
+              `New {{trigger.eventName}}:\n` +
+              `${NETWORK[inputs.network as ChainId]?.explorerUrl}/tx/{{trigger.transactionHash}}`,
           },
           credentialsId,
         }
@@ -77,7 +94,9 @@ export function TransactionNotificationStep({ projects }: { projects: Project[] 
           key: 'telegram_bot_api-send-text-message-or-reply',
           inputs: {
             chatId: inputs.chatId,
-            text: `New transaction:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
+            text:
+              `New {{trigger.eventName}}:\n` +
+              `${NETWORK[inputs.network as ChainId]?.explorerUrl}/tx/{{trigger.transactionHash}}`,
           },
         }
     }
@@ -87,11 +106,13 @@ export function TransactionNotificationStep({ projects }: { projects: Project[] 
   const onIntegrationChange = (integration: Integration, credentialsId?: string, extraInputs?: Record<string, any>) => {
     setNotificationIntegration(integration)
     setCredentialsId(credentialsId)
+    setChangedInputs(extraInputs ?? {})
+  }
 
-    // check if inputs have changed to avoid inifinte re-render
-    const inputsChanged = Object.keys(extraInputs ?? {}).some((key) => extraInputs![key] !== inputs[key])
+  const setChangedInputs = (changedInputs: Record<string, any>) => {
+    const inputsChanged = Object.keys(changedInputs).some((key) => changedInputs[key] !== inputs[key])
     if (inputsChanged) {
-      setInputs({ ...inputs, ...(extraInputs ?? {}) })
+      setInputs({ ...inputs, ...changedInputs })
     }
   }
 
@@ -107,19 +128,15 @@ export function TransactionNotificationStep({ projects }: { projects: Project[] 
     try {
       await createWorflowWithOperations({
         projectId: inputs.project ?? projects[0].id,
-        workflowName: 'Send notification when a transaction occurs',
+        workflowName: 'Send notification when an event is emitted',
         integration: {
-          key: inputs.network,
+          key: 'blockchain',
         },
         trigger: {
-          key: 'listTransactions',
+          key: 'newEvent',
           inputs: {
             ...inputs,
             project: undefined,
-          },
-          schedule: {
-            frequency: 'interval',
-            interval: 900,
           },
         },
         actions: [getWorkflowActionData(notificationIntegration.key)],
@@ -129,11 +146,20 @@ export function TransactionNotificationStep({ projects }: { projects: Project[] 
     }
   }
 
+  if (!integrationTrigger) {
+    return <Loading />
+  }
+
   return (
     <>
-      <div className="mb-8">
-        <SchemaForm schema={schema} initialInputs={inputs} hideSubmit onChange={setInputs} onSubmit={onFormSubmit} />
-      </div>
+      <TriggerInputsForm
+        triggerId={integrationTrigger.id}
+        accountCredentialId={undefined}
+        initialInputs={inputs}
+        onChange={setChangedInputs}
+        onSubmitOperationInputs={onFormSubmit}
+        hideSubmit
+      />
       <div className="mb-8">
         <IntegrationNotificationStep onIntegrationChange={onIntegrationChange} />
       </div>

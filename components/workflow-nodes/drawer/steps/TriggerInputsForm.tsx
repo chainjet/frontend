@@ -1,8 +1,11 @@
 import { gql } from '@apollo/client'
 import { isAddress } from '@ethersproject/address'
+import { deepStrictEqual } from 'assert'
 import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
+import _ from 'lodash'
 import { useEffect, useState } from 'react'
+import { isDeepStrictEqual } from 'util'
 import { jsonSchemaDefinitions } from '../../../../src/json-schema/jsonSchemaDefinitions'
 import { useGetAsyncSchemas } from '../../../../src/services/AsyncSchemaHooks'
 import { useGetIntegrationTriggerById } from '../../../../src/services/IntegrationTriggerHooks'
@@ -23,6 +26,8 @@ interface Props {
   initialInputs: TriggerInputs
   extraSchemaProps?: JSONSchema7
   onSubmitOperationInputs: (inputs: TriggerInputs) => any
+  onChange?: (inputs: Record<string, any>) => any
+  hideSubmit?: boolean
 }
 
 const triggerInputsFormFragment = gql`
@@ -37,8 +42,15 @@ const triggerInputsFormFragment = gql`
   }
 `
 
-export function TriggerInputsForm(props: Props) {
-  const { triggerId, extraSchemaProps, onSubmitOperationInputs, accountCredentialId, initialInputs } = props
+export function TriggerInputsForm({
+  triggerId,
+  accountCredentialId,
+  initialInputs,
+  extraSchemaProps,
+  onSubmitOperationInputs,
+  onChange,
+  hideSubmit,
+}: Props) {
   const { data, loading, error } = useGetIntegrationTriggerById(triggerInputsFormFragment, {
     variables: {
       id: triggerId,
@@ -64,6 +76,11 @@ export function TriggerInputsForm(props: Props) {
       inputs: dependencyInputs,
     },
   })
+
+  // update inputs if initial inputs has an external change
+  useEffect(() => {
+    setInputs(initialInputs)
+  }, [initialInputs])
 
   // add schema defaults to dependency inputs
   useEffect(() => {
@@ -150,7 +167,7 @@ export function TriggerInputsForm(props: Props) {
     schema = deepmerge(schema, contractSchemaData.contractSchema.schema ?? {})
   }
 
-  const onChange = (data: Record<string, any>) => {
+  const onFormChange = (data: Record<string, any>) => {
     // TODO hack for Smart Contracts integration
     //      migrate it to use asyncSchemas
     if (
@@ -192,11 +209,20 @@ export function TriggerInputsForm(props: Props) {
       setDependencyInputs(newInputs)
       setInputs(newInputs)
     }
+
+    // trigger onChange for any change
+    onChange?.(data)
   }
 
   return (
     <>
-      <SchemaForm schema={schema} initialInputs={inputs} onSubmit={onSubmitOperationInputs} onChange={onChange} />
+      <SchemaForm
+        schema={schema}
+        initialInputs={inputs}
+        onSubmit={onSubmitOperationInputs}
+        onChange={onFormChange}
+        hideSubmit={hideSubmit}
+      />
       {contractSchemaLoading && <Loading />}
       {contractSchemaError && <DisplayError error={contractSchemaError} />}
     </>
