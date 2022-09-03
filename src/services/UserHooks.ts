@@ -1,8 +1,9 @@
 import { gql, gql as graphqlTag } from '@apollo/client'
 import { MutationFunctionOptions } from '@apollo/react-common'
 import { DocumentNode, QueryHookOptions, useMutation, useQuery } from '@apollo/react-hooks'
+import { useRouter } from 'next/router'
 import { destroyCookie as nookiesDestroyCookie, setCookie } from 'nookies'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { ViewerContext } from '../../components/providers/ViewerContextProvider'
 import { UpdateOneUserInput, User } from '../../graphql'
 import { refreshApolloClient } from '../apollo'
@@ -12,6 +13,19 @@ import { TOKEN_COOKIE_NAME, USER_COOKIE_NAME } from './AuthService'
 
 export function useViewer() {
   return useContext(ViewerContext)
+}
+
+export function useRedirectGuests() {
+  const { viewer } = useViewer()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!viewer) {
+      router.push('/login')
+    }
+  }, [router, viewer])
+
+  return { viewer }
 }
 
 export function useGetViewer(fragment: DocumentNode, options: QueryHookOptions<{ viewer: User }, QueryById>) {
