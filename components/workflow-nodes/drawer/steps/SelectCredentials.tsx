@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 import { Button, Select, Typography } from 'antd'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { IntegrationAccount } from '../../../../graphql'
 import {
   useCreateOneAccountCredential,
@@ -13,6 +13,9 @@ import { RequestError } from '../../../common/RequestStates/RequestError'
 interface Props {
   integrationAccount: IntegrationAccount
   onCredentialsSelected: (id: string) => any
+  hideNameInput?: boolean
+  hideSubmitButton?: boolean
+  autoConnectIfNoAccount?: boolean // open oauth page automatically if there are no accounts connected
 }
 
 const credentialsFragment = gql`
@@ -22,19 +25,29 @@ const credentialsFragment = gql`
   }
 `
 
-export const SelectCredentials = (props: Props) => {
-  const { integrationAccount: integrationAccount, onCredentialsSelected } = props
-  const queryVars = {
-    filter: {
-      integrationAccount: {
-        eq: integrationAccount.id,
+export const SelectCredentials = ({
+  integrationAccount: integrationAccount,
+  onCredentialsSelected,
+  hideNameInput,
+  hideSubmitButton,
+  autoConnectIfNoAccount,
+}: Props) => {
+  const queryVars = useMemo(
+    () => ({
+      filter: {
+        integrationAccount: {
+          eq: integrationAccount.id,
+        },
       },
-    },
-  }
+    }),
+    [integrationAccount.id],
+  )
   const { data, loading, error, refetch } = useGetAccountCredentials(credentialsFragment, {
     variables: queryVars,
     fetchPolicy: 'network-only',
   })
+  const credentials = useMemo(() => data?.accountCredentials?.edges.map((edge) => edge.node) ?? [], [data])
+
   const [selectedCredentialID, setSelectedCredentialID] = useState<string | undefined>(
     data?.accountCredentials?.edges?.[0]?.node?.id,
   )
@@ -43,17 +56,26 @@ export const SelectCredentials = (props: Props) => {
   const accountNameKey = '__name'
 
   useEffect(() => {
-    setSelectedCredentialID(data?.accountCredentials?.edges?.[0]?.node?.id)
-  }, [data])
+    const credentialId = data?.accountCredentials?.edges?.[0]?.node?.id
+    setSelectedCredentialID(credentialId)
+
+    // if the submit button is hidden, we need to submit automatically
+    if (credentialId && hideSubmitButton) {
+      onCredentialsSelected(credentialId)
+    }
+  }, [data, hideSubmitButton, onCredentialsSelected])
 
   // refetch credentials on page re-focus
   useEffect(() => {
-    const focusRefetch = () => void refetch(queryVars)
+    if (!refetch) {
+      return
+    }
+    const focusRefetch = () => refetch(queryVars)
     window.addEventListener('focus', focusRefetch)
     return function cleanup() {
       window.removeEventListener('focus', focusRefetch)
     }
-  }, [])
+  }, [queryVars, refetch])
 
   const handleCredentialSelectChange = (value: string) => {
     setSelectedCredentialID(value)
@@ -100,18 +122,40 @@ export const SelectCredentials = (props: Props) => {
     }
   }
 
-  const handleConnectOauthAccountClick = (key: string) => {
-    const popup = window.open(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/account-credentials/oauth/${key}`)
-    if (popup) {
-      popup.addEventListener('beforeunload', () => {
-        void onOauthAccountConnected()
-      })
-    }
-  }
-
-  const onOauthAccountConnected = async () => {
+  const onOauthAccountConnected = useCallback(async () => {
     await refetch(queryVars)
-  }
+  }, [queryVars, refetch])
+
+  const handleConnectOauthAccountClick = useCallback(
+    (key: string) => {
+      const popup = window.open(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/account-credentials/oauth/${key}`)
+      if (popup) {
+        popup.addEventListener('beforeunload', () => {
+          void onOauthAccountConnected()
+        })
+      }
+    },
+    [onOauthAccountConnected],
+  )
+
+  // if autoConnectIfNoAccount is true, open oauth page automatically if there are no accounts connected
+  useEffect(() => {
+    if (
+      autoConnectIfNoAccount &&
+      !loading &&
+      !credentials.length &&
+      ['oauth1', 'oauth2'].includes(integrationAccount.authType)
+    ) {
+      handleConnectOauthAccountClick(integrationAccount.key)
+    }
+  }, [
+    autoConnectIfNoAccount,
+    credentials,
+    handleConnectOauthAccountClick,
+    integrationAccount.authType,
+    integrationAccount.key,
+    loading,
+  ])
 
   if (loading) {
     return <Loading />
@@ -119,8 +163,6 @@ export const SelectCredentials = (props: Props) => {
   if (error) {
     return <RequestError error={error} />
   }
-
-  const credentials = data?.accountCredentials?.edges.map((edge) => edge.node) ?? []
 
   const renderAccountSelector = () => (
     <div style={{ marginBottom: '16px' }}>
@@ -153,6 +195,7 @@ export const SelectCredentials = (props: Props) => {
           required: [accountNameKey, ...(integrationAccount.fieldsSchema.required || [])],
           properties: {
             [accountNameKey]: {
+              ...(hideNameInput ? { 'x-hidden': true } : {}),
               title: 'Name',
               type: 'string',
               default: `My ${integrationAccount.name} account`,
@@ -168,6 +211,7 @@ export const SelectCredentials = (props: Props) => {
               initialInputs={{}}
               loading={createCredentialLoading}
               onSubmit={handleNewCredentialSubmit}
+              hideSubmit={hideSubmitButton}
             />
           </>
         )
@@ -185,13 +229,13 @@ export const SelectCredentials = (props: Props) => {
     <>
       {credentials.length ? renderAccountSelector() : ''}
 
-      {selectedCredentialID ? (
-        <Button type="primary" onClick={handleContinueClick}>
-          Continue
-        </Button>
-      ) : (
-        renderNewAccount()
-      )}
+      {selectedCredentialID
+        ? !hideSubmitButton && (
+            <Button type="primary" onClick={handleContinueClick}>
+              Continue
+            </Button>
+          )
+        : renderNewAccount()}
     </>
   )
 }

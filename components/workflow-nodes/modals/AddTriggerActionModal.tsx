@@ -51,7 +51,10 @@ export const AddTriggerActionModal = (props: Props) => {
         itemLayout="horizontal"
         dataSource={data}
         renderItem={(item) => (
-          <List.Item onClick={() => onOptionSelected(item.key)} className="list-item">
+          <List.Item
+            onClick={() => onOptionSelected(item.key)}
+            className="cursor-pointer hover:bg-blue-50 hover:shadow-sm"
+          >
             <List.Item.Meta title={item.title} description={item.description} />
           </List.Item>
         )}

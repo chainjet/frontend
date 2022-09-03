@@ -125,7 +125,7 @@ export const SelectIntegration = (props: Props) => {
   return (
     <>
       {smallCategoriesSelector && (
-        <div className="w-full flex items-center gap-2 mb-8">
+        <div className="flex items-center w-full gap-2 mb-8">
           <div>
             <strong>Category:</strong>
           </div>

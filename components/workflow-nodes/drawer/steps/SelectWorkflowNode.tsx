@@ -4,7 +4,6 @@ import { Input, List, Tag, Typography } from 'antd'
 import { useState } from 'react'
 import { IntegrationAction, IntegrationTrigger, OperationCategory } from '../../../../graphql'
 import { capitalize } from '../../../../src/utils/strings'
-require('./SelectWorkflowNode.less')
 
 interface Props<T extends IntegrationTrigger | IntegrationAction> {
   nodeType: 'trigger' | 'action'
@@ -49,7 +48,10 @@ export function SelectWorkflowNode<T extends IntegrationTrigger | IntegrationAct
           loading={loading}
           dataSource={operationCategories}
           renderItem={(category) => (
-            <List.Item onClick={() => onCategorySelected(category)} className="list-item">
+            <List.Item
+              onClick={() => onCategorySelected(category)}
+              className="cursor-pointer hover:bg-blue-50 hover:shadow-sm"
+            >
               <List.Item.Meta
                 title={capitalize(category.name)}
                 description={
@@ -90,7 +92,7 @@ export function SelectWorkflowNode<T extends IntegrationTrigger | IntegrationAct
           loading={loading}
           dataSource={nodes}
           renderItem={(node) => (
-            <List.Item onClick={() => onNodeSelected(node)} className="list-item">
+            <List.Item onClick={() => onNodeSelected(node)} className="cursor-pointer hover:bg-blue-50 hover:shadow-sm">
               <List.Item.Meta
                 title={
                   (node as IntegrationTrigger).instant ? (

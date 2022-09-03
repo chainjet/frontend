@@ -31,6 +31,7 @@ interface Props {
   parentOutputs?: WorkflowOutput[]
   loading?: boolean
   loadingSchema?: boolean
+  hideSubmit?: boolean
   onChange?: (inputs: OperationInputs) => any
   onSubmit: (inputs: OperationInputs) => any
   onError?: () => any
@@ -57,9 +58,17 @@ export const TextareaWidget = (props: WidgetProps) => {
   return <BaseWidget {...props} widgetType="textarea" />
 }
 
-export const SchemaForm = (props: Props) => {
-  const { schema, initialInputs, parentOutputs, loading, loadingSchema, onChange, onSubmit, onError } = props
-
+export const SchemaForm = ({
+  schema,
+  initialInputs,
+  parentOutputs,
+  loading,
+  loadingSchema,
+  hideSubmit,
+  onChange,
+  onSubmit,
+  onError,
+}: Props) => {
   // Prepare Json Schema
   let formSchema = cloneDeep(schema) ?? {}
 
@@ -129,6 +138,8 @@ export const SchemaForm = (props: Props) => {
       >
         {loadingSchema ? (
           <Loading />
+        ) : hideSubmit ? (
+          <></>
         ) : (
           <Button type="primary" htmlType="submit" loading={loading}>
             Submit
