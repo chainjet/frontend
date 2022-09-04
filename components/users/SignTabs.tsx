@@ -2,7 +2,7 @@ import { LockTwoTone, MailOutlined, UserOutlined } from '@ant-design/icons'
 import { Alert, Button, Checkbox, Divider, Form, Input, Tabs } from 'antd'
 import { Store } from 'antd/lib/form/interface'
 import Link from 'next/link'
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
 import { useState } from 'react'
 import { GoogleAnalyticsService } from '../../src/services/GoogleAnalyticsService'
 import { useLogin, useRegister } from '../../src/services/UserHooks'
@@ -20,6 +20,7 @@ export const SignTabs = (props: Props) => {
   const [register] = useRegister()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
 
   // TODO implement values.remember
   const handleLogin = async (values: Store) => {
@@ -37,7 +38,13 @@ export const SignTabs = (props: Props) => {
         category: 'engagement',
         label: 'password',
       })
-      await redirectAfterAuth('/')
+      switch (router.query?.go) {
+        case 'notifications':
+          await redirectAfterAuth('/create/notification')
+          break
+        default:
+          await redirectAfterAuth('/')
+      }
     } catch (e: any) {
       setError(e?.message)
     } finally {
@@ -71,10 +78,16 @@ export const SignTabs = (props: Props) => {
         category: 'engagement',
         label: 'password',
       })
-      if (res?.data?.register?.project?.slug) {
-        await redirectAfterAuth(`/${res.data.register.project.slug}`)
-      } else {
-        await redirectAfterAuth('/')
+      switch (router.query?.go) {
+        case 'notifications':
+          await redirectAfterAuth('/create/notification')
+          break
+        default:
+          if (res?.data?.register?.project?.slug) {
+            await redirectAfterAuth(`/${res.data.register.project.slug}`)
+          } else {
+            await redirectAfterAuth('/')
+          }
       }
     } catch (e: any) {
       setError(e?.message)
