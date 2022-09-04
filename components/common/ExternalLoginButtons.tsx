@@ -1,5 +1,6 @@
 import { GoogleOutlined } from '@ant-design/icons'
 import { Button, Space } from 'antd'
+import { useRouter } from 'next/router'
 import { CSSProperties, useState } from 'react'
 
 interface Props {
@@ -24,11 +25,21 @@ const githubButtonStyle: CSSProperties = {
 export function ExteralLoginButtons(props: Props) {
   const { message } = props
   const [loading, setLoading] = useState('')
+  const router = useRouter()
+
+  let redirectTo: string = ''
+  switch (router.query?.go) {
+    case 'notifications':
+      redirectTo = '/create/notification'
+  }
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       <a
-        href={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/account-credentials/oauth/google?login=true`}
+        href={
+          `${process.env.NEXT_PUBLIC_API_ENDPOINT}/account-credentials/oauth/google?login=true` +
+          (redirectTo ? `&redirect_to=${redirectTo}` : '')
+        }
         onClick={() => setLoading('google')}
       >
         <Button block type="primary" icon={<GoogleOutlined />} style={googleButtonStyle} loading={loading === 'google'}>

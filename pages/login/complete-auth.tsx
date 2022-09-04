@@ -19,10 +19,10 @@ interface Props {
   completeUsername?: boolean
   completeEmail?: boolean
   email?: string
+  redirectTo?: string
 }
 
-function CompleteAuthPage(props: Props) {
-  const { id, code, provider, completeUsername, completeEmail, email } = props
+function CompleteAuthPage({ id, code, provider, completeUsername, completeEmail, email, redirectTo }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [completeExternalAuth] = useCompleteExternalAuth()
@@ -51,14 +51,16 @@ function CompleteAuthPage(props: Props) {
           setGaEventSent(true)
         }
 
-        if (res.data.completeExternalAuth.project) {
+        if (redirectTo?.startsWith('/')) {
+          router.push(redirectTo)
+        } else if (res.data.completeExternalAuth.project) {
           await router.push(`/${res.data.completeExternalAuth.project.slug}`)
         } else {
           await router.push('/')
         }
       }
     })()
-  }, [code, completeEmail, completeExternalAuth, completeUsername, gaEventSent, id, provider, router])
+  }, [code, completeEmail, completeExternalAuth, completeUsername, gaEventSent, id, provider, redirectTo, router])
 
   // Authentication was submitted by useEffect
   if (!completeUsername && !completeEmail) {
@@ -84,14 +86,15 @@ function CompleteAuthPage(props: Props) {
         label: provider,
       })
 
-      if (res.data.completeExternalAuth.project) {
+      if (redirectTo?.startsWith('/')) {
+        router.push(redirectTo)
+      } else if (res.data.completeExternalAuth.project) {
         await router.push(`/${res.data.completeExternalAuth.project.slug}`)
       } else {
         await router.push('/')
       }
     } catch (e: any) {
       setError(e?.message)
-    } finally {
       setLoading(false)
     }
   }
@@ -154,6 +157,7 @@ CompleteAuthPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> 
     completeUsername: !!getQueryParam(ctx, 'completeUsername'),
     completeEmail: !!getQueryParam(ctx, 'completeEmail'),
     email: getQueryParam(ctx, 'email'),
+    redirectTo: getQueryParam(ctx, 'redirect_to'),
   }
 }
 
