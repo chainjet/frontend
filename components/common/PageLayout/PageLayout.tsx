@@ -2,6 +2,7 @@ import {
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  PlusSquareOutlined,
   ProjectOutlined,
   SettingOutlined,
 } from '@ant-design/icons'
@@ -82,6 +83,11 @@ export default function PageLayout({ children }: Props) {
           mode="inline"
           defaultSelectedKeys={[router.pathname]}
           items={[
+            {
+              key: '/create/notification',
+              label: <Link href="/create/notification">Create Notification</Link>,
+              icon: <PlusSquareOutlined />,
+            },
             { key: '/', label: <Link href="/">Projects</Link>, icon: <ProjectOutlined /> },
             { key: '/credentials', label: <Link href="/credentials">Credentials</Link>, icon: <GoKey /> },
           ]}
