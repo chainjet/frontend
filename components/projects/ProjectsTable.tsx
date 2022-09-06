@@ -32,6 +32,7 @@ export const ProjectsTable = (props: Props) => {
           ),
         },
       ]}
+      pagination={false}
     />
   )
 }

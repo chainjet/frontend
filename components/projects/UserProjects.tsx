@@ -1,9 +1,9 @@
-import React from 'react'
 import { gql } from '@apollo/client'
-import { ProjectsTable } from './ProjectsTable'
+import { ProjectSortFields, SortDirection } from '../../graphql'
 import { useGetProjects } from '../../src/services/ProjectHooks'
 import { Loading } from '../common/RequestStates/Loading'
 import { RequestError } from '../common/RequestStates/RequestError'
+import { ProjectsTable } from './ProjectsTable'
 
 const projectsFragment = gql`
   fragment UserProjectsFragment on Project {
@@ -13,7 +13,19 @@ const projectsFragment = gql`
 `
 
 export const UserProjects = () => {
-  const { data, loading, error } = useGetProjects(projectsFragment)
+  const { data, loading, error } = useGetProjects(projectsFragment, {
+    variables: {
+      paging: {
+        first: 120,
+      },
+      sorting: [
+        {
+          field: ProjectSortFields.createdAt,
+          direction: SortDirection.DESC,
+        },
+      ],
+    },
+  })
 
   if (loading) {
     return <Loading />
