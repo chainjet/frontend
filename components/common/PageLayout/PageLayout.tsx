@@ -42,7 +42,7 @@ export default function PageLayout({ children }: Props) {
       ...(siderCollapsed ? { height: 65 } : { height: 80 }),
     }
     return (
-      <Link href="/">
+      <Link href="/account">
         <a>
           <img src={siderCollapsed ? '/icon.svg' : '/logo.svg'} style={style} alt="ChainJet Logo" width="100%" />
         </a>
@@ -88,7 +88,7 @@ export default function PageLayout({ children }: Props) {
               label: <Link href="/create/notification">Create Notification</Link>,
               icon: <PlusSquareOutlined />,
             },
-            { key: '/', label: <Link href="/">Projects</Link>, icon: <ProjectOutlined /> },
+            { key: '/account', label: <Link href="/account">Projects</Link>, icon: <ProjectOutlined /> },
             { key: '/credentials', label: <Link href="/credentials">Credentials</Link>, icon: <GoKey /> },
           ]}
         />
