@@ -157,6 +157,12 @@ function createApolloClient(initialState: NormalizedCacheObject = {}, tokens?: U
   const headers: { [key: string]: string } = {}
   if (tokens) {
     headers.Authorization = `Bearer ${tokens.accessToken}`
+    if (typeof sessionStorage !== 'undefined') {
+      const roleKey = sessionStorage.getItem('role-key')
+      if (roleKey) {
+        headers['x-role-key'] = roleKey
+      }
+    }
   }
 
   return new ApolloClient({
