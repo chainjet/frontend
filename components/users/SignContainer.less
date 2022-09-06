@@ -3,7 +3,8 @@
   flex-direction: column;
   height: 100vh;
   overflow: auto;
-  background-color: #f0f2f5;
+  color: white;
+  background-color: #5503bb;
   background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');
   background-repeat: no-repeat;
   background-position: center 110px;
@@ -13,5 +14,19 @@
   .sign-tabs-container {
     width: 368px;
     margin: 60px auto 0;
+
+    .ant-divider-horizontal.ant-divider-with-text-center::before,
+    .ant-divider-horizontal.ant-divider-with-text-center::after {
+      border-top: 1px solid #ccc;
+    }
+
+    .ant-tabs-tab .ant-tabs-tab-btn {
+      color: #ccc;
+      font-weight: 500;
+    }
+
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+      color: #4285f4;
+    }
   }
 }
