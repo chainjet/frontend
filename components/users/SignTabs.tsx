@@ -149,7 +149,7 @@ export const SignTabs = (props: Props) => {
           <div style={{ marginTop: 16 }}>
             <ExteralLoginButtons message="Sign in with" />
           </div>
-          <Divider style={{ margin: '24px 0' }}>OR</Divider>
+          <Divider style={{ margin: '24px 0', color: 'white' }}>OR</Divider>
 
           <Form name="login" initialValues={{ remember: true }} onFinish={handleLogin} onFinishFailed={handleLoginFail}>
             <Form.Item name="username" rules={[{ required: true, message: 'Please enter your username' }]}>
@@ -162,7 +162,9 @@ export const SignTabs = (props: Props) => {
 
             <div>
               <Form.Item name="remember" valuePropName="checked" style={{ display: 'inline-block' }}>
-                <Checkbox>Remember me</Checkbox>
+                <Checkbox>
+                  <span className="text-white">Remember me</span>
+                </Checkbox>
               </Form.Item>
               <Link href="/login/forgot-password">
                 <a style={{ float: 'right', display: 'flex', minHeight: '32px', alignItems: 'center' }}>
@@ -185,7 +187,7 @@ export const SignTabs = (props: Props) => {
           <div style={{ marginTop: 16 }}>
             <ExteralLoginButtons message="Sign up with" />
           </div>
-          <Divider style={{ margin: '24px 0' }}>OR</Divider>
+          <Divider style={{ margin: '24px 0', color: 'white' }}>OR</Divider>
 
           <Form
             name="register"
@@ -215,7 +217,7 @@ export const SignTabs = (props: Props) => {
               </Button>
             </Form.Item>
 
-            <p>
+            <p className="text-white">
               By creating an account, you confirm that you have read and agree to our&nbsp;
               <Link href="/legal/terms">terms and conditions</Link> and&nbsp;
               <Link href="/legal/privacy">privacy policy</Link>.
