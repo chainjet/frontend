@@ -96,6 +96,7 @@ export function TokenNotificationStep({ projects }: { projects: Project[] }) {
             chatId: inputs.chatId,
             text: `New token transfer:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
           },
+          credentialsId,
         }
     }
     throw new Error(`Invalid integration key: ${key}`)

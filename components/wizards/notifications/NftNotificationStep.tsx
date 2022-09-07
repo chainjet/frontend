@@ -102,6 +102,7 @@ export function NftNotificationStep({ projects }: { projects: Project[] }) {
             chatId: inputs.chatId,
             text: `New NFT transfer:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
           },
+          credentialsId,
         }
     }
     throw new Error(`Invalid integration key: ${key}`)

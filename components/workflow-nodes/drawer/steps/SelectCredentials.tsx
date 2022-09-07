@@ -22,11 +22,14 @@ const credentialsFragment = gql`
   fragment SelectCredentialsStepFragment on AccountCredential {
     id
     name
+    integrationAccount {
+      id
+    }
   }
 `
 
 export const SelectCredentials = ({
-  integrationAccount: integrationAccount,
+  integrationAccount,
   onCredentialsSelected,
   hideNameInput,
   hideSubmitButton,
@@ -56,14 +59,14 @@ export const SelectCredentials = ({
   const accountNameKey = '__name'
 
   useEffect(() => {
-    const credentialId = data?.accountCredentials?.edges?.[0]?.node?.id
-    setSelectedCredentialID(credentialId)
-
-    // if the submit button is hidden, we need to submit automatically
-    if (credentialId && hideSubmitButton) {
-      onCredentialsSelected(credentialId)
+    const credential = data?.accountCredentials?.edges?.[0]?.node
+    if (credential) {
+      setSelectedCredentialID(credential.id)
+      if (hideSubmitButton && credential.integrationAccount?.id === integrationAccount?.id) {
+        onCredentialsSelected(credential.id)
+      }
     }
-  }, [data, hideSubmitButton, onCredentialsSelected])
+  }, [data, hideSubmitButton, integrationAccount, onCredentialsSelected])
 
   // refetch credentials on page re-focus
   useEffect(() => {
@@ -110,10 +113,11 @@ export const SelectCredentials = ({
     })
     if (res.data?.createOneAccountCredential?.id) {
       await onCredentialsSelected(res.data.createOneAccountCredential.id)
-      setCreateCredentialLoading(false)
+      refetch?.(queryVars)
     } else {
       // TODO show error
     }
+    setCreateCredentialLoading(false)
   }
 
   const handleContinueClick = () => {
@@ -195,7 +199,7 @@ export const SelectCredentials = ({
           required: [accountNameKey, ...(integrationAccount.fieldsSchema.required || [])],
           properties: {
             [accountNameKey]: {
-              ...(hideNameInput ? { 'x-hidden': true } : {}),
+              ...(hideNameInput ? { 'x-ui:widget': 'hidden' } : {}),
               title: 'Name',
               type: 'string',
               default: `My ${integrationAccount.name} account`,
@@ -211,7 +215,7 @@ export const SelectCredentials = ({
               initialInputs={{}}
               loading={createCredentialLoading}
               onSubmit={handleNewCredentialSubmit}
-              hideSubmit={hideSubmitButton}
+              submitButtonText="Connect"
             />
           </>
         )

@@ -32,6 +32,7 @@ interface Props {
   loading?: boolean
   loadingSchema?: boolean
   hideSubmit?: boolean
+  submitButtonText?: string
   onChange?: (inputs: OperationInputs) => any
   onSubmit: (inputs: OperationInputs) => any
   onError?: () => any
@@ -65,6 +66,7 @@ export const SchemaForm = ({
   loading,
   loadingSchema,
   hideSubmit,
+  submitButtonText,
   onChange,
   onSubmit,
   onError,
@@ -142,7 +144,7 @@ export const SchemaForm = ({
           <></>
         ) : (
           <Button type="primary" htmlType="submit" loading={loading}>
-            Submit
+            {submitButtonText ?? 'Submit'}
           </Button>
         )}
       </ThemedForm>

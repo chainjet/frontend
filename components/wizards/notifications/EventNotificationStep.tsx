@@ -98,6 +98,7 @@ export function EventNotificationStep({ projects }: { projects: Project[] }) {
               `New {{trigger.eventName}}:\n` +
               `${NETWORK[inputs.network as ChainId]?.explorerUrl}/tx/{{trigger.transactionHash}}`,
           },
+          credentialsId,
         }
     }
     throw new Error(`Invalid integration key: ${key}`)
