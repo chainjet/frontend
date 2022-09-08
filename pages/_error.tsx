@@ -1,11 +1,10 @@
-import React from 'react'
-import { Button, Result } from 'antd'
-import { NextPageContext } from 'next'
-import { LandingHeader } from '../components/landing/LandingHeader'
-import { LandingFooter } from '../components/landing/LandingFooter'
-import { ResultStatusType } from 'antd/lib/result'
-import { useRouter } from 'next/router'
 import { ApolloError } from '@apollo/client'
+import { Button, Result } from 'antd'
+import { ResultStatusType } from 'antd/lib/result'
+import { NextPageContext } from 'next'
+import { useRouter } from 'next/router'
+import { LandingFooter } from '../components/landing/LandingFooter'
+import { LandingHeader } from '../components/landing/LandingHeader'
 
 interface Props {
   statusCode?: ResultStatusType
@@ -16,7 +15,7 @@ export function ErrorPage({ statusCode, error }: Props) {
   const router = useRouter()
 
   const handleGoHome = async () => {
-    await router.push('/')
+    await router.push('/account')
   }
 
   return (

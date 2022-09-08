@@ -56,7 +56,7 @@ function CompleteAuthPage({ id, code, provider, completeUsername, completeEmail,
         } else if (res.data.completeExternalAuth.project) {
           await router.push(`/${res.data.completeExternalAuth.project.slug}`)
         } else {
-          await router.push('/')
+          await router.push('/account')
         }
       }
     })()
@@ -91,7 +91,7 @@ function CompleteAuthPage({ id, code, provider, completeUsername, completeEmail,
       } else if (res.data.completeExternalAuth.project) {
         await router.push(`/${res.data.completeExternalAuth.project.slug}`)
       } else {
-        await router.push('/')
+        await router.push('/account')
       }
     } catch (e: any) {
       setError(e?.message)

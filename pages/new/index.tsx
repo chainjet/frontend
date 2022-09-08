@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
-import { withApollo } from '../../src/apollo'
 import { Card, Col, Row } from 'antd'
-import { Store } from 'rc-field-form/es/interface'
-import { useCreateOneProject } from '../../src/services/ProjectHooks'
+import Head from 'next/head'
 import Router from 'next/router'
+import { Store } from 'rc-field-form/es/interface'
+import { useState } from 'react'
 import { PageWrapper } from '../../components/common/PageLayout/PageWrapper'
 import { ProjectForm } from '../../components/projects/ProjectForm'
-import Head from 'next/head'
+import { withApollo } from '../../src/apollo'
+import { useCreateOneProject } from '../../src/services/ProjectHooks'
 
 function NewProjectPage() {
   const [createProject] = useCreateOneProject()
@@ -37,7 +37,7 @@ function NewProjectPage() {
   }
 
   const handleGoBack = async () => {
-    await Router.push('/')
+    await Router.push('/account')
   }
 
   return (

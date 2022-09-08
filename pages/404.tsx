@@ -1,6 +1,5 @@
 import { Button, Result } from 'antd'
 import { useRouter } from 'next/router'
-import React from 'react'
 import { LandingFooter } from '../components/landing/LandingFooter'
 import { LandingHeader } from '../components/landing/LandingHeader'
 
@@ -8,7 +7,7 @@ export default function Error404Page() {
   const router = useRouter()
 
   const handleGoHome = async () => {
-    await router.push('/')
+    await router.push('/account')
   }
 
   return (

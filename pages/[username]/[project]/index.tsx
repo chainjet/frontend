@@ -1,18 +1,17 @@
-import React from 'react'
-import { withApollo } from '../../../src/apollo'
-import { PageWrapper } from '../../../components/common/PageLayout/PageWrapper'
-import { gql } from '@apollo/client'
-import { NextPageContext } from 'next'
-import { Button } from 'antd'
-import { Loading } from '../../../components/common/RequestStates/Loading'
-import { ProjectWorkflows } from '../../../components/workflows/ProjectWorkflows'
-import Link from 'next/link'
-import { RequestError } from '../../../components/common/RequestStates/RequestError'
-import { useGetProjects } from '../../../src/services/ProjectHooks'
-import Router from 'next/router'
 import { SettingOutlined } from '@ant-design/icons'
-import { getQueryParam } from '../../../src/utils/nextUtils'
+import { gql } from '@apollo/client'
+import { Button } from 'antd'
+import { NextPageContext } from 'next'
 import Head from 'next/head'
+import Link from 'next/link'
+import Router from 'next/router'
+import { PageWrapper } from '../../../components/common/PageLayout/PageWrapper'
+import { Loading } from '../../../components/common/RequestStates/Loading'
+import { RequestError } from '../../../components/common/RequestStates/RequestError'
+import { ProjectWorkflows } from '../../../components/workflows/ProjectWorkflows'
+import { withApollo } from '../../../src/apollo'
+import { useGetProjects } from '../../../src/services/ProjectHooks'
+import { getQueryParam } from '../../../src/utils/nextUtils'
 
 const projectFragment = gql`
   fragment ProjectPage on Project {
@@ -49,7 +48,7 @@ function ProjectPage(props: Props) {
   const project = data.projects.edges[0].node
 
   const handleGoBack = async () => {
-    await Router.push('/')
+    await Router.push('/account')
   }
 
   const handleSettingsClick = async () => {

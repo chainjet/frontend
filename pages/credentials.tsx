@@ -1,13 +1,12 @@
 import { gql } from '@apollo/client'
+import Head from 'next/head'
 import Router from 'next/router'
-import React from 'react'
-import { CredentialsTable } from '../components/credentials/CredentialsTable'
 import { PageWrapper } from '../components/common/PageLayout/PageWrapper'
 import { Loading } from '../components/common/RequestStates/Loading'
 import { RequestError } from '../components/common/RequestStates/RequestError'
+import { CredentialsTable } from '../components/credentials/CredentialsTable'
 import { withApollo } from '../src/apollo'
 import { useGetAccountCredentials } from '../src/services/AccountCredentialHooks'
-import Head from 'next/head'
 
 const credentialsFragment = gql`
   fragment CredentialsPage on AccountCredential {
@@ -36,7 +35,7 @@ export function CredentialsPage() {
   const accountCredentials = data.accountCredentials.edges.map((edge) => edge.node)
 
   const handleGoBack = async () => {
-    await Router.push('/')
+    await Router.push('/account')
   }
 
   return (

@@ -1,18 +1,18 @@
 import { gql } from '@apollo/client'
 import { Button, Card } from 'antd'
 import { NextPageContext } from 'next'
+import Head from 'next/head'
 import Router from 'next/router'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PageWrapper } from '../../../components/common/PageLayout/PageWrapper'
-import { DeleteProjectModal } from '../../../components/projects/DeleteProjectModal'
-import { ProjectForm } from '../../../components/projects/ProjectForm'
 import { Loading } from '../../../components/common/RequestStates/Loading'
 import { RequestError } from '../../../components/common/RequestStates/RequestError'
+import { DeleteProjectModal } from '../../../components/projects/DeleteProjectModal'
+import { ProjectForm } from '../../../components/projects/ProjectForm'
 import { Project } from '../../../graphql'
 import { withApollo } from '../../../src/apollo'
 import { useGetProjects, useUpdateOneProject } from '../../../src/services/ProjectHooks'
 import { getQueryParam } from '../../../src/utils/nextUtils'
-import Head from 'next/head'
 
 const projectFragment = gql`
   fragment ProjectSettingsPage on Project {
@@ -81,7 +81,7 @@ function ProjectSettingsPage(props: Props) {
   }
 
   const handleProjectDelete = async () => {
-    await Router.push('/')
+    await Router.push('/account')
   }
 
   const handleGoBack = async () => {

@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import Router from 'next/router'
-import { useVerifyEmail } from '../../src/services/UserHooks'
+import { Alert } from 'antd'
+import { NextPageContext } from 'next'
 import Head from 'next/head'
+import Router from 'next/router'
+import { useEffect, useState } from 'react'
 import { Loading } from '../../components/common/RequestStates/Loading'
 import { withApollo } from '../../src/apollo'
-import { NextPageContext } from 'next'
-import { getQueryParam } from '../../src/utils/nextUtils'
-import { Alert } from 'antd'
+import { useVerifyEmail } from '../../src/services/UserHooks'
 import { getHeadMetatags } from '../../src/utils/html.utils'
+import { getQueryParam } from '../../src/utils/nextUtils'
 
 interface Props {
   username: string
@@ -30,10 +30,10 @@ const CompleteSignupPage = (props: Props) => {
       if (res.data.verifyEmail.error) {
         setError(res.data.verifyEmail.error)
       } else {
-        await Router.push('/')
+        await Router.push('/account')
       }
     })()
-  }, [])
+  }, [code, username, verifyEmail])
 
   return (
     <>
