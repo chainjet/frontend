@@ -1,11 +1,9 @@
 import { gql } from '@apollo/client'
 import { isAddress } from '@ethersproject/address'
-import { deepStrictEqual } from 'assert'
+import { Alert } from 'antd'
 import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
-import _ from 'lodash'
 import { useEffect, useState } from 'react'
-import { isDeepStrictEqual } from 'util'
 import { jsonSchemaDefinitions } from '../../../../src/json-schema/jsonSchemaDefinitions'
 import { useGetAsyncSchemas } from '../../../../src/services/AsyncSchemaHooks'
 import { useGetIntegrationTriggerById } from '../../../../src/services/IntegrationTriggerHooks'
@@ -14,7 +12,6 @@ import { retrocycle } from '../../../../src/utils/json.utils'
 import { isEmptyObj } from '../../../../src/utils/object.utils'
 import { getSchemaDefaults, isSelectInput, mergePropSchema } from '../../../../src/utils/schema.utils'
 import { SchemaForm } from '../../../common/Forms/schema-form/SchemaForm'
-import { DisplayError } from '../../../common/RequestStates/DisplayError'
 import { Loading } from '../../../common/RequestStates/Loading'
 import { RequestError } from '../../../common/RequestStates/RequestError'
 
@@ -25,7 +22,7 @@ interface Props {
   accountCredentialId: string | undefined
   initialInputs: TriggerInputs
   extraSchemaProps?: JSONSchema7
-  onSubmitOperationInputs: (inputs: TriggerInputs) => any
+  onSubmitOperationInputs: (inputs: TriggerInputs) => Promise<any>
   onChange?: (inputs: Record<string, any>) => any
   hideSubmit?: boolean
 }
@@ -51,6 +48,8 @@ export function TriggerInputsForm({
   onChange,
   hideSubmit,
 }: Props) {
+  const [submitLoading, setSubmitLoading] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const { data, loading, error } = useGetIntegrationTriggerById(triggerInputsFormFragment, {
     variables: {
       id: triggerId,
@@ -214,17 +213,39 @@ export function TriggerInputsForm({
     onChange?.(data)
   }
 
+  const onFormSubmit = async (data: Record<string, any>) => {
+    setSubmitLoading(true)
+    setSubmitError(null)
+    try {
+      await onSubmitOperationInputs(data)
+    } catch (e: any) {
+      setSubmitError(e.message ?? 'Unknown error')
+    } finally {
+      setSubmitLoading(false)
+    }
+  }
+
   return (
     <>
       <SchemaForm
         schema={schema}
         initialInputs={inputs}
-        onSubmit={onSubmitOperationInputs}
         onChange={onFormChange}
+        onSubmit={onFormSubmit}
+        loading={submitLoading}
         hideSubmit={hideSubmit}
       />
       {contractSchemaLoading && <Loading />}
-      {contractSchemaError && <DisplayError error={contractSchemaError} />}
+      {(submitError ?? contractSchemaError) && (
+        <div className="mt-8">
+          <Alert
+            type="error"
+            message="Error executing the trigger:"
+            description={submitError ?? contractSchemaError}
+            showIcon
+          />
+        </div>
+      )}
     </>
   )
 }

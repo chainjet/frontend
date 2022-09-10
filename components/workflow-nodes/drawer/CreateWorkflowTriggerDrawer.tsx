@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { WorkflowNodeDrawer } from './WorkflowNodeDrawer'
+import { useState } from 'react'
 import { IntegrationTrigger, WorkflowTrigger } from '../../../graphql'
 import { useCreateOneWorkflowTrigger } from '../../../src/services/WorkflowTriggerHooks'
 import { CompleteHookTrigger } from './steps/CompleteHookTrigger'
+import { WorkflowNodeDrawer } from './WorkflowNodeDrawer'
 
 interface Props {
   workflowId: string

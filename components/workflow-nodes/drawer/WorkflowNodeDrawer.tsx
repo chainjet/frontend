@@ -36,7 +36,7 @@ type Props<T extends IntegrationTrigger | IntegrationAction> = (TriggerProps | A
 
   overrideStep?: JSX.Element
 
-  onSubmitInputs: (inputs: Record<string, any>, node: T, credentialsID?: string) => void
+  onSubmitInputs: (inputs: Record<string, any>, node: T, credentialsID?: string) => Promise<any>
   onCancel: () => void
 }
 
