@@ -5,7 +5,6 @@ import { Workflow } from '../../../../graphql'
 interface NodeOptions {
   workflow: Workflow
   onCreateTriggerClick: () => void
-  onCreateActionClick: () => void
 }
 
 export class AddTriggerActionNodeModel extends NodeModel {

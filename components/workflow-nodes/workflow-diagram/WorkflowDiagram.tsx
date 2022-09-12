@@ -244,12 +244,10 @@ function createEmptyWorkflowDiagram(
   model: DiagramModel,
   workflow: Workflow,
   onCreateTriggerClick: (node?: WorkflowNode) => void,
-  onCreateActionClick: (node?: WorkflowNode, condition?: string) => void,
 ) {
   const node = new AddTriggerActionNodeModel({
     workflow,
     onCreateTriggerClick,
-    onCreateActionClick,
   })
   model.addNode(node)
 }
@@ -269,12 +267,7 @@ interface CreateWorkflowTreeOpts {
 
 function createWorkflowTree(options: CreateWorkflowTreeOpts) {
   if (!options.workflowTrigger && !options.workflowActions.length) {
-    return createEmptyWorkflowDiagram(
-      options.model,
-      options.workflow,
-      options.onCreateTriggerClick,
-      options.onCreateActionClick,
-    )
+    return createEmptyWorkflowDiagram(options.model, options.workflow, options.onCreateTriggerClick)
   }
   let triggerNode: NodeModel | undefined
   if (options.workflowTrigger) {
