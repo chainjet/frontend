@@ -27,6 +27,7 @@ type ActionProps = {
 type Props<T extends IntegrationTrigger | IntegrationAction> = (TriggerProps | ActionProps) & {
   title: string
   visible: boolean
+  action: 'create' | 'update'
 
   // load the drawer with initial data, used for updating trigger and actions
   initialNode?: T
@@ -44,6 +45,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
   const {
     title,
     visible,
+    action,
     initialNode,
     initialNodeInputs,
     initialCredentialId,
@@ -164,6 +166,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
         } else {
           return (
             <ActionInputsForm
+              action={action}
               integrationActionId={selectedNode.id}
               workflowTriggerId={props.workflowTriggerId}
               parentActionIds={props.parentActionIds}

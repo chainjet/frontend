@@ -106,3 +106,14 @@ export function useCheckWorkflowTrigger() {
   `
   return useMutation<{ checkWorkflowTrigger: WorkflowTrigger }, { id: string }>(mutation)
 }
+
+export function useTestWorkflowTrigger() {
+  const mutation = gql`
+    mutation ($id: String!) {
+      testWorkflowTrigger(id: $id) {
+        id
+      }
+    }
+  `
+  return useMutation<{ testWorkflowTrigger: WorkflowTrigger }, { id: string }>(mutation)
+}

@@ -1,11 +1,10 @@
-import React from 'react'
-import { WorkflowNodeDrawer } from './WorkflowNodeDrawer'
-import { Loading } from '../../common/RequestStates/Loading'
-import { RequestError } from '../../common/RequestStates/RequestError'
-import { SelectWorkflowNode } from './steps/SelectWorkflowNode'
 import { gql } from '@apollo/client'
 import { IntegrationTrigger, WorkflowTrigger } from '../../../graphql'
 import { useGetWorkflowTriggerById, useUpdateOneWorkflowTrigger } from '../../../src/services/WorkflowTriggerHooks'
+import { Loading } from '../../common/RequestStates/Loading'
+import { RequestError } from '../../common/RequestStates/RequestError'
+import { SelectWorkflowNode } from './steps/SelectWorkflowNode'
+import { WorkflowNodeDrawer } from './WorkflowNodeDrawer'
 
 interface Props {
   workflowTriggerId: string
@@ -35,12 +34,16 @@ const workflowTriggerFragment = gql`
   ${SelectWorkflowNode.fragments.IntegrationTrigger}
 `
 
-export const UpdateWorkflowTriggerDrawer = (props: Props) => {
-  const { visible, onUpdateWorkflowTrigger, onCancel } = props
+export const UpdateWorkflowTriggerDrawer = ({
+  workflowTriggerId,
+  visible,
+  onUpdateWorkflowTrigger,
+  onCancel,
+}: Props) => {
   const [updateWorkflowTrigger] = useUpdateOneWorkflowTrigger()
   const { data, loading, error } = useGetWorkflowTriggerById(workflowTriggerFragment, {
     variables: {
-      id: props.workflowTriggerId,
+      id: workflowTriggerId,
     },
   })
 
@@ -84,6 +87,7 @@ export const UpdateWorkflowTriggerDrawer = (props: Props) => {
     <WorkflowNodeDrawer
       nodeType="trigger"
       title={`Update Trigger "${workflowTrigger.name}"`}
+      action="update"
       initialNode={workflowTrigger.integrationTrigger}
       initialNodeInputs={initialInputs ?? {}}
       initialCredentialId={workflowTrigger.credentials?.id}

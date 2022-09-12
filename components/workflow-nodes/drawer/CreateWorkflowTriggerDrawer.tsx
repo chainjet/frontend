@@ -11,8 +11,7 @@ interface Props {
   onCancel: () => void
 }
 
-export const CreateWorkflowTriggerDrawer = (props: Props) => {
-  const { workflowId, visible, onCreateWorkflowTrigger, onCancel } = props
+export const CreateWorkflowTriggerDrawer = ({ workflowId, visible, onCreateWorkflowTrigger, onCancel }: Props) => {
   const [createWorkflowTrigger] = useCreateOneWorkflowTrigger()
   const [hookStep, setHookStep] = useState(false)
   const [integrationTrigger, setIntegrationTrigger] = useState<IntegrationTrigger | null>(null)
@@ -69,6 +68,7 @@ export const CreateWorkflowTriggerDrawer = (props: Props) => {
       nodeType="trigger"
       title="Create Workflow Trigger"
       visible={visible}
+      action="create"
       overrideStep={
         integrationTrigger && workflowTrigger && hookStep ? (
           <CompleteHookTrigger

@@ -1,11 +1,10 @@
-import React from 'react'
-import { WorkflowNodeDrawer } from './WorkflowNodeDrawer'
-import { Loading } from '../../common/RequestStates/Loading'
-import { RequestError } from '../../common/RequestStates/RequestError'
-import { SelectWorkflowNode } from './steps/SelectWorkflowNode'
 import { gql } from '@apollo/client'
 import { IntegrationAction, WorkflowAction } from '../../../graphql'
 import { useGetWorkflowActionById, useUpdateOneWorkflowAction } from '../../../src/services/WorkflowActionHooks'
+import { Loading } from '../../common/RequestStates/Loading'
+import { RequestError } from '../../common/RequestStates/RequestError'
+import { SelectWorkflowNode } from './steps/SelectWorkflowNode'
+import { WorkflowNodeDrawer } from './WorkflowNodeDrawer'
 
 interface Props {
   visible: boolean
@@ -36,12 +35,18 @@ const workflowActionFragment = gql`
   ${SelectWorkflowNode.fragments.IntegrationAction}
 `
 
-export const UpdateWorkflowActionDrawer = (props: Props) => {
-  const { visible, workflowTriggerId, parentActionIds, onUpdateWorkflowAction, onCancel } = props
+export const UpdateWorkflowActionDrawer = ({
+  visible,
+  workflowActionId,
+  workflowTriggerId,
+  parentActionIds,
+  onUpdateWorkflowAction,
+  onCancel,
+}: Props) => {
   const [updateWorkflowAction] = useUpdateOneWorkflowAction()
   const { data, loading, error } = useGetWorkflowActionById(workflowActionFragment, {
     variables: {
-      id: props.workflowActionId,
+      id: workflowActionId,
     },
   })
 
@@ -82,6 +87,7 @@ export const UpdateWorkflowActionDrawer = (props: Props) => {
       nodeType="action"
       visible={visible}
       title={`Update Action "${workflowAction.name}"`}
+      action="update"
       workflowTriggerId={workflowTriggerId}
       parentActionIds={parentActionIds}
       initialNode={workflowAction.integrationAction}

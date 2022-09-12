@@ -1,7 +1,7 @@
-import React from 'react'
-import { WorkflowNodeDrawer } from './WorkflowNodeDrawer'
 import { IntegrationAction, WorkflowAction } from '../../../graphql'
 import { useCreateOneWorkflowAction } from '../../../src/services/WorkflowActionHooks'
+import { useTestWorkflowTrigger } from '../../../src/services/WorkflowTriggerHooks'
+import { WorkflowNodeDrawer } from './WorkflowNodeDrawer'
 
 interface Props {
   visible: boolean
@@ -14,18 +14,18 @@ interface Props {
   onCancel: () => void
 }
 
-export const CreateWorkflowActionDrawer = (props: Props) => {
-  const {
-    workflowId,
-    workflowTriggerId,
-    parentActionIds,
-    previousActionCondition,
-    nextAction,
-    visible,
-    onCreateWorkflowAction,
-    onCancel,
-  } = props
+export const CreateWorkflowActionDrawer = ({
+  workflowId,
+  workflowTriggerId,
+  parentActionIds,
+  previousActionCondition,
+  nextAction,
+  visible,
+  onCreateWorkflowAction,
+  onCancel,
+}: Props) => {
   const [createOneWorkflowAction] = useCreateOneWorkflowAction()
+  const [testWorkflowTrigger] = useTestWorkflowTrigger()
 
   const onSubmitInputs = async (inputs: { [key: string]: any }, action: IntegrationAction, credentialsID?: string) => {
     const previousAction = parentActionIds.length ? parentActionIds[parentActionIds.length - 1] : undefined
@@ -44,6 +44,13 @@ export const CreateWorkflowActionDrawer = (props: Props) => {
         },
       },
     })
+    if (workflowTriggerId) {
+      await testWorkflowTrigger({
+        variables: {
+          id: workflowTriggerId,
+        },
+      })
+    }
     if (res.data?.createOneWorkflowAction) {
       onCreateWorkflowAction(res.data.createOneWorkflowAction)
     } else {
@@ -56,6 +63,7 @@ export const CreateWorkflowActionDrawer = (props: Props) => {
       nodeType="action"
       title="Create Workflow Action"
       visible={visible}
+      action="create"
       workflowTriggerId={workflowTriggerId}
       parentActionIds={parentActionIds}
       onSubmitInputs={onSubmitInputs}

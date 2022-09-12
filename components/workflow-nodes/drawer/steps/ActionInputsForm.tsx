@@ -14,6 +14,7 @@ import { WorkflowOutput } from '../../../../src/typings/Workflow'
 import { retrocycle } from '../../../../src/utils/json.utils'
 import { isEmptyObj } from '../../../../src/utils/object.utils'
 import { getSchemaDefaults, isSelectInput, mergePropSchema } from '../../../../src/utils/schema.utils'
+import { capitalize } from '../../../../src/utils/strings'
 import { SchemaForm } from '../../../common/Forms/schema-form/SchemaForm'
 import { Loading } from '../../../common/RequestStates/Loading'
 import { RequestError } from '../../../common/RequestStates/RequestError'
@@ -21,6 +22,7 @@ import { RequestError } from '../../../common/RequestStates/RequestError'
 type ActionInputs = { [key: string]: any }
 
 interface Props {
+  action: 'create' | 'update'
   integrationActionId: string
   workflowTriggerId: string | undefined
   parentActionIds: string[]
@@ -88,6 +90,7 @@ const credentialsFragment = gql`
 `
 
 export function ActionInputsForm({
+  action,
   integrationActionId,
   workflowTriggerId,
   parentActionIds,
@@ -321,6 +324,9 @@ export function ActionInputsForm({
         loading={submitLoading}
         onSubmit={onFormSubmit}
         onChange={onChange}
+        submitButtonText={
+          !!workflowTriggerId ? (action === 'create' ? 'Test and create' : 'Update') : capitalize(action)
+        }
       />
       {(submitError ?? contractSchemaError) && (
         <div className="mt-8">
