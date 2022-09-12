@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client'
 import { isAddress } from '@ethersproject/address'
+import { Alert } from 'antd'
 import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
 import { useEffect, useState } from 'react'
@@ -14,7 +15,6 @@ import { retrocycle } from '../../../../src/utils/json.utils'
 import { isEmptyObj } from '../../../../src/utils/object.utils'
 import { getSchemaDefaults, isSelectInput, mergePropSchema } from '../../../../src/utils/schema.utils'
 import { SchemaForm } from '../../../common/Forms/schema-form/SchemaForm'
-import { DisplayError } from '../../../common/RequestStates/DisplayError'
 import { Loading } from '../../../common/RequestStates/Loading'
 import { RequestError } from '../../../common/RequestStates/RequestError'
 
@@ -27,7 +27,7 @@ interface Props {
   accountCredentialId: string | undefined
   initialInputs: ActionInputs
   extraSchemaProps?: JSONSchema7
-  onSubmitActionInputs: (inputs: ActionInputs) => any
+  onSubmitActionInputs: (inputs: ActionInputs) => Promise<any>
 }
 
 const actionInputsFormFragment = gql`
@@ -87,16 +87,17 @@ const credentialsFragment = gql`
   }
 `
 
-export function ActionInputsForm(props: Props) {
-  const {
-    integrationActionId,
-    workflowTriggerId,
-    parentActionIds,
-    accountCredentialId,
-    initialInputs,
-    extraSchemaProps,
-    onSubmitActionInputs,
-  } = props
+export function ActionInputsForm({
+  integrationActionId,
+  workflowTriggerId,
+  parentActionIds,
+  accountCredentialId,
+  initialInputs,
+  extraSchemaProps,
+  onSubmitActionInputs,
+}: Props) {
+  const [submitLoading, setSubmitLoading] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const [inputs, setInputs] = useState(initialInputs)
   const [dependencyInputs, setDependencyInputs] = useState(initialInputs)
@@ -296,6 +297,18 @@ export function ActionInputsForm(props: Props) {
     }
   }
 
+  const onFormSubmit = async (data: Record<string, any>) => {
+    setSubmitLoading(true)
+    setSubmitError(null)
+    try {
+      await onSubmitActionInputs(data)
+    } catch (e: any) {
+      setSubmitError(e.message ?? 'Unknown error')
+    } finally {
+      setSubmitLoading(false)
+    }
+  }
+
   const isLoading = asyncSchemaRes?.loading || contractSchemaLoading
 
   return (
@@ -305,10 +318,20 @@ export function ActionInputsForm(props: Props) {
         initialInputs={inputs}
         parentOutputs={parentOutputs}
         loadingSchema={isLoading}
-        onSubmit={onSubmitActionInputs}
+        loading={submitLoading}
+        onSubmit={onFormSubmit}
         onChange={onChange}
       />
-      {contractSchemaError && <DisplayError error={contractSchemaError} />}
+      {(submitError ?? contractSchemaError) && (
+        <div className="mt-8">
+          <Alert
+            type="error"
+            message="Error executing the trigger:"
+            description={submitError ?? contractSchemaError}
+            showIcon
+          />
+        </div>
+      )}
     </>
   )
 }
