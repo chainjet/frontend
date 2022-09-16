@@ -26,14 +26,16 @@ export function IntegrationPageContainer(props: Props) {
   return (
     <>
       <LandingHeader />
-      <Card>
-        <SelectIntegration
-          initialCategory={category}
-          onCategoryChange={handleCategoryChange}
-          getIntegrationLink={(integration) => `/integrations/${integration.key}`}
-          getCategoryLink={(category) => (category ? `/integrations/category/${category.id}` : '/integrations')}
-        />
-      </Card>
+      <div style={{ marginTop: 110 }}>
+        <Card>
+          <SelectIntegration
+            initialCategory={category}
+            onCategoryChange={handleCategoryChange}
+            getIntegrationLink={(integration) => `/integrations/${integration.key}`}
+            getCategoryLink={(category) => (category ? `/integrations/category/${category.id}` : '/integrations')}
+          />
+        </Card>
+      </div>
       <LandingFooter />
     </>
   )

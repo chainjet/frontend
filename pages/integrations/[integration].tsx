@@ -3,7 +3,6 @@ import { Card, Typography } from 'antd'
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
 import { NextPageContext } from 'next'
 import Head from 'next/head'
-import React from 'react'
 import { Loading } from '../../components/common/RequestStates/Loading'
 import { IntegrationBanner } from '../../components/integrations/IntegrationBanner'
 import { LandingFooter } from '../../components/landing/LandingFooter'
@@ -115,25 +114,27 @@ function IntegrationPage(props: Props) {
       </Head>
       <LandingHeader />
 
-      <IntegrationBanner integration={integration} />
+      <div style={{ marginTop: 200 }}>
+        <IntegrationBanner integration={integration} />
 
-      {!!triggers.length && (
-        <Card style={{ padding: breakpoint.xs ? '0' : '16px 128px' }}>
-          <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <Typography.Title level={3}>Triggers</Typography.Title>
-          </div>
-          <OperationList integration={integration} operations={triggers} columns={breakpoint.xs ? 1 : 2} />
-        </Card>
-      )}
+        {!!triggers.length && (
+          <Card style={{ padding: breakpoint.xs ? '0' : '16px 128px' }}>
+            <div style={{ textAlign: 'center', marginBottom: 48 }}>
+              <Typography.Title level={3}>Triggers</Typography.Title>
+            </div>
+            <OperationList integration={integration} operations={triggers} columns={breakpoint.xs ? 1 : 2} />
+          </Card>
+        )}
 
-      {!!actions.length && (
-        <Card style={{ padding: breakpoint.xs ? '0' : '16px 128px' }}>
-          <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <Typography.Title level={3}>Actions</Typography.Title>
-          </div>
-          <OperationList integration={integration} operations={actions} columns={breakpoint.xs ? 1 : 2} />
-        </Card>
-      )}
+        {!!actions.length && (
+          <Card style={{ padding: breakpoint.xs ? '0' : '16px 128px' }}>
+            <div style={{ textAlign: 'center', marginBottom: 48 }}>
+              <Typography.Title level={3}>Actions</Typography.Title>
+            </div>
+            <OperationList integration={integration} operations={actions} columns={breakpoint.xs ? 1 : 2} />
+          </Card>
+        )}
+      </div>
 
       <LandingFooter />
     </>
