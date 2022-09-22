@@ -4,7 +4,6 @@ import {
   MenuUnfoldOutlined,
   PlusSquareOutlined,
   ProjectOutlined,
-  SettingOutlined,
 } from '@ant-design/icons'
 import { Dropdown, Layout, Menu } from 'antd'
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
@@ -12,7 +11,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { CSSProperties, useState } from 'react'
 import { GoKey } from 'react-icons/go'
-import { useLogout, useViewer } from '../../../src/services/UserHooks'
+import { useAccount, useConnect, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi'
+import ConnectWalletButton from '../../account/ConnectWalletButton'
 require('./PageLayout.less')
 
 interface Props {
@@ -20,20 +20,20 @@ interface Props {
 }
 
 export default function PageLayout({ children }: Props) {
-  const { viewer } = useViewer()
+  const { address, connector, isConnected, isConnecting } = useAccount()
+  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address })
+  const { data: ensName } = useEnsName({ address })
+  const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
+  const { disconnect } = useDisconnect()
   const router = useRouter()
   const breakpoint = useBreakpoint()
   const hasMobileSider = breakpoint.xs
   const [siderCollapsed, setSiderCollapsed] = useState(true)
-  const [logout] = useLogout()
+
+  console.log(`address: ${address}, isConnecting: ${isConnecting}, isConnected: ${isConnected}`)
 
   const handleSettingsClick = async () => {
     await router.push('/settings')
-  }
-
-  const handleLogoutClick = async () => {
-    await logout()
-    window.location.href = '/'
   }
 
   const renderLogo = () => {
@@ -51,12 +51,12 @@ export default function PageLayout({ children }: Props) {
   }
 
   const renderHeaderContent = () => {
-    if (viewer) {
+    if (address) {
       const menu = (
         <Menu
           items={[
-            { key: 'settings', label: 'Settings', icon: <SettingOutlined />, onClick: handleSettingsClick },
-            { key: 'logout', label: 'Logout', icon: <LogoutOutlined />, onClick: handleLogoutClick },
+            // { key: 'settings', label: 'Settings', icon: <SettingOutlined />, onClick: handleSettingsClick },
+            { key: 'logout', label: 'Logout', icon: <LogoutOutlined />, onClick: disconnect as any },
           ]}
         />
       )
@@ -64,12 +64,16 @@ export default function PageLayout({ children }: Props) {
       return (
         <Dropdown overlay={menu}>
           <span className="user-menu">
-            <span>{viewer.username}</span>
+            <span>{ensName ? `${ensName} (${address})` : address}</span>
           </span>
         </Dropdown>
       )
     } else {
-      return <Link href="/login">Login</Link>
+      return (
+        <div className="mr-4">
+          <ConnectWalletButton />
+        </div>
+      )
     }
   }
 

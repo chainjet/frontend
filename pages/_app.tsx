@@ -1,9 +1,44 @@
 import App from 'next/app'
 import Head from 'next/head'
+import { configureChains, createClient, defaultChains, WagmiConfig } from 'wagmi'
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
+import { InjectedConnector } from 'wagmi/connectors/injected'
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
+import { publicProvider } from 'wagmi/providers/public'
 import CookieConsent from '../components/common/CookieConsent'
-import { TidioChat } from '../components/common/TidioChat'
 import GoogleAnalytics from '../components/common/GoogleAnalytics'
+import { TidioChat } from '../components/common/TidioChat'
 import '../styles/globals.css'
+
+const { chains, provider } = configureChains(defaultChains, [publicProvider()])
+
+const client = createClient({
+  autoConnect: true,
+  connectors: [
+    new MetaMaskConnector({ chains }),
+    new CoinbaseWalletConnector({
+      chains,
+      options: {
+        appName: 'ChainJet',
+      },
+    }),
+    new WalletConnectConnector({
+      chains,
+      options: {
+        qrcode: true,
+      },
+    }),
+    new InjectedConnector({
+      chains,
+      options: {
+        name: 'Injected',
+        shimDisconnect: true,
+      },
+    }),
+  ],
+  provider,
+})
 
 export default class ChainJetApp extends App {
   render() {
@@ -37,7 +72,9 @@ export default class ChainJetApp extends App {
         <CookieConsent />
         <TidioChat />
 
-        <Component {...pageProps} />
+        <WagmiConfig client={client}>
+          <Component {...pageProps} />
+        </WagmiConfig>
       </>
     )
   }

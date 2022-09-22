@@ -1,11 +1,11 @@
 import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache, NormalizedCacheObject } from '@apollo/react-hooks'
 import fetch from 'isomorphic-unfetch'
 import { NextPageContext } from 'next'
-import { destroyCookie, parseCookies, setCookie } from 'nookies'
+import { parseCookies } from 'nookies'
 import PageLayout from '../components/common/PageLayout/PageLayout'
 import ViewerContextProvider from '../components/providers/ViewerContextProvider'
 import { User } from '../graphql'
-import { AuthService, TOKEN_COOKIE_NAME, USER_COOKIE_NAME } from './services/AuthService'
+import { AuthService, TOKEN_COOKIE_NAME } from './services/AuthService'
 import { UserTokens } from './typings/UserTokens'
 
 let globalApolloClient: ApolloClient<NormalizedCacheObject> | null = null
@@ -183,41 +183,4 @@ function createApolloClient(initialState: NormalizedCacheObject = {}, tokens?: U
       },
     }).restore(initialState),
   })
-}
-
-async function refreshCredentials(ctx: ApolloPageContext, username: string, tokens: UserTokens) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/v1/auth/token`, {
-    // TODO
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      username,
-      refreshToken: tokens.refreshToken,
-    }),
-  })
-
-  if (res.status >= 200 && res.status < 300) {
-    const options = {
-      path: '/',
-      ...(process.env.NEXT_PUBLIC_API_ENDPOINT?.includes('chainjet.io') ? { domain: '.chainjet.io' } : {}),
-    }
-    setCookie(
-      ctx,
-      TOKEN_COOKIE_NAME,
-      JSON.stringify({
-        ...tokens,
-        ...(await res.json()),
-        __typename: undefined,
-      }),
-      options,
-    )
-  } else if (res.status === 401) {
-    // invalid refresh token, remove all cookies
-    destroyCookie(ctx, USER_COOKIE_NAME)
-    destroyCookie(ctx, TOKEN_COOKIE_NAME)
-    refreshApolloClient()
-  }
 }
