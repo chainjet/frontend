@@ -28,8 +28,8 @@ module.exports = withHtml(
               destination: '/dist/index.html',
             },
             {
-              source: '/pricing',
-              destination: '/dist/pricing.html',
+              source: '/waiting-list',
+              destination: '/dist/waiting-list.html',
             },
           ]
         : [
