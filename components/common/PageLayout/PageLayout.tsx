@@ -1,17 +1,10 @@
-import {
-  LogoutOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  PlusSquareOutlined,
-  ProjectOutlined,
-} from '@ant-design/icons'
+import { LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, ProjectOutlined } from '@ant-design/icons'
 import { Dropdown, Layout, Menu } from 'antd'
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { CSSProperties, useState } from 'react'
-import { GoKey } from 'react-icons/go'
-import { useAccount, useConnect, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi'
+import React, { CSSProperties, useEffect, useState } from 'react'
+import { useAccount, useConnect, useDisconnect, useEnsName } from 'wagmi'
 import ConnectWalletButton from '../../account/ConnectWalletButton'
 require('./PageLayout.less')
 
@@ -21,16 +14,17 @@ interface Props {
 
 export default function PageLayout({ children }: Props) {
   const { address, connector, isConnected, isConnecting } = useAccount()
-  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address })
   const { data: ensName } = useEnsName({ address })
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
   const { disconnect } = useDisconnect()
   const router = useRouter()
   const breakpoint = useBreakpoint()
   const hasMobileSider = breakpoint.xs
-  const [siderCollapsed, setSiderCollapsed] = useState(true)
+  const [siderCollapsed, setSiderCollapsed] = useState(hasMobileSider)
 
-  console.log(`address: ${address}, isConnecting: ${isConnecting}, isConnected: ${isConnected}`)
+  useEffect(() => {
+    setSiderCollapsed(hasMobileSider)
+  }, [hasMobileSider])
 
   const handleSettingsClick = async () => {
     await router.push('/settings')
@@ -86,15 +80,7 @@ export default function PageLayout({ children }: Props) {
           theme="dark"
           mode="inline"
           defaultSelectedKeys={[router.pathname]}
-          items={[
-            {
-              key: '/create/notification',
-              label: <Link href="/create/notification">Create Notification</Link>,
-              icon: <PlusSquareOutlined />,
-            },
-            { key: '/account', label: <Link href="/account">Projects</Link>, icon: <ProjectOutlined /> },
-            { key: '/credentials', label: <Link href="/credentials">Credentials</Link>, icon: <GoKey /> },
-          ]}
+          items={[{ key: '/dashboard', label: <Link href="/dashboard">Dashboard</Link>, icon: <ProjectOutlined /> }]}
         />
       </Layout.Sider>
 
