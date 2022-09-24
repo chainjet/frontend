@@ -53,8 +53,6 @@ function CompleteAuthPage({ id, code, provider, completeUsername, completeEmail,
 
         if (redirectTo?.startsWith('/')) {
           router.push(redirectTo)
-        } else if (res.data.completeExternalAuth.project) {
-          await router.push(`/${res.data.completeExternalAuth.project.slug}`)
         } else {
           await router.push('/account')
         }
@@ -88,8 +86,6 @@ function CompleteAuthPage({ id, code, provider, completeUsername, completeEmail,
 
       if (redirectTo?.startsWith('/')) {
         router.push(redirectTo)
-      } else if (res.data.completeExternalAuth.project) {
-        await router.push(`/${res.data.completeExternalAuth.project.slug}`)
       } else {
         await router.push('/account')
       }

@@ -1,8 +1,7 @@
 import { WarningOutlined } from '@ant-design/icons'
-import React, { useState } from 'react'
-import { AccountCredential, Project } from '../../graphql'
+import { useState } from 'react'
+import { AccountCredential } from '../../graphql'
 import { useDeleteOneAccountCredential } from '../../src/services/AccountCredentialHooks'
-import { useDeleteOneProject } from '../../src/services/ProjectHooks'
 import { DeleteConfirmationModal } from '../common/Modals/DeleteConfirmationModal'
 
 interface Props {

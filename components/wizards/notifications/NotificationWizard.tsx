@@ -1,8 +1,5 @@
-import { gql } from '@apollo/client'
 import { Card, List, Typography } from 'antd'
 import { useMemo, useState } from 'react'
-import { useGetProjects } from '../../../src/services/ProjectHooks'
-import { Loading } from '../../common/RequestStates/Loading'
 import { EventNotificationStep } from './EventNotificationStep'
 import { NftNotificationStep } from './NftNotificationStep'
 import { TokenNotificationStep } from './TokenNotificationStep'
@@ -15,19 +12,8 @@ interface TriggerOption {
   component: JSX.Element
 }
 
-const projectsFragment = gql`
-  fragment NotificationWizardProjectsFragment on Project {
-    id
-    slug
-    name
-  }
-`
-
 export function NotificationWizard() {
-  const { data, loading, error } = useGetProjects(projectsFragment)
   const [triggerOption, setTriggerOption] = useState<TriggerOption | null>(null)
-
-  const projects = data?.projects.edges.map((edge) => edge.node)
 
   const triggerTypeOptions: TriggerOption[] = useMemo(
     () => [
@@ -35,33 +21,29 @@ export function NotificationWizard() {
         id: 'token-transfer',
         name: 'Token received on an address',
         description: 'A notification is sent every time a token is received on a given address.',
-        component: <TokenNotificationStep projects={projects ?? []} />,
+        component: <TokenNotificationStep />,
       },
       {
         id: 'nft-transfer',
         name: 'NFT received on an address',
         description: 'A notification is sent every time a NFT is received on a given address.',
-        component: <NftNotificationStep projects={projects ?? []} />,
+        component: <NftNotificationStep />,
       },
       {
         id: 'transaction',
         name: 'Transaction made on an address',
         description: 'A notification is sent every time a transaction is made on a given address.',
-        component: <TransactionNotificationStep projects={projects ?? []} />,
+        component: <TransactionNotificationStep />,
       },
       {
         id: 'event',
         name: 'Event emitted by a smart contract',
         description: 'A notification is sent every time a given smart contract emits an event.',
-        component: <EventNotificationStep projects={projects ?? []} />,
+        component: <EventNotificationStep />,
       },
     ],
-    [projects],
+    [],
   )
-
-  if (!data?.projects?.edges?.length) {
-    return <Loading />
-  }
 
   const onTriggerOptionSelected = (option: TriggerOption) => {
     console.log(`Selected option: ${option.id}`)

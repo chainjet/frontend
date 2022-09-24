@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 import { Alert, Button } from 'antd'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { Integration, Project } from '../../../graphql'
+import { Integration } from '../../../graphql'
 import { ChainId, NETWORK } from '../../../src/constants/networks'
 import { useGetIntegrations } from '../../../src/services/IntegrationHooks'
 import { useGetIntegrationTriggers } from '../../../src/services/IntegrationTriggerHooks'
@@ -25,7 +25,7 @@ const integrationTriggerFragment = gql`
   }
 `
 
-export function EventNotificationStep({ projects }: { projects: Project[] }) {
+export function EventNotificationStep() {
   const [inputs, setInputs] = useState<Record<string, any>>({})
   const [credentialsId, setCredentialsId] = useState<string>()
   const [notificationIntegration, setNotificationIntegration] = useState<Integration>()
@@ -61,8 +61,8 @@ export function EventNotificationStep({ projects }: { projects: Project[] }) {
   const integrationTrigger = integrationTriggerData?.integrationTriggers?.edges?.[0]?.node
 
   useEffect(() => {
-    if (workflow?.slug && workflowActions?.length) {
-      router.push(`/${workflow.slug}`)
+    if (workflow?.id && workflowActions?.length) {
+      router.push(`/workflows/${workflow.id}`)
     }
   }, [router, workflow, workflowActions])
 
@@ -128,7 +128,6 @@ export function EventNotificationStep({ projects }: { projects: Project[] }) {
     setError(null)
     try {
       await createWorflowWithOperations({
-        projectId: inputs.project ?? projects[0].id,
         workflowName: 'Send notification when an event is emitted',
         integration: {
           key: 'blockchain',
@@ -137,7 +136,6 @@ export function EventNotificationStep({ projects }: { projects: Project[] }) {
           key: 'newEvent',
           inputs: {
             ...inputs,
-            project: undefined,
           },
         },
         actions: [getWorkflowActionData(notificationIntegration.key)],

@@ -9,8 +9,20 @@ import {
   WorkflowFilter,
   WorkflowSort,
 } from '../../graphql'
-import { QueryMany } from '../typings/GraphQL'
-import { getListEntitiesQuery } from './GraphQLHooks'
+import { QueryById, QueryMany } from '../typings/GraphQL'
+import { getEntityQuery, getListEntitiesQuery } from './GraphQLHooks'
+
+export function useGetWorkflowById(
+  fragment: DocumentNode,
+  options: QueryHookOptions<{ workflow: Workflow }, QueryById>,
+) {
+  const query = getEntityQuery({
+    entityName: 'workflow',
+    key: 'id',
+    fragment,
+  })
+  return useQuery<{ workflow: Workflow }, QueryById>(query, options)
+}
 
 export function useGetWorkflows(
   fragment: DocumentNode,
@@ -30,7 +42,6 @@ export function useCreateOneWorkflow() {
     mutation ($input: CreateOneWorkflowInput!) {
       createOneWorkflow(input: $input) {
         id
-        slug
       }
     }
   `
@@ -42,7 +53,6 @@ export function useUpdateOneWorkflow() {
     mutation ($input: UpdateOneWorkflowInput!) {
       updateOneWorkflow(input: $input) {
         id
-        slug
         name
         runOnFailure
       }

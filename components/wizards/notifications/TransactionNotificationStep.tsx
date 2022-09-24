@@ -2,13 +2,13 @@ import { Alert, Button } from 'antd'
 import { JSONSchema7 } from 'json-schema'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { Integration, Project } from '../../../graphql'
+import { Integration } from '../../../graphql'
 import { useCreateWorkflowWithOperations } from '../../../src/services/WizardHooks'
 import { getEtherscanNetworkSchema, getExplorerUrlForIntegration } from '../../../src/utils/blockchain.utils'
 import { SchemaForm } from '../../common/Forms/schema-form/SchemaForm'
 import { IntegrationNotificationStep } from './IntegrationNotificationStep'
 
-export function TransactionNotificationStep({ projects }: { projects: Project[] }) {
+export function TransactionNotificationStep() {
   const [inputs, setInputs] = useState<Record<string, any>>({})
   const [credentialsId, setCredentialsId] = useState<string>()
   const [notificationIntegration, setNotificationIntegration] = useState<Integration>()
@@ -23,25 +23,15 @@ export function TransactionNotificationStep({ projects }: { projects: Project[] 
   const router = useRouter()
 
   useEffect(() => {
-    if (workflow?.slug && workflowActions?.length) {
-      router.push(`/${workflow.slug}`)
+    if (workflow?.id && workflowActions?.length) {
+      router.push(`/workflows/${workflow.id}`)
     }
   }, [router, workflow, workflowActions])
 
   const schema: JSONSchema7 = {
     type: 'object',
-    required: projects.length > 1 ? ['project', 'network', 'address'] : ['network', 'address'],
+    required: ['network', 'address'],
     properties: {
-      ...(projects.length > 1
-        ? {
-            project: {
-              title: 'Project',
-              type: 'string',
-              default: projects[0].id,
-              oneOf: projects.map((project) => ({ title: project.name, const: project.id })),
-            },
-          }
-        : {}),
       network: getEtherscanNetworkSchema(),
       address: {
         title: 'Receiver address',
@@ -107,7 +97,6 @@ export function TransactionNotificationStep({ projects }: { projects: Project[] 
     setError(null)
     try {
       await createWorflowWithOperations({
-        projectId: inputs.project ?? projects[0].id,
         workflowName: 'Send notification when a transaction occurs',
         integration: {
           key: inputs.network,
@@ -116,7 +105,6 @@ export function TransactionNotificationStep({ projects }: { projects: Project[] 
           key: 'listTransactions',
           inputs: {
             ...inputs,
-            project: undefined,
           },
           schedule: {
             frequency: 'interval',

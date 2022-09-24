@@ -3,7 +3,6 @@ import { Table } from 'antd'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import Link from 'next/link'
-import React from 'react'
 import { Workflow, WorkflowRun } from '../../graphql'
 
 interface Props {
@@ -11,9 +10,8 @@ interface Props {
   workflow: Workflow
 }
 
-export const WorkflowRunsTable = (props: Props) => {
+export const WorkflowRunsTable = ({ workflowRuns, workflow }: Props) => {
   dayjs.extend(relativeTime)
-  const { workflowRuns, workflow } = props
 
   const dataSource = workflowRuns.map((run) => ({
     key: run.id,
@@ -22,7 +20,7 @@ export const WorkflowRunsTable = (props: Props) => {
     workflowTriggered: run.triggerRun?.workflowTriggered ? 'Yes' : 'No',
     operationsUsed: run.operationsUsed,
     logs: (
-      <Link href="/[username]/[project]/workflow/[workflow]/run/[workflowRun]" as={`/${workflow.slug}/run/${run.id}`}>
+      <Link key={run.id} href={`/workflows/${workflow.id}/run/${run.id}`}>
         <a>View logs</a>
       </Link>
     ),
@@ -74,7 +72,6 @@ WorkflowRunsTable.fragments = {
   Workflow: gql`
     fragment WorkflowRunsTable_Workflow on Workflow {
       id
-      slug
     }
   `,
 }

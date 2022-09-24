@@ -1,23 +1,21 @@
-import React, { useEffect } from 'react'
 import { gql } from '@apollo/client'
-import { NextPageContext } from 'next'
-import { Loading } from '../../../../../../components/common/RequestStates/Loading'
-import { RequestError } from '../../../../../../components/common/RequestStates/RequestError'
-import { withApollo } from '../../../../../../src/apollo'
-import { useGetWorkflowRunById } from '../../../../../../src/services/WorkflowRunHooks'
 import { Table, Tag } from 'antd'
-import { PageWrapper } from '../../../../../../components/common/PageLayout/PageWrapper'
-import Router from 'next/router'
-import { getQueryParam } from '../../../../../../src/utils/nextUtils'
 import dayjs from 'dayjs'
-import { WorkflowRunStartedByOptions, WorkflowRunStatus } from '../../../../../../graphql'
-import { assertNever } from '../../../../../../src/utils/typescript.utils'
+import { NextPageContext } from 'next'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { PageWrapper } from '../../../../components/common/PageLayout/PageWrapper'
+import { Loading } from '../../../../components/common/RequestStates/Loading'
+import { RequestError } from '../../../../components/common/RequestStates/RequestError'
+import { WorkflowRunStartedByOptions, WorkflowRunStatus } from '../../../../graphql'
+import { withApollo } from '../../../../src/apollo'
+import { useGetWorkflowRunById } from '../../../../src/services/WorkflowRunHooks'
+import { getQueryParam } from '../../../../src/utils/nextUtils'
+import { assertNever } from '../../../../src/utils/typescript.utils'
 
 interface Props {
-  username: string
-  projectName: string
-  workflowName: string
+  workflowId: string
   workflowRunId: string
 }
 
@@ -48,8 +46,8 @@ const workflowRunFragment = gql`
   }
 `
 
-function WorkflowRunPage(props: Props) {
-  const { username, projectName, workflowName, workflowRunId } = props
+function WorkflowRunPage({ workflowId, workflowRunId }: Props) {
+  const router = useRouter()
   const { data, error, loading, startPolling, stopPolling } = useGetWorkflowRunById(workflowRunFragment, {
     variables: {
       id: workflowRunId,
@@ -209,10 +207,7 @@ function WorkflowRunPage(props: Props) {
   ]
 
   const handleGoBack = async () => {
-    await Router.push(
-      '/[username]/[project]/workflow/[workflow]',
-      `/${username}/${projectName}/workflow/${workflowName}`,
-    )
+    await router.push(`/workflows/${workflowId}`)
   }
 
   const getWorkflowStatusTag = () => {
@@ -295,9 +290,7 @@ function WorkflowRunPage(props: Props) {
 
 WorkflowRunPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> => {
   return {
-    username: getQueryParam(ctx, 'username').toLowerCase(),
-    projectName: getQueryParam(ctx, 'project').toLowerCase(),
-    workflowName: getQueryParam(ctx, 'workflow').toLowerCase(),
+    workflowId: getQueryParam(ctx, 'id').toLowerCase(),
     workflowRunId: getQueryParam(ctx, 'workflowRun').toLowerCase(),
   }
 }

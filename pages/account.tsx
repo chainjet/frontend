@@ -2,7 +2,7 @@ import { Button } from 'antd'
 import Head from 'next/head'
 import Link from 'next/link'
 import { PageWrapper } from '../components/common/PageLayout/PageWrapper'
-import { UserProjects } from '../components/projects/UserProjects'
+import { UserWorkflows } from '../components/workflows/UserWorkflows'
 import { withApollo } from '../src/apollo'
 import { useRedirectGuests } from '../src/services/UserHooks'
 
@@ -16,15 +16,15 @@ function HomePage() {
   return (
     <>
       <Head>
-        <title>ChainJet Projects</title>
+        <title>ChainJet Workflows</title>
       </Head>
-      <PageWrapper title="Projects">
+      <PageWrapper title="Workflows">
         <div style={{ marginBottom: 16 }}>
-          <Link href="/new">
-            <Button type="primary">Create Project</Button>
+          <Link href="/create/workflow">
+            <Button type="primary">Create Workflow</Button>
           </Link>
         </div>
-        <UserProjects />
+        <UserWorkflows />
       </PageWrapper>
     </>
   )

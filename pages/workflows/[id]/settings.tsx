@@ -1,76 +1,59 @@
 import { gql } from '@apollo/client'
-import { NextPageContext } from 'next'
-import Router from 'next/router'
-import Head from 'next/head'
-import React, { useEffect, useState } from 'react'
 import { Button, Card } from 'antd'
-import { PageWrapper } from '../../../../../components/common/PageLayout/PageWrapper'
-import { Loading } from '../../../../../components/common/RequestStates/Loading'
-import { RequestError } from '../../../../../components/common/RequestStates/RequestError'
-import { withApollo } from '../../../../../src/apollo'
-import { useGetWorkflows, useUpdateOneWorkflow } from '../../../../../src/services/WorkflowHooks'
-import { getQueryParam } from '../../../../../src/utils/nextUtils'
-import { WorkflowForm } from '../../../../../components/workflows/WorkflowForm'
-import { Workflow, WorkflowTrigger } from '../../../../../graphql'
-import { DeleteWorkflowModal } from '../../../../../components/workflows/DeleteWorkflowModal'
-import { useUpdateOneWorkflowTrigger } from '../../../../../src/services/WorkflowTriggerHooks'
+import { NextPageContext } from 'next'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
+import { PageWrapper } from '../../../components/common/PageLayout/PageWrapper'
+import { Loading } from '../../../components/common/RequestStates/Loading'
+import { RequestError } from '../../../components/common/RequestStates/RequestError'
+import { DeleteWorkflowModal } from '../../../components/workflows/DeleteWorkflowModal'
+import { WorkflowForm } from '../../../components/workflows/WorkflowForm'
+import { Workflow, WorkflowTrigger } from '../../../graphql'
+import { withApollo } from '../../../src/apollo'
+import { useGetWorkflowById, useUpdateOneWorkflow } from '../../../src/services/WorkflowHooks'
+import { useUpdateOneWorkflowTrigger } from '../../../src/services/WorkflowTriggerHooks'
+import { getQueryParam } from '../../../src/utils/nextUtils'
 
 interface Props {
-  username: string
-  projectName: string
-  workflowName: string
+  workflowId: string
 }
 
 const workflowFragment = gql`
   fragment WorkflowSettingsPage on Workflow {
     id
-    slug
     ...WorkflowForm_Workflow
-    project {
-      ...WorkflowForm_Project
-    }
     trigger {
       ...WorkflowForm_WorkflowTrigger
     }
   }
   ${WorkflowForm.fragments.Workflow}
-  ${WorkflowForm.fragments.Project}
   ${WorkflowForm.fragments.WorkflowTrigger}
 `
 
-function WorkflowSettingsPage(props: Props) {
-  const { data, loading, error } = useGetWorkflows(workflowFragment, {
+function WorkflowSettingsPage({ workflowId }: Props) {
+  const router = useRouter()
+  const { data, loading, error, refetch } = useGetWorkflowById(workflowFragment, {
     variables: {
-      filter: {
-        slug: {
-          eq: `${props.username}/${props.projectName}/workflow/${props.workflowName}`.toLowerCase(),
-        },
-      },
+      id: workflowId,
     },
   })
-  const [workflow, setWorkflow] = useState(data?.workflows.edges[0].node)
   const [updateLoading, setUpdateLoading] = useState(false)
   const [updateError, setUpdateError] = useState<string | null>(null)
   const [updateWorkflow] = useUpdateOneWorkflow()
   const [updateWorkflowTrigger] = useUpdateOneWorkflowTrigger()
   const [deleteWorkflowModalOpen, setDeleteWorkflowModalOpen] = useState(false)
 
-  useEffect(() => {
-    setWorkflow(data?.workflows.edges[0].node)
-  }, [data])
-
   if (loading) {
     return <Loading />
   }
-  if (error || !workflow) {
+  if (error || !data?.workflow) {
     return <RequestError error={error} />
   }
+  const { workflow } = data
 
-  const handleWorkflowChange = (key: keyof Workflow, value: any) => {
-    setWorkflow({
-      ...workflow,
-      [key]: value,
-    })
+  const handleWorkflowChange = () => {
+    refetch()
   }
 
   const handleWorkflowUpdate = async (update: Partial<Workflow> & Partial<WorkflowTrigger>) => {
@@ -97,7 +80,7 @@ function WorkflowSettingsPage(props: Props) {
           },
         },
       })
-      await Router.push('/[username]/[project]/workflow/[workflow]', `/${res.data?.updateOneWorkflow.slug}`)
+      await router.push(`/workflows/${workflowId}`)
     } catch (e: any) {
       setUpdateError(e?.message)
     }
@@ -105,11 +88,11 @@ function WorkflowSettingsPage(props: Props) {
   }
 
   const handleWorkflowDelete = async () => {
-    await Router.push('/[username]/[project]', `/${workflow.project.slug}`)
+    await router.push('/account')
   }
 
   const handleGoBack = async () => {
-    await Router.push('/[username]/[project]/workflow/[workflow]', `/${workflow.slug}`)
+    await router.push(`/workflows/${workflowId}`)
   }
 
   return (
@@ -149,9 +132,7 @@ function WorkflowSettingsPage(props: Props) {
 
 WorkflowSettingsPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> => {
   return {
-    username: getQueryParam(ctx, 'username').toLowerCase(),
-    projectName: getQueryParam(ctx, 'project').toLowerCase(),
-    workflowName: getQueryParam(ctx, 'workflow').toLowerCase(),
+    workflowId: getQueryParam(ctx, 'id').toLowerCase(),
   }
 }
 

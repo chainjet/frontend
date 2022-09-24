@@ -1,7 +1,6 @@
 import { WarningOutlined } from '@ant-design/icons'
-import React, { useState } from 'react'
-import { Project, Workflow } from '../../graphql'
-import { useDeleteOneProject } from '../../src/services/ProjectHooks'
+import { useState } from 'react'
+import { Workflow } from '../../graphql'
 import { useDeleteOneWorkflow } from '../../src/services/WorkflowHooks'
 import { DeleteConfirmationModal } from '../common/Modals/DeleteConfirmationModal'
 

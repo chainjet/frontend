@@ -82,10 +82,6 @@ export function useRegister() {
           accessTokenExpiration
           refreshToken
         }
-        project {
-          id
-          slug
-        }
       }
     }
   `
@@ -188,10 +184,6 @@ export function useCompleteExternalAuth() {
         token {
           accessToken
           refreshToken
-        }
-        project {
-          id
-          slug
         }
       }
     }

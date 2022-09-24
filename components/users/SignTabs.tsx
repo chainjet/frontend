@@ -83,11 +83,7 @@ export const SignTabs = (props: Props) => {
           await redirectAfterAuth('/create/notification')
           break
         default:
-          if (res?.data?.register?.project?.slug) {
-            await redirectAfterAuth(`/${res.data.register.project.slug}`)
-          } else {
-            await redirectAfterAuth('/account')
-          }
+          await redirectAfterAuth('/account')
       }
     } catch (e: any) {
       setError(e?.message)

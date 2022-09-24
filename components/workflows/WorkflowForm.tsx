@@ -1,8 +1,7 @@
 import { gql } from '@apollo/client'
 import { Alert, Button, Form, Input, Switch } from 'antd'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Workflow } from '../../graphql'
-import { slugify } from '../../src/utils/strings'
 import { WorkflowSelector } from './WorkflowSelector'
 
 interface Props {
@@ -56,7 +55,6 @@ export const WorkflowForm = (props: Props) => {
           label="Workflow Name"
           initialValue={name}
           rules={[{ required: true }]}
-          help={name && `https://chainjet.io/${workflow.project.slug}/workflow/${slugify(name)}`}
           style={{ marginBottom: 32 }}
         >
           <Input allowClear onChange={(e) => handleNameChange(e.target.value)} />
@@ -83,7 +81,6 @@ export const WorkflowForm = (props: Props) => {
         {runWorkflowOnFailureEnabled && (
           <div style={{ marginBottom: 32 }}>
             <WorkflowSelector
-              projectId={workflow.project.id}
               selectedWorkflowId={runOnFailure ?? undefined}
               onChange={handleRunOnFailureChange}
               filterWorkflows={(wf) => wf.id !== workflow.id}
@@ -116,13 +113,6 @@ WorkflowForm.fragments = {
     fragment WorkflowForm_WorkflowTrigger on WorkflowTrigger {
       id
       maxConsecutiveFailures
-    }
-  `,
-
-  Project: gql`
-    fragment WorkflowForm_Project on Project {
-      id
-      slug
     }
   `,
 }

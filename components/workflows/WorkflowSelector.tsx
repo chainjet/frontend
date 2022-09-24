@@ -1,6 +1,5 @@
 import { gql } from '@apollo/client'
 import { Select } from 'antd'
-import React from 'react'
 import { Workflow } from '../../graphql'
 import { useGetWorkflows } from '../../src/services/WorkflowHooks'
 import { Loading } from '../common/RequestStates/Loading'
@@ -14,21 +13,13 @@ const workflowsFragment = gql`
 `
 
 interface Props {
-  projectId: string
   selectedWorkflowId?: string
   onChange: (workflowId: string) => void
   filterWorkflows?: (workflow: Workflow) => boolean
 }
 
-export function WorkflowSelector(props: Props) {
-  const { projectId, selectedWorkflowId, onChange, filterWorkflows } = props
-  const { data, loading, error } = useGetWorkflows(workflowsFragment, {
-    variables: {
-      filter: {
-        project: { eq: projectId },
-      },
-    },
-  })
+export function WorkflowSelector({ selectedWorkflowId, onChange, filterWorkflows }: Props) {
+  const { data, loading, error } = useGetWorkflows(workflowsFragment, {})
 
   if (loading) {
     return <Loading />
@@ -49,7 +40,9 @@ export function WorkflowSelector(props: Props) {
       style={{ width: '100%' }}
     >
       {workflows.map((workflow) => (
-        <Select.Option value={workflow.id}>{workflow.name}</Select.Option>
+        <Select.Option key={workflow.id} value={workflow.id}>
+          {workflow.name}
+        </Select.Option>
       ))}
     </Select>
   )

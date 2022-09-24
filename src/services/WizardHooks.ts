@@ -17,7 +17,6 @@ type OperationData = {
 type TriggerData = OperationData & { schedule?: Record<string, any> }
 
 interface CreateWorkflowWithOperations {
-  projectId: string
   workflowName: string
   integration: {
     id?: string
@@ -105,7 +104,7 @@ export function useCreateWorkflowWithOperations() {
   const dataLoading = integrationLoading || integrationTriggerLoading || integrationActionsLoading
 
   const createWorflowWithOperations = useCallback(
-    async ({ projectId, workflowName, integration, trigger, actions }: CreateWorkflowWithOperations) => {
+    async ({ workflowName, integration, trigger, actions }: CreateWorkflowWithOperations) => {
       setLoading(true)
       setIntegrationQuery(integration)
       setTrigger(trigger)
@@ -114,7 +113,6 @@ export function useCreateWorkflowWithOperations() {
         variables: {
           input: {
             workflow: {
-              project: projectId,
               name: workflowName,
             },
           },

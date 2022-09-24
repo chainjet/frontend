@@ -3,35 +3,29 @@ import { gql } from '@apollo/client'
 import { Button, Switch } from 'antd'
 import { NextPageContext } from 'next'
 import Head from 'next/head'
-import Router from 'next/router'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { PageWrapper } from '../../../../components/common/PageLayout/PageWrapper'
-import { Loading } from '../../../../components/common/RequestStates/Loading'
-import { RequestError } from '../../../../components/common/RequestStates/RequestError'
-import { WorkflowDiagramFragments } from '../../../../components/workflow-nodes/workflow-diagram/WorkflowDiagramFragments'
-import { WorkflowDiagramContainer } from '../../../../components/workflow-nodes/WorkflowDiagramContainer'
-import { WorkflowRunHistoryModal } from '../../../../components/workflow-runs/WorkflowRunHistoryModal'
-import { WorkflowRunsTable } from '../../../../components/workflow-runs/WorkflowRunsTable'
-import { withApollo } from '../../../../src/apollo'
-import { useGetWorkflows } from '../../../../src/services/WorkflowHooks'
-import { useUpdateOneWorkflowTrigger } from '../../../../src/services/WorkflowTriggerHooks'
-import { getQueryParam } from '../../../../src/utils/nextUtils'
+import { PageWrapper } from '../../../components/common/PageLayout/PageWrapper'
+import { Loading } from '../../../components/common/RequestStates/Loading'
+import { RequestError } from '../../../components/common/RequestStates/RequestError'
+import { WorkflowDiagramFragments } from '../../../components/workflow-nodes/workflow-diagram/WorkflowDiagramFragments'
+import { WorkflowDiagramContainer } from '../../../components/workflow-nodes/WorkflowDiagramContainer'
+import { WorkflowRunHistoryModal } from '../../../components/workflow-runs/WorkflowRunHistoryModal'
+import { WorkflowRunsTable } from '../../../components/workflow-runs/WorkflowRunsTable'
+import { withApollo } from '../../../src/apollo'
+import { useGetWorkflowById } from '../../../src/services/WorkflowHooks'
+import { useUpdateOneWorkflowTrigger } from '../../../src/services/WorkflowTriggerHooks'
+import { getQueryParam } from '../../../src/utils/nextUtils'
 require('./workflow.less')
 
 interface Props {
-  username: string
-  projectName: string
-  workflowName: string
+  workflowId: string
 }
 
 const workflowFragment = gql`
   fragment WorkflowPage on Workflow {
     id
     name
-    project {
-      id
-      slug
-    }
     trigger {
       id
       enabled
@@ -51,14 +45,11 @@ const workflowFragment = gql`
   ${WorkflowRunsTable.fragments.Workflow}
 `
 
-function WorkflowPage(props: Props) {
-  const { data, loading, error, refetch } = useGetWorkflows(workflowFragment, {
+function WorkflowPage({ workflowId }: Props) {
+  const router = useRouter()
+  const { data, loading, error, refetch } = useGetWorkflowById(workflowFragment, {
     variables: {
-      filter: {
-        slug: {
-          eq: `${props.username}/${props.projectName}/workflow/${props.workflowName}`.toLowerCase(),
-        },
-      },
+      id: workflowId,
     },
   })
   const [updateWorkflowTrigger] = useUpdateOneWorkflowTrigger()
@@ -68,22 +59,22 @@ function WorkflowPage(props: Props) {
   if (loading) {
     return <Loading />
   }
-  if (error || !data?.workflows?.edges?.[0]?.node) {
+  if (error || !data?.workflow) {
     return <RequestError error={error} />
   }
 
-  const workflow = data.workflows.edges[0].node
+  const { workflow } = data
 
   const handleWorkflowChange = async () => {
     await refetch()
   }
 
   const handleGoBack = async () => {
-    await Router.push('/[username]/[project]', `/${workflow.project.slug}`)
+    await router.push('/account')
   }
 
   const handleSettingsClick = async () => {
-    await Router.push('/[username]/[project]/workflow/[workflow]/settings', `/${workflow.slug}/settings`)
+    await router.push(`/workflows/${workflowId}/settings`)
   }
 
   const handleEnableClick = async (enabled: boolean) => {
@@ -153,9 +144,7 @@ function WorkflowPage(props: Props) {
 
 WorkflowPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> => {
   return {
-    username: getQueryParam(ctx, 'username').toLowerCase(),
-    projectName: getQueryParam(ctx, 'project').toLowerCase(),
-    workflowName: getQueryParam(ctx, 'workflow').toLowerCase(),
+    workflowId: getQueryParam(ctx, 'id').toLowerCase(),
   }
 }
 
