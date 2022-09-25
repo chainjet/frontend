@@ -35,7 +35,6 @@ export function ConnectWallet({
       {connectors.map((connector) => (
         <button
           className="inline-flex items-center justify-center w-full px-4 py-2 mb-4 text-xl text-white rounded cursor-pointer bg-primary hover:bg-primary-hover"
-          disabled={!connector.ready}
           key={connector.id}
           onClick={() => connect({ connector })}
         >
