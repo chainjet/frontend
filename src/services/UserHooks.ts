@@ -1,8 +1,7 @@
-import { gql, gql as graphqlTag, OperationVariables } from '@apollo/client'
-import { MutationFunctionOptions } from '@apollo/react-common'
+import { gql, gql as graphqlTag } from '@apollo/client'
 import { DocumentNode, QueryHookOptions, useMutation, useQuery } from '@apollo/react-hooks'
 import { useRouter } from 'next/router'
-import { destroyCookie as nookiesDestroyCookie, setCookie } from 'nookies'
+import { destroyCookie as nookiesDestroyCookie } from 'nookies'
 import { useContext, useEffect } from 'react'
 import { useDisconnect } from 'wagmi'
 import { SignerContext } from '../../components/providers/ViewerContextProvider'
@@ -70,32 +69,6 @@ export function useChangePassword() {
   return useMutation<{ changePassword: User }, { newPassword: string; oldPassword: string }>(mutation)
 }
 
-export function useRegister() {
-  const mutation = gql`
-    mutation register($email: String!, $username: String!, $password: String!) {
-      register(email: $email, username: $username, password: $password) {
-        user {
-          id
-          username
-        }
-        token {
-          accessToken
-          accessTokenExpiration
-          refreshToken
-        }
-      }
-    }
-  `
-  const [register] = useMutation(mutation)
-  return [
-    async <TData>(options?: MutationFunctionOptions<TData, OperationVariables>) => {
-      const res = await register(options)
-      createCookies(res.data.register)
-      return res
-    },
-  ]
-}
-
 export function useLogout() {
   const { disconnect } = useDisconnect()
   return [
@@ -116,21 +89,10 @@ export function useLogout() {
   ]
 }
 
-export function useVerifyEmail() {
+export function useRequestMigration() {
   const mutation = gql`
-    mutation verifyEmail($username: String!, $code: String!) {
-      verifyEmail(username: $username, code: $code) {
-        error
-      }
-    }
-  `
-  return useMutation(mutation)
-}
-
-export function useRequestPasswordReset() {
-  const mutation = gql`
-    mutation requestPasswordReset($email: String!) {
-      requestPasswordReset(email: $email) {
+    mutation requestMigration($email: String!) {
+      requestMigration(email: $email) {
         result
       }
     }
@@ -138,40 +100,15 @@ export function useRequestPasswordReset() {
   return useMutation(mutation)
 }
 
-export function useCompletePasswordReset() {
+export function useCompleteMigration() {
   const mutation = gql`
-    mutation completePasswordReset($username: String!, $password: String!, $code: String!) {
-      completePasswordReset(username: $username, password: $password, code: $code) {
-        error
+    mutation completeMigration($email: String!, $code: String!, $data: String!) {
+      completeMigration(email: $email, code: $code, data: $data) {
+        result
       }
     }
   `
   return useMutation(mutation)
-}
-
-export function useCompleteExternalAuth() {
-  const mutation = gql`
-    mutation completeExternalAuth($id: String!, $code: String!, $username: String!, $email: String!) {
-      completeExternalAuth(id: $id, code: $code, username: $username, email: $email) {
-        user {
-          id
-          username
-        }
-        token {
-          accessToken
-          refreshToken
-        }
-      }
-    }
-  `
-  const [completeSocialAuthentication] = useMutation(mutation)
-  return [
-    async <TData>(options?: MutationFunctionOptions<TData, OperationVariables>) => {
-      const res = await completeSocialAuthentication(options)
-      createCookies(res.data.completeExternalAuth)
-      return res
-    },
-  ]
 }
 
 export function useGenerateApiKey() {
@@ -183,15 +120,6 @@ export function useGenerateApiKey() {
     }
   `
   return useMutation(mutation)
-}
-
-function createCookies(data: { token: any; user: User }) {
-  const options = {
-    path: '/',
-    ...(process.env.NEXT_PUBLIC_API_ENDPOINT?.includes('chainjet.io') ? { domain: '.chainjet.io' } : {}),
-  }
-  setCookie(null, TOKEN_COOKIE_NAME, JSON.stringify(data.token), options)
-  refreshApolloClient()
 }
 
 function destroyCookie(name: string) {

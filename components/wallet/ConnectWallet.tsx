@@ -6,9 +6,13 @@ import { SignInWithEthereum } from './SignInWithEthereum'
 export function ConnectWallet({
   onSuccess,
   onError,
+  beforeLogin,
+  message,
 }: {
   onSuccess: (args: { address: string }) => void
   onError: (args: { error: Error }) => void
+  beforeLogin?: (data: string) => Promise<boolean>
+  message?: string
 }) {
   const { isConnected } = useAccount()
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
@@ -21,12 +25,12 @@ export function ConnectWallet({
   }
 
   if (isConnected) {
-    return <SignInWithEthereum onSuccess={onSuccess} onError={onError} />
+    return <SignInWithEthereum onSuccess={onSuccess} onError={onError} beforeLogin={beforeLogin} />
   }
 
   return (
     <>
-      <div className="mb-6 text-lg text-center">Connect your wallet with ChainJet</div>
+      <div className="mb-6 text-lg text-center">{message ?? 'Connect your wallet with ChainJet'}</div>
       {error && <Alert message={error?.message} type="error" showIcon style={{ marginBottom: 24 }} />}
       {connectors.map((connector) => (
         <button

@@ -10,9 +10,11 @@ import { Loading } from '../common/RequestStates/Loading'
 export function SignInWithEthereum({
   onSuccess,
   onError,
+  beforeLogin,
 }: {
   onSuccess: (args: { address: string }) => void
   onError: (args: { error: Error }) => void
+  beforeLogin?: (data: string) => Promise<boolean>
 }) {
   const { address } = useAccount()
   const { chain: activeChain } = useNetwork()
@@ -68,6 +70,14 @@ export function SignInWithEthereum({
       const signature = await signMessageAsync({
         message: message.prepareMessage(),
       })
+
+      if (beforeLogin) {
+        const canContinue = await beforeLogin(JSON.stringify({ message, signature }))
+        if (!canContinue) {
+          setState((x) => ({ ...x, loading: false }))
+          return
+        }
+      }
 
       // Do login
       const loginRes = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/auth/login`, {
