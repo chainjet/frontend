@@ -4,13 +4,12 @@ import {
   MenuUnfoldOutlined,
   PlusSquareOutlined,
   ProjectOutlined,
-  SettingOutlined,
 } from '@ant-design/icons'
 import { Dropdown, Layout, Menu } from 'antd'
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { CSSProperties, useState } from 'react'
+import React, { CSSProperties, useEffect, useState } from 'react'
 import { GoKey } from 'react-icons/go'
 import { useLogout, useViewer } from '../../../src/services/UserHooks'
 require('./PageLayout.less')
@@ -24,8 +23,12 @@ export default function PageLayout({ children }: Props) {
   const router = useRouter()
   const breakpoint = useBreakpoint()
   const hasMobileSider = breakpoint.xs
-  const [siderCollapsed, setSiderCollapsed] = useState(true)
+  const [siderCollapsed, setSiderCollapsed] = useState(hasMobileSider)
   const [logout] = useLogout()
+
+  useEffect(() => {
+    setSiderCollapsed(hasMobileSider)
+  }, [hasMobileSider])
 
   const handleSettingsClick = async () => {
     await router.push('/settings')
@@ -55,7 +58,7 @@ export default function PageLayout({ children }: Props) {
       const menu = (
         <Menu
           items={[
-            { key: 'settings', label: 'Settings', icon: <SettingOutlined />, onClick: handleSettingsClick },
+            // { key: 'settings', label: 'Settings', icon: <SettingOutlined />, onClick: handleSettingsClick },
             { key: 'logout', label: 'Logout', icon: <LogoutOutlined />, onClick: handleLogoutClick },
           ]}
         />
@@ -88,7 +91,7 @@ export default function PageLayout({ children }: Props) {
               label: <Link href="/create/notification">Create Notification</Link>,
               icon: <PlusSquareOutlined />,
             },
-            { key: '/account', label: <Link href="/account">Projects</Link>, icon: <ProjectOutlined /> },
+            { key: '/account', label: <Link href="/account">Dashboard</Link>, icon: <ProjectOutlined /> },
             { key: '/credentials', label: <Link href="/credentials">Credentials</Link>, icon: <GoKey /> },
           ]}
         />
