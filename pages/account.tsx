@@ -7,16 +7,16 @@ import { withApollo } from '../src/apollo'
 import { useRedirectGuests } from '../src/services/UserHooks'
 
 function HomePage() {
-  const { viewer } = useRedirectGuests()
+  const { signer } = useRedirectGuests()
 
-  if (!viewer) {
+  if (!signer) {
     return <></>
   }
 
   return (
     <>
       <Head>
-        <title>ChainJet Workflows</title>
+        <title>ChainJet Dashboard</title>
       </Head>
       <PageWrapper title="Workflows">
         <div style={{ marginBottom: 16 }}>

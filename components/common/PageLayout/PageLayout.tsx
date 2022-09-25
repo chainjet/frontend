@@ -5,13 +5,14 @@ import {
   PlusSquareOutlined,
   ProjectOutlined,
 } from '@ant-design/icons'
-import { Dropdown, Layout, Menu } from 'antd'
+import { Button, Dropdown, Layout, Menu } from 'antd'
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { CSSProperties, useEffect, useState } from 'react'
 import { GoKey } from 'react-icons/go'
-import { useLogout, useViewer } from '../../../src/services/UserHooks'
+import { useAccount, useEnsName } from 'wagmi'
+import { useLogout, useSigner } from '../../../src/services/UserHooks'
 require('./PageLayout.less')
 
 interface Props {
@@ -19,16 +20,24 @@ interface Props {
 }
 
 export default function PageLayout({ children }: Props) {
-  const { viewer } = useViewer()
+  const { signer } = useSigner()
   const router = useRouter()
   const breakpoint = useBreakpoint()
   const hasMobileSider = breakpoint.xs
   const [siderCollapsed, setSiderCollapsed] = useState(hasMobileSider)
   const [logout] = useLogout()
+  const { address } = useAccount()
+  const { data: ensName } = useEnsName({ address })
 
   useEffect(() => {
     setSiderCollapsed(hasMobileSider)
   }, [hasMobileSider])
+
+  useEffect(() => {
+    if (signer !== address) {
+      router.push('/login')
+    }
+  })
 
   const handleSettingsClick = async () => {
     await router.push('/settings')
@@ -54,7 +63,7 @@ export default function PageLayout({ children }: Props) {
   }
 
   const renderHeaderContent = () => {
-    if (viewer) {
+    if (address) {
       const menu = (
         <Menu
           items={[
@@ -67,13 +76,23 @@ export default function PageLayout({ children }: Props) {
       return (
         <Dropdown overlay={menu}>
           <span className="user-menu">
-            <span>{viewer.username}</span>
+            <span>{ensName ? `${ensName} (${address})` : address}</span>
           </span>
         </Dropdown>
       )
     } else {
-      return <Link href="/login">Login</Link>
+      return (
+        <div className="mr-4">
+          <Button type="primary" href="/login">
+            Connect Wallet
+          </Button>
+        </div>
+      )
     }
+  }
+
+  if (signer !== address) {
+    return <></>
   }
 
   return (

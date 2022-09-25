@@ -1,16 +1,23 @@
-import React from 'react'
-import { withApollo } from '../../src/apollo'
-import { SignTabs } from '../../components/users/SignTabs'
-import { NextPageContext } from 'next'
-import { getQueryParam } from '../../src/utils/nextUtils'
+import { Alert } from 'antd'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
+import { SignContainer } from '../../components/users/SignContainer'
+import { ConnectWallet } from '../../components/wallet/ConnectWallet'
+import { withApollo } from '../../src/apollo'
 import { getHeadMetatags } from '../../src/utils/html.utils'
 
-interface Props {
-  passwordChanged: boolean
-}
+interface Props {}
 
-const LoginPage = (props: Props) => {
+const LoginPage = ({}: Props) => {
+  const [error, setError] = useState<Error | undefined>()
+  const router = useRouter()
+
+  const onSignInSuccess = () => {
+    setError(undefined)
+    router.push('/account')
+  }
+
   return (
     <>
       <Head>
@@ -20,15 +27,14 @@ const LoginPage = (props: Props) => {
           description: 'Login into ChainJet',
         })}
       </Head>
-      <SignTabs defaultTabKey="login" passwordChanged={props.passwordChanged} />
+      <SignContainer>
+        <div>
+          {error && <Alert message={error?.message} type="error" showIcon style={{ marginBottom: 24 }} />}
+          <ConnectWallet onSuccess={onSignInSuccess} onError={({ error }) => setError(error)} />
+        </div>
+      </SignContainer>
     </>
   )
 }
 
-LoginPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> => {
-  return {
-    passwordChanged: !!getQueryParam(ctx, 'password-changed'),
-  }
-}
-
-export default withApollo(LoginPage, { useLayout: false })
+export default withApollo(LoginPage, { useLayout: false, ssr: false })

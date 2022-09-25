@@ -1,9 +1,7 @@
 import { NextPageContext } from 'next'
 import { parseCookies } from 'nookies'
-import { User } from '../../graphql'
 
 export const TOKEN_COOKIE_NAME = 'cj-token'
-export const USER_COOKIE_NAME = 'cj-user'
 
 export class AuthService {
   readonly endpoint: string
@@ -17,14 +15,14 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    return !!this.getCookies()[USER_COOKIE_NAME]
+    return !!this.getCookies()[TOKEN_COOKIE_NAME]
   }
 
-  getViewer(): User | null {
-    const userJson = this.getCookies()[USER_COOKIE_NAME]
+  getSigner(): string | undefined {
+    const userJson = this.getCookies()[TOKEN_COOKIE_NAME]
     if (userJson) {
-      return JSON.parse(userJson)
+      const signerData = JSON.parse(userJson)
+      return signerData.address
     }
-    return null
   }
 }

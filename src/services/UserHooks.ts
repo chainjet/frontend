@@ -1,31 +1,32 @@
-import { gql, gql as graphqlTag } from '@apollo/client'
+import { gql, gql as graphqlTag, OperationVariables } from '@apollo/client'
 import { MutationFunctionOptions } from '@apollo/react-common'
 import { DocumentNode, QueryHookOptions, useMutation, useQuery } from '@apollo/react-hooks'
 import { useRouter } from 'next/router'
 import { destroyCookie as nookiesDestroyCookie, setCookie } from 'nookies'
 import { useContext, useEffect } from 'react'
-import { ViewerContext } from '../../components/providers/ViewerContextProvider'
+import { useDisconnect } from 'wagmi'
+import { SignerContext } from '../../components/providers/ViewerContextProvider'
 import { UpdateOneUserInput, User } from '../../graphql'
 import { refreshApolloClient } from '../apollo'
 import { QueryById } from '../typings/GraphQL'
 import { getFragmentFirstName } from '../utils/graphql.utils'
-import { TOKEN_COOKIE_NAME, USER_COOKIE_NAME } from './AuthService'
+import { TOKEN_COOKIE_NAME } from './AuthService'
 
-export function useViewer() {
-  return useContext(ViewerContext)
+export function useSigner() {
+  return useContext(SignerContext)
 }
 
 export function useRedirectGuests() {
-  const { viewer } = useViewer()
+  const { signer } = useSigner()
   const router = useRouter()
 
   useEffect(() => {
-    if (!viewer) {
+    if (!signer) {
       router.push('/login')
     }
-  }, [router, viewer])
+  }, [router, signer])
 
-  return { viewer }
+  return { signer }
 }
 
 export function useGetViewer(fragment: DocumentNode, options: QueryHookOptions<{ viewer: User }, QueryById>) {
@@ -87,7 +88,7 @@ export function useRegister() {
   `
   const [register] = useMutation(mutation)
   return [
-    async <TData, TVariables>(options?: MutationFunctionOptions<TData, TVariables>) => {
+    async <TData>(options?: MutationFunctionOptions<TData, OperationVariables>) => {
       const res = await register(options)
       createCookies(res.data.register)
       return res
@@ -95,46 +96,21 @@ export function useRegister() {
   ]
 }
 
-export function useLogin() {
-  const mutation = gql`
-    mutation login($username: String!, $password: String!) {
-      login(username: $username, password: $password) {
-        user {
-          id
-          username
-        }
-        token {
-          accessToken
-          accessTokenExpiration
-          refreshToken
-        }
-      }
-    }
-  `
-  const [login] = useMutation(mutation)
-  return [
-    async <TData, TVariables>(options?: MutationFunctionOptions<TData, TVariables>) => {
-      const res = await login(options)
-      createCookies(res.data.login)
-      return res
-    },
-  ]
-}
-
 export function useLogout() {
-  const mutation = gql`
-    mutation logout {
-      logout
-    }
-  `
-  const [logout] = useMutation(mutation)
+  const { disconnect } = useDisconnect()
   return [
-    async <TData, TVariables>(options?: MutationFunctionOptions<TData, TVariables>) => {
+    async () => {
       try {
-        await logout(options)
+        await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/auth/logout`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        })
       } catch (e) {}
-      destroyCookie(USER_COOKIE_NAME)
       destroyCookie(TOKEN_COOKIE_NAME)
+      disconnect()
       refreshApolloClient()
     },
   ]
@@ -190,7 +166,7 @@ export function useCompleteExternalAuth() {
   `
   const [completeSocialAuthentication] = useMutation(mutation)
   return [
-    async <TData, TVariables>(options?: MutationFunctionOptions<TData, TVariables>) => {
+    async <TData>(options?: MutationFunctionOptions<TData, OperationVariables>) => {
       const res = await completeSocialAuthentication(options)
       createCookies(res.data.completeExternalAuth)
       return res
@@ -215,7 +191,6 @@ function createCookies(data: { token: any; user: User }) {
     ...(process.env.NEXT_PUBLIC_API_ENDPOINT?.includes('chainjet.io') ? { domain: '.chainjet.io' } : {}),
   }
   setCookie(null, TOKEN_COOKIE_NAME, JSON.stringify(data.token), options)
-  setCookie(null, USER_COOKIE_NAME, JSON.stringify(data.user), options)
   refreshApolloClient()
 }
 

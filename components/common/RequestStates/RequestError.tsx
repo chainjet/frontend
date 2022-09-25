@@ -1,6 +1,5 @@
 import { ApolloError } from '@apollo/client'
 import { useRouter } from 'next/router'
-import React from 'react'
 import { useEffect } from 'react'
 import { DisplayError } from './DisplayError'
 
@@ -8,14 +7,14 @@ interface Props {
   error?: ApolloError
 }
 
-export const RequestError = (props: Props) => {
+export const RequestError = ({ error }: Props) => {
   const router = useRouter()
 
   useEffect(() => {
-    if (props.error?.message === 'Unauthorized') {
+    if (error?.message === 'Unauthorized') {
       void router.push('/login')
     }
-  }, [props.error])
+  }, [error?.message, router])
 
-  return <DisplayError error={props.error} />
+  return <DisplayError error={error} />
 }

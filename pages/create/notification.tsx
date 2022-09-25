@@ -5,8 +5,8 @@ import { withApollo } from '../../src/apollo'
 import { useRedirectGuests } from '../../src/services/UserHooks'
 
 function CreateNotificationPage() {
-  const { viewer } = useRedirectGuests()
-  if (!viewer) {
+  const { signer } = useRedirectGuests()
+  if (!signer) {
     return <></>
   }
 

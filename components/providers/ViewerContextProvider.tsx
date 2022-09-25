@@ -1,16 +1,15 @@
-import React, { createContext, useState } from 'react'
-import { User } from '../../graphql'
+import { createContext, useState } from 'react'
 
-export const ViewerContext = createContext<{ viewer: User | null; setViewer: any }>({ viewer: null, setViewer: null })
+export const SignerContext = createContext<{ signer?: string; setSigner: any }>({ setSigner: null })
 
 interface Props {
-  viewer?: User | null
+  signer?: string
   children: JSX.Element[] | JSX.Element
 }
 
-const ViewerContextProvider = (props: Props) => {
-  const [viewer, setViewer] = useState<User | null>(props.viewer || null)
-  return <ViewerContext.Provider value={{ viewer, setViewer }}>{props.children}</ViewerContext.Provider>
+const SignerContextProvider = (props: Props) => {
+  const [signer, setSigner] = useState<string | undefined>(props.signer)
+  return <SignerContext.Provider value={{ signer, setSigner }}>{props.children}</SignerContext.Provider>
 }
 
-export default ViewerContextProvider
+export default SignerContextProvider
