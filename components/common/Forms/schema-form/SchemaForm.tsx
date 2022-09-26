@@ -108,7 +108,7 @@ export const SchemaForm = ({
   return (
     <>
       <Head>
-        <link rel="stylesheet" id="theme" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.22.4/antd.min.css" />
+        <link rel="stylesheet" id="theme" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.23.2/antd.min.css" />
       </Head>
       <ThemedForm
         schema={formSchema}
