@@ -15,7 +15,13 @@ const LoginPage = ({}: Props) => {
 
   const onSignInSuccess = () => {
     setError(undefined)
-    router.push('/account')
+    switch (router.query.go) {
+      case 'notifications':
+        router.push('/create/notification')
+        break
+      default:
+        router.push('/account')
+    }
   }
 
   return (
