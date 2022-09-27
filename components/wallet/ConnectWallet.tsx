@@ -49,7 +49,7 @@ export function ConnectWallet({
                 <img src={images[connector.id]} alt={`${connector.name} Logo`} width={28} height={28} />
               )}
               <strong className="ml-1">{connector.name}</strong>
-              {!connector.ready && ' (unsupported)'}
+              {!connector.ready && <span className="ml-1"> (extension not found)</span>}
             </>
           )}
         </button>
