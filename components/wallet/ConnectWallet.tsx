@@ -1,4 +1,5 @@
 import { Alert } from 'antd'
+import Link from 'next/link'
 import { useAccount, useConnect } from 'wagmi'
 import { Loading } from '../common/RequestStates/Loading'
 import { SignInWithEthereum } from './SignInWithEthereum'
@@ -8,11 +9,13 @@ export function ConnectWallet({
   onError,
   beforeLogin,
   message,
+  showMigrationLink,
 }: {
   onSuccess: (args: { address: string }) => void
   onError: (args: { error: Error }) => void
   beforeLogin?: (data: string) => Promise<boolean>
   message?: string
+  showMigrationLink?: boolean
 }) {
   const { isConnected } = useAccount()
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
@@ -51,6 +54,17 @@ export function ConnectWallet({
           )}
         </button>
       ))}
+      {showMigrationLink && (
+        <div className="grid mt-8 text-center">
+          <span className="">
+            Do you have a non-wallet account?{' '}
+            <Link href="/migrate">
+              <a className="text-primary">Migrate it here</a>
+            </Link>
+            .
+          </span>
+        </div>
+      )}
     </>
   )
 }
