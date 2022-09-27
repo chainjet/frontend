@@ -117,6 +117,14 @@ export function IntegrationNotificationStep({
     }
   }
 
+  const onFormInputsChanged = (inputs: Record<string, any>) => {
+    if (integrationSelected) {
+      const newInputs = { ...extraInputs, ...inputs }
+      setExtraInputs(newInputs)
+      onIntegrationChange(integrationSelected, credentialsId, newInputs)
+    }
+  }
+
   return (
     <>
       <div className="mb-8 text-xl">Where should we notify?</div>
@@ -161,6 +169,28 @@ export function IntegrationNotificationStep({
           />
         </div>
       )}
+      {integrationSelected?.key === 'email' && (
+        <div className="mt-8">
+          <SchemaForm
+            schema={{
+              type: 'object',
+              required: ['email'],
+              properties: {
+                email: {
+                  type: 'string',
+                  title: 'Email',
+                  description: `Enter you email`,
+                  format: 'email',
+                },
+              },
+            }}
+            onChange={onFormInputsChanged}
+            onSubmit={() => {}}
+            initialInputs={extraInputs}
+            hideSubmit
+          />
+        </div>
+      )}
       {integrationSelected?.key === 'discord' &&
         credentialsId &&
         (discordChannelPropSchema?.channelId ? (
@@ -201,7 +231,7 @@ export function IntegrationNotificationStep({
                 },
               },
             }}
-            onChange={onDiscordInputsSelected}
+            onChange={onFormInputsChanged}
             onSubmit={() => {}}
             initialInputs={extraInputs}
             hideSubmit

@@ -44,9 +44,13 @@ export function TransactionNotificationStep() {
   const getWorkflowActionData = (key: string) => {
     switch (key) {
       case 'email':
+        if (!inputs.email) {
+          throw new Error(`Email is required`)
+        }
         return {
           key: 'sendEmailToYourself',
           inputs: {
+            email: inputs.email,
             subject: `New transaction on ${inputs.address}`,
             body:
               `There was a transaction on an address you are watching.\n\n` +

@@ -49,10 +49,14 @@ export function TokenNotificationStep() {
   const getWorkflowActionData = (key: string) => {
     switch (key) {
       case 'email':
+        if (!inputs.email) {
+          throw new Error(`Email is required`)
+        }
         if (inputs.address) {
           return {
             key: 'sendEmailToYourself',
             inputs: {
+              email: inputs.email,
               subject: `New token received on ${inputs.address}`,
               body:
                 `A wallet you are watching just received a token.\n\n` +
@@ -63,6 +67,7 @@ export function TokenNotificationStep() {
           return {
             key: 'sendEmailToYourself',
             inputs: {
+              email: inputs.email,
               subject: `New token transfer`,
               body:
                 `There was a transfer on a token you are watching.\n\n` +

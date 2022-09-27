@@ -69,9 +69,13 @@ export function EventNotificationStep() {
   const getWorkflowActionData = (key: string) => {
     switch (key) {
       case 'email':
+        if (!inputs.email) {
+          throw new Error(`Email is required`)
+        }
         return {
           key: 'sendEmailToYourself',
           inputs: {
+            email: inputs.email,
             subject: `New {{trigger.eventName}} on ${inputs.address}`,
             body:
               `There was a new {{trigger.eventName}} event on an address you are watching.\n\n` +

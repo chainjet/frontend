@@ -55,10 +55,14 @@ export function NftNotificationStep() {
   const getWorkflowActionData = (key: string) => {
     switch (key) {
       case 'email':
+        if (!inputs.email) {
+          throw new Error(`Email is required`)
+        }
         if (inputs.address) {
           return {
             key: 'sendEmailToYourself',
             inputs: {
+              email: inputs.email,
               subject: `New NFT received on ${inputs.address}`,
               body:
                 `A wallet you are watching just received an NFT.\n\n` +
@@ -69,6 +73,7 @@ export function NftNotificationStep() {
           return {
             key: 'sendEmailToYourself',
             inputs: {
+              email: inputs.email,
               subject: `New NFT transfer`,
               body:
                 `There was a transfer on an NFT you are watching.\n\n` +
