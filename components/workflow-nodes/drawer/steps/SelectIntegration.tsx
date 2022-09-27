@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 import { Button, Card, Col, Input, List, Row, Select, Typography } from 'antd'
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Integration, IntegrationConnection, IntegrationSortFields, SortDirection } from '../../../../graphql'
 import { integrationCategories, IntegrationCategory } from '../../../../src/constants/integration-categories'
 import { useGetIntegrations } from '../../../../src/services/IntegrationHooks'
@@ -39,20 +39,41 @@ const selectIntegrationFragment = gql`
   ${SelectCredentials.fragments.IntegrationAccount}
 `
 
-export const SelectIntegration = (props: Props) => {
-  const { nodeType, initialCategory, onIntegrationSelect, onCategoryChange, getIntegrationLink, getCategoryLink } =
-    props
+interface Folder {
+  isFolder: true
+  name: string
+  logo: string
+  key: string
+}
+
+const folders: Folder[] = [
+  {
+    isFolder: true,
+    logo: 'https://raw.githubusercontent.com/chainjet/assets/master/integrations/aws.svg',
+    name: 'Amazon Web Services',
+    key: 'aws',
+  },
+]
+
+export const SelectIntegration = ({
+  nodeType,
+  initialCategory,
+  onIntegrationSelect,
+  onCategoryChange,
+  getIntegrationLink,
+  getCategoryLink,
+}: Props) => {
   const [search, setSearch] = useState('')
   const [categorySelected, setCategorySelected] = useState<IntegrationCategory | null>(initialCategory ?? null)
+  const [folderSelected, setFolderSelected] = useState<Folder | null>(null)
   const [loadingMore, setLoadingMore] = useState(false)
   const breakpoint = useBreakpoint()
   const smallCategoriesSelector = breakpoint.xs
 
+  const displayAll = !search && !categorySelected?.id
+
   const queryVars = {
     filter: {
-      deprecated: {
-        is: false,
-      },
       ...(nodeType
         ? {
             [nodeType === 'trigger' ? 'numberOfTriggers' : 'numberOfActions']: {
@@ -61,6 +82,11 @@ export const SelectIntegration = (props: Props) => {
           }
         : {}),
       ...(!search && categorySelected?.id ? { integrationCategories: { eq: categorySelected.id } } : {}),
+      ...(displayAll && folderSelected
+        ? { parentKey: { eq: folderSelected.key } }
+        : search
+        ? {}
+        : { parentKey: { neq: 'aws' } }),
       ...(search ? { name: { iLike: search } } : {}),
     },
     paging: {
@@ -76,7 +102,7 @@ export const SelectIntegration = (props: Props) => {
     setSearch(e.target.value)
   }
 
-  const handleCategoryChange = async (categoryId: string | null) => {
+  const handleCategoryChange = (categoryId: string | null) => {
     const category = integrationCategories.find((c) => c.id === categoryId) ?? null
     setCategorySelected(category)
     onCategoryChange?.(category)
@@ -84,6 +110,11 @@ export const SelectIntegration = (props: Props) => {
       document.querySelector('.ant-drawer-body')?.scrollTo({ top: 0 })
       window.scrollTo({ top: 0 })
     }
+    setFolderSelected(null)
+  }
+
+  const handleFolderSelect = (folder: Folder) => {
+    setFolderSelected(folder)
   }
 
   const handleLoadMoreClick = async () => {
@@ -115,12 +146,20 @@ export const SelectIntegration = (props: Props) => {
     }
   }
 
+  const integrations = data?.integrations?.edges?.map((edge) => edge.node)
+  const hasNextPage = !!data?.integrations?.pageInfo?.hasNextPage
+
+  const integrationsAndFolders = useMemo(
+    () =>
+      !loading && displayAll && !folderSelected
+        ? [...(integrations ?? []), ...folders].sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1))
+        : integrations,
+    [displayAll, folderSelected, integrations, loading],
+  )
+
   if (error) {
     return <>Unexpected error, please try again.</>
   }
-
-  const integrations = data?.integrations?.edges?.map((edge) => edge.node) || []
-  const hasNextPage = !!data?.integrations?.pageInfo?.hasNextPage
 
   return (
     <>
@@ -163,7 +202,7 @@ export const SelectIntegration = (props: Props) => {
 
         <Col span={smallCategoriesSelector ? 24 : 20} style={{ padding: '0px 24px' }}>
           <List
-            dataSource={integrations}
+            dataSource={integrationsAndFolders}
             loading={loading}
             bordered={false}
             itemLayout="horizontal"
@@ -177,6 +216,19 @@ export const SelectIntegration = (props: Props) => {
               xxl: 3,
             }}
             renderItem={(integration) => {
+              if ('isFolder' in integration) {
+                return (
+                  <List.Item onClick={() => handleFolderSelect?.(integration)}>
+                    <Card hoverable={!!onIntegrationSelect || !!getIntegrationLink} bordered={false}>
+                      <Card.Meta
+                        avatar={<IntegrationAvatar integration={integration} />}
+                        title={integration.name}
+                        description=""
+                      />
+                    </Card>
+                  </List.Item>
+                )
+              }
               const integrationContent = (
                 <List.Item onClick={() => onIntegrationSelect?.(integration)}>
                   <Card hoverable={!!onIntegrationSelect || !!getIntegrationLink} bordered={false}>

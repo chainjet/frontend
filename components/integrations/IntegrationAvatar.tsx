@@ -1,15 +1,15 @@
 import { Avatar } from 'antd'
-import { Integration } from '../../graphql'
 require('./IntegrationAvatar.less')
 
 interface Props {
-  integration: Integration
+  integration: {
+    name: string
+    logo?: string | null
+  }
   size?: number
 }
 
-export const IntegrationAvatar = (props: Props) => {
-  const { integration, size } = props
-
+export const IntegrationAvatar = ({ integration, size }: Props) => {
   if (integration.logo) {
     return (
       <Avatar shape="square" size={size ?? 36} src={integration.logo} alt={integration.name} className="card-avatar" />
