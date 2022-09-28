@@ -134,7 +134,7 @@ export function NftNotificationStep() {
           key: inputs.network,
         },
         trigger: {
-          key: inputs.tokenType === 'ERC1155' ? 'listERC1155TokenTransfers' : 'listERC721TokenTransfers',
+          key: inputs.nftType === 'ERC1155' ? 'listERC1155TokenTransfers' : 'listERC721TokenTransfers',
           inputs: {
             ...inputs,
           },

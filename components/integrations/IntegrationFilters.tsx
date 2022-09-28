@@ -6,11 +6,10 @@ interface Props {
   categorySelected: IntegrationCategory | null
   onCategoryChange: (categoryId: string | null) => void
   getCategoryLink?: (category: IntegrationCategory | null) => string
+  hidePopular?: boolean
 }
 
-export function IntegrationFilters(props: Props) {
-  const { categorySelected, onCategoryChange, getCategoryLink } = props
-
+export function IntegrationFilters({ categorySelected, onCategoryChange, getCategoryLink, hidePopular }: Props) {
   const handleItemSelect = (key: string) => {
     onCategoryChange(key ?? null)
   }
@@ -21,15 +20,17 @@ export function IntegrationFilters(props: Props) {
         selectedKeys={[categorySelected ? categorySelected.id : 'all']}
         onSelect={(info) => handleItemSelect(info.key.toString())}
       >
-        <Menu.Item key="popular">
-          {getCategoryLink ? (
-            <Link href={getCategoryLink(integrationCategories[0])}>
-              <a>Popular</a>
-            </Link>
-          ) : (
-            'Popular'
-          )}
-        </Menu.Item>
+        {!hidePopular && (
+          <Menu.Item key="popular">
+            {getCategoryLink ? (
+              <Link href={getCategoryLink(integrationCategories[0])}>
+                <a>Popular</a>
+              </Link>
+            ) : (
+              'Popular'
+            )}
+          </Menu.Item>
+        )}
         <Menu.Item key="all">
           {getCategoryLink ? (
             <Link href={getCategoryLink(null)}>

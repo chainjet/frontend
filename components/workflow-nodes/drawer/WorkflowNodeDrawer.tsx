@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import { Divider, Drawer, Steps } from 'antd'
+import { Drawer } from 'antd'
 import { JSONSchema7 } from 'json-schema'
 import { useState } from 'react'
 import { Integration, IntegrationAction, IntegrationTrigger } from '../../../graphql'
@@ -8,6 +8,7 @@ import { GoogleAnalyticsService } from '../../../src/services/GoogleAnalyticsSer
 import { ActionInputsForm } from './steps/ActionInputsForm'
 import { SelectCredentials } from './steps/SelectCredentials'
 import { SelectIntegration } from './steps/SelectIntegration'
+import { SelectTrigger } from './steps/SelectTrigger'
 import { SelectWorkflowAction } from './steps/SelectWorkflowAction'
 import { SelectWorkflowTrigger } from './steps/SelectWorkflowTrigger'
 import { TriggerInputsForm } from './steps/TriggerInputsForm'
@@ -103,6 +104,16 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
     switch (stepIndex) {
       // Select Integration
       case 0:
+        if (props.nodeType === 'trigger') {
+          return (
+            <SelectTrigger
+              onIntegrationSelect={onIntegrationSelected}
+              onTriggerSelected={(trigger) => onWorkflowStepSelected(trigger as T)}
+              onCredentialsSelected={onCredentialsSelected}
+              onSubmitTriggerInputs={onSubmitInputs as any}
+            />
+          )
+        }
         const initialCategory = integrationCategories.find((category) => category.id === 'popular')
         return (
           <SelectIntegration
@@ -200,7 +211,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
       visible={visible}
       width={window.innerWidth}
     >
-      <div className="hidden sm:block">
+      {/* <div className="hidden sm:block">
         <Steps size="small" current={currentStep}>
           <Steps.Step title="Select Integration" description="" onStepClick={onPreviousStep} />
           <Steps.Step
@@ -217,7 +228,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
         </Steps>
 
         <Divider />
-      </div>
+      </div> */}
 
       {currentStep > 0 && (
         <div className="flex items-center gap-1 mb-4 cursor-pointer" onClick={() => onPreviousStep(currentStep - 1)}>

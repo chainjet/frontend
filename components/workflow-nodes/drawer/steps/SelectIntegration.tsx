@@ -17,6 +17,7 @@ interface Props {
   onCategoryChange?: (category: IntegrationCategory | null) => any
   getIntegrationLink?: (integration: Integration) => string
   getCategoryLink?: (category: IntegrationCategory | null) => string
+  hidePopular?: boolean
 }
 
 const selectIntegrationFragment = gql`
@@ -62,6 +63,7 @@ export const SelectIntegration = ({
   onCategoryChange,
   getIntegrationLink,
   getCategoryLink,
+  hidePopular,
 }: Props) => {
   const [search, setSearch] = useState('')
   const [categorySelected, setCategorySelected] = useState<IntegrationCategory | null>(initialCategory ?? null)
@@ -169,9 +171,11 @@ export const SelectIntegration = ({
             <strong>Category:</strong>
           </div>
           <Select className="w-full" defaultValue={categorySelected?.id} onChange={handleCategoryChange}>
-            <Select.Option value={integrationCategories[0].id} key="popular">
-              Popular
-            </Select.Option>
+            {!hidePopular && (
+              <Select.Option value={integrationCategories[0].id} key="popular">
+                Popular
+              </Select.Option>
+            )}
             <Select.Option value="all" key="all">
               A-Z
             </Select.Option>
@@ -196,6 +200,7 @@ export const SelectIntegration = ({
               onCategoryChange={handleCategoryChange}
               categorySelected={categorySelected}
               getCategoryLink={getCategoryLink}
+              hidePopular={hidePopular}
             />
           </Col>
         )}
