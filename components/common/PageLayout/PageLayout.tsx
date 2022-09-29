@@ -13,6 +13,7 @@ import React, { CSSProperties, useEffect, useState } from 'react'
 import { GoKey } from 'react-icons/go'
 import { useAccount, useEnsName } from 'wagmi'
 import { useLogout, useSigner } from '../../../src/services/UserHooks'
+import { shortenAddress } from '../../../src/utils/strings'
 require('./PageLayout.less')
 
 interface Props {
@@ -76,7 +77,7 @@ export default function PageLayout({ children }: Props) {
       return (
         <Dropdown overlay={menu}>
           <span className="user-menu">
-            <span>{ensName ? `${ensName} (${address})` : address}</span>
+            <span>{ensName ? ensName : shortenAddress(address)}</span>
           </span>
         </Dropdown>
       )
