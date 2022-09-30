@@ -102,6 +102,13 @@ export function SelectWorkflowNode<T extends IntegrationTrigger | IntegrationAct
                         Instant
                       </Tag>
                     </>
+                  ) : nodeType === 'action' ? (
+                    <>
+                      {capitalize(node.name)}{' '}
+                      <Tag color="gold" style={{ marginLeft: 8 }}>
+                        Off-Chain
+                      </Tag>
+                    </>
                   ) : (
                     capitalize(node.name)
                   )
