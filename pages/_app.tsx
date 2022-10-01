@@ -9,8 +9,8 @@ import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { publicProvider } from 'wagmi/providers/public'
 import CookieConsent from '../components/common/CookieConsent'
+import { DiscordWidget } from '../components/common/DiscordWidget'
 import GoogleAnalytics from '../components/common/GoogleAnalytics'
-import { TidioChat } from '../components/common/TidioChat'
 import '../styles/globals.css'
 
 const { chains, provider } = configureChains(defaultChains, [publicProvider()])
@@ -78,7 +78,7 @@ export default function ChainJetApp({
 
       <GoogleAnalytics />
       <CookieConsent />
-      <TidioChat />
+      <DiscordWidget />
 
       <WagmiConfig client={wagmiClient}>
         <Component {...pageProps} />
