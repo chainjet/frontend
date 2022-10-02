@@ -1,4 +1,4 @@
-import { HistoryOutlined, SettingOutlined } from '@ant-design/icons'
+import { EditOutlined, HistoryOutlined, SettingOutlined } from '@ant-design/icons'
 import { gql } from '@apollo/client'
 import { Button, Switch } from 'antd'
 import { NextPageContext } from 'next'
@@ -12,6 +12,7 @@ import { WorkflowDiagramFragments } from '../../../components/workflow-nodes/wor
 import { WorkflowDiagramContainer } from '../../../components/workflow-nodes/WorkflowDiagramContainer'
 import { WorkflowRunHistoryModal } from '../../../components/workflow-runs/WorkflowRunHistoryModal'
 import { WorkflowRunsTable } from '../../../components/workflow-runs/WorkflowRunsTable'
+import { RenameWorkflowModal } from '../../../components/workflows/RenameWorkflowModal'
 import { withApollo } from '../../../src/apollo'
 import { useGetWorkflowById } from '../../../src/services/WorkflowHooks'
 import { useUpdateOneWorkflowTrigger } from '../../../src/services/WorkflowTriggerHooks'
@@ -54,6 +55,7 @@ function WorkflowPage({ workflowId }: Props) {
   })
   const [updateWorkflowTrigger] = useUpdateOneWorkflowTrigger()
   const [runHistoryModalOpen, setRunHistoryModalOpen] = useState(false)
+  const [renameWorkflowModalOpen, setRenameWorkflowModalOpen] = useState(false)
   const [changingWorkflowTriggerEnable, setChangingWorkflowTriggerEnable] = useState(false)
 
   if (loading) {
@@ -122,8 +124,19 @@ function WorkflowPage({ workflowId }: Props) {
         <title>{workflow.name}</title>
       </Head>
 
+      <RenameWorkflowModal
+        workflow={workflow}
+        visible={renameWorkflowModalOpen}
+        onCancel={() => setRenameWorkflowModalOpen(false)}
+        onWorkflowRename={() => setRenameWorkflowModalOpen(false)}
+      />
+
       <PageWrapper
-        title={workflow.name}
+        title={
+          <div className="group" onClick={() => setRenameWorkflowModalOpen(true)}>
+            {workflow.name} <EditOutlined className="invisible cursor-pointer group-hover:visible" />
+          </div>
+        }
         extra={renderHeaderExtra()}
         onBack={handleGoBack}
         className="workflow-diagram-container"
