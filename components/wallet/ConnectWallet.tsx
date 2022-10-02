@@ -35,25 +35,26 @@ export function ConnectWallet({
     <>
       <div className="mb-6 text-lg text-center">{message ?? 'Connect your wallet with ChainJet'}</div>
       {error && <Alert message={error?.message} type="error" showIcon style={{ marginBottom: 24 }} />}
-      {connectors.map((connector) => (
-        <button
-          className="inline-flex items-center justify-center w-full px-4 py-2 mb-4 text-xl text-white rounded cursor-pointer bg-primary hover:bg-primary-hover"
-          key={connector.id}
-          onClick={() => connect({ connector })}
-        >
-          {isLoading && connector.id === pendingConnector?.id ? (
-            <Loading />
-          ) : (
-            <>
-              {images[connector.id] && (
-                <img src={images[connector.id]} alt={`${connector.name} Logo`} width={28} height={28} />
-              )}
-              <strong className="ml-1">{connector.name}</strong>
-              {!connector.ready && <span className="ml-1"> (extension not found)</span>}
-            </>
-          )}
-        </button>
-      ))}
+      {connectors
+        .filter((connector) => connector.ready)
+        .map((connector) => (
+          <button
+            className="inline-flex items-center justify-center w-full px-4 py-2 mb-4 text-xl text-white rounded cursor-pointer bg-primary hover:bg-primary-hover"
+            key={connector.id}
+            onClick={() => connect({ connector })}
+          >
+            {isLoading && connector.id === pendingConnector?.id ? (
+              <Loading />
+            ) : (
+              <>
+                {images[connector.id] && (
+                  <img src={images[connector.id]} alt={`${connector.name} Logo`} width={28} height={28} />
+                )}
+                <strong className="ml-1">{connector.name}</strong>
+              </>
+            )}
+          </button>
+        ))}
       {showMigrationLink && (
         <div className="grid mt-8 text-center">
           <span className="">
