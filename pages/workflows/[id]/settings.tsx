@@ -88,7 +88,7 @@ function WorkflowSettingsPage({ workflowId }: Props) {
   }
 
   const handleWorkflowDelete = async () => {
-    await router.push('/account')
+    await router.push('/dashboard')
   }
 
   const handleGoBack = async () => {

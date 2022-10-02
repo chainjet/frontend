@@ -36,7 +36,7 @@ function NewWorkflowPage() {
   }
 
   const handleGoBack = async () => {
-    await router.push('/account')
+    await router.push('/dashboard')
   }
 
   return (

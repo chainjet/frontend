@@ -15,7 +15,7 @@ export function ErrorPage({ statusCode, error }: Props) {
   const router = useRouter()
 
   const handleGoHome = async () => {
-    await router.push('/account')
+    await router.push('/dashboard')
   }
 
   return (

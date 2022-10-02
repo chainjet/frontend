@@ -20,7 +20,7 @@ const LoginPage = ({}: Props) => {
         router.push('/create/notification')
         break
       default:
-        router.push('/account')
+        router.push('/dashboard')
     }
   }
 

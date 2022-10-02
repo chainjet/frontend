@@ -46,7 +46,7 @@ const CompleteMigrationPage = ({ email, code }: Props) => {
 
   const onSignInSuccess = () => {
     setError(undefined)
-    router.push('/account')
+    router.push('/dashboard')
   }
 
   return (

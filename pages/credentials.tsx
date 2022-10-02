@@ -35,7 +35,7 @@ export function CredentialsPage() {
   const accountCredentials = data.accountCredentials.edges.map((edge) => edge.node)
 
   const handleGoBack = async () => {
-    await Router.push('/account')
+    await Router.push('/dashboard')
   }
 
   return (

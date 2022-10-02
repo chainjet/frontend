@@ -72,7 +72,7 @@ function WorkflowPage({ workflowId }: Props) {
   }
 
   const handleGoBack = async () => {
-    await router.push('/account')
+    await router.push('/dashboard')
   }
 
   const handleSettingsClick = async () => {

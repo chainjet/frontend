@@ -7,7 +7,7 @@ export default function Error404Page() {
   const router = useRouter()
 
   const handleGoHome = async () => {
-    await router.push('/account')
+    await router.push('/dashboard')
   }
 
   return (
