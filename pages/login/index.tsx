@@ -2,6 +2,7 @@ import { Alert } from 'antd'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import NoSsr from '../../components/common/NoSsr'
 import { SignContainer } from '../../components/users/SignContainer'
 import { ConnectWallet } from '../../components/wallet/ConnectWallet'
 import { withApollo } from '../../src/apollo'
@@ -33,12 +34,14 @@ const LoginPage = ({}: Props) => {
           description: 'Login into ChainJet',
         })}
       </Head>
-      <SignContainer>
-        <div>
-          {error && <Alert message={error?.message} type="error" showIcon style={{ marginBottom: 24 }} />}
-          <ConnectWallet onSuccess={onSignInSuccess} onError={({ error }) => setError(error)} showMigrationLink />
-        </div>
-      </SignContainer>
+      <NoSsr>
+        <SignContainer>
+          <div>
+            {error && <Alert message={error?.message} type="error" showIcon style={{ marginBottom: 24 }} />}
+            <ConnectWallet onSuccess={onSignInSuccess} onError={({ error }) => setError(error)} showMigrationLink />
+          </div>
+        </SignContainer>
+      </NoSsr>
     </>
   )
 }
