@@ -107,13 +107,17 @@ export function TriggerInputsForm({
       (!contractSchemaData ||
         (contractSchemaData.chainId !== inputs.network && contractSchemaData.address !== inputs.address))
     ) {
-      getContractSchema({
-        variables: {
-          chainId: inputs.network,
-          address: inputs.address,
-          type: 'events',
-        },
-      })
+      try {
+        getContractSchema({
+          variables: {
+            chainId: inputs.network,
+            address: inputs.address,
+            type: 'events',
+          },
+        })
+      } catch (e) {
+        console.log(`ERROR ===>`, e)
+      }
     }
   }, [inputs, integrationTrigger])
 
@@ -241,7 +245,7 @@ export function TriggerInputsForm({
           <Alert
             type="error"
             message="Error executing the trigger:"
-            description={submitError ?? contractSchemaError}
+            description={submitError ?? contractSchemaError?.message}
             showIcon
           />
         </div>

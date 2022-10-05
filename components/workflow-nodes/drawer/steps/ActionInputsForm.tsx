@@ -333,7 +333,7 @@ export function ActionInputsForm({
           <Alert
             type="error"
             message="Error executing the trigger:"
-            description={submitError ?? contractSchemaError}
+            description={submitError ?? contractSchemaError?.message}
             showIcon
           />
         </div>
