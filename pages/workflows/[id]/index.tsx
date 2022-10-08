@@ -12,6 +12,7 @@ import { WorkflowDiagramFragments } from '../../../components/workflow-nodes/wor
 import { WorkflowDiagramContainer } from '../../../components/workflow-nodes/WorkflowDiagramContainer'
 import { WorkflowRunHistoryModal } from '../../../components/workflow-runs/WorkflowRunHistoryModal'
 import { WorkflowRunsTable } from '../../../components/workflow-runs/WorkflowRunsTable'
+import { DeployWorkflowModal } from '../../../components/workflows/DeployWorkflowModal'
 import { RenameWorkflowModal } from '../../../components/workflows/RenameWorkflowModal'
 import { withApollo } from '../../../src/apollo'
 import { useGetWorkflowById } from '../../../src/services/WorkflowHooks'
@@ -27,6 +28,8 @@ const workflowFragment = gql`
   fragment WorkflowPage on Workflow {
     id
     name
+    network
+    address
     trigger {
       id
       enabled
@@ -55,6 +58,7 @@ function WorkflowPage({ workflowId }: Props) {
   })
   const [updateWorkflowTrigger] = useUpdateOneWorkflowTrigger()
   const [runHistoryModalOpen, setRunHistoryModalOpen] = useState(false)
+  const [deployWorkflowModalOpen, setDeployWorkflowModalOpen] = useState(false)
   const [renameWorkflowModalOpen, setRenameWorkflowModalOpen] = useState(false)
   const [changingWorkflowTriggerEnable, setChangingWorkflowTriggerEnable] = useState(false)
 
@@ -73,6 +77,11 @@ function WorkflowPage({ workflowId }: Props) {
 
   const handleGoBack = async () => {
     await router.push('/dashboard')
+  }
+
+  const handleContractDeploy = async () => {
+    setDeployWorkflowModalOpen(false)
+    handleWorkflowChange()
   }
 
   const handleSettingsClick = async () => {
@@ -98,14 +107,21 @@ function WorkflowPage({ workflowId }: Props) {
 
   const renderHeaderExtra = () => {
     return [
-      workflow.trigger && (
+      workflow.trigger && (!workflow.network || workflow.address) && (
         <Switch
+          key="enable"
           checkedChildren="On"
           unCheckedChildren="Off"
           loading={changingWorkflowTriggerEnable}
           checked={workflow.trigger.enabled}
           onClick={handleEnableClick}
         />
+      ),
+
+      workflow.network && !workflow.address && (
+        <Button type="primary" key="deploy" onClick={() => setDeployWorkflowModalOpen(true)}>
+          Deploy
+        </Button>
       ),
 
       <Button type="default" key="run-history" icon={<HistoryOutlined />} onClick={() => setRunHistoryModalOpen(true)}>
@@ -148,6 +164,15 @@ function WorkflowPage({ workflowId }: Props) {
             visible={runHistoryModalOpen}
             workflow={workflow}
             onClose={() => setRunHistoryModalOpen(false)}
+          />
+        )}
+
+        {deployWorkflowModalOpen && (
+          <DeployWorkflowModal
+            visible={deployWorkflowModalOpen}
+            workflow={workflow}
+            onWorkflowDeploy={handleContractDeploy}
+            onClose={() => setDeployWorkflowModalOpen(false)}
           />
         )}
       </PageWrapper>

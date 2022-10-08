@@ -16,7 +16,7 @@ export enum ChainId {
   FANTOM_TESTNET = 4002,
   FUSE = 122,
   GNOSIS = 100,
-  GÖRLI = 5,
+  GOERLI = 5,
   HARMONY = 1666600000,
   HARMONY_TESTNET = 1666700000,
   HECO = 128,
@@ -131,7 +131,7 @@ export const NETWORK: { [key in ChainId]: Network } = {
     explorerUrl: 'https://gnosisscan.io',
     etherscanIntegrationKey: 'gnosisscan',
   },
-  [ChainId.GÖRLI]: {
+  [ChainId.GOERLI]: {
     name: 'Görli',
     explorerUrl: 'https://goerli.etherscan.io',
     isTestnet: true,

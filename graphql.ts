@@ -37,6 +37,11 @@ export enum SortNulls {
     NULLS_LAST = "NULLS_LAST"
 }
 
+export enum OperationType {
+    OffChain = "OffChain",
+    EVM = "EVM"
+}
+
 export enum IntegrationActionSortFields {
     id = "id",
     createdAt = "createdAt",
@@ -45,6 +50,7 @@ export enum IntegrationActionSortFields {
     name = "name",
     deprecated = "deprecated",
     category = "category",
+    type = "type",
     skipAuth = "skipAuth"
 }
 
@@ -227,7 +233,25 @@ export interface IntegrationActionFilter {
     name?: Nullable<StringFieldComparison>;
     deprecated?: Nullable<BooleanFieldComparison>;
     category?: Nullable<StringFieldComparison>;
+    type?: Nullable<OperationTypeFilterComparison>;
     skipAuth?: Nullable<BooleanFieldComparison>;
+}
+
+export interface OperationTypeFilterComparison {
+    is?: Nullable<boolean>;
+    isNot?: Nullable<boolean>;
+    eq?: Nullable<OperationType>;
+    neq?: Nullable<OperationType>;
+    gt?: Nullable<OperationType>;
+    gte?: Nullable<OperationType>;
+    lt?: Nullable<OperationType>;
+    lte?: Nullable<OperationType>;
+    like?: Nullable<OperationType>;
+    notLike?: Nullable<OperationType>;
+    iLike?: Nullable<OperationType>;
+    notILike?: Nullable<OperationType>;
+    in?: Nullable<OperationType[]>;
+    notIn?: Nullable<OperationType[]>;
 }
 
 export interface IntegrationActionSort {
@@ -529,6 +553,7 @@ export interface UpdateOneWorkflowInput {
 export interface UpdateWorkflowInput {
     name?: Nullable<string>;
     runOnFailure?: Nullable<string>;
+    address?: Nullable<string>;
 }
 
 export interface UpdateManyWorkflowsInput {
@@ -775,6 +800,7 @@ export interface IntegrationAction {
     description?: Nullable<string>;
     deprecated: boolean;
     category?: Nullable<string>;
+    type: OperationType;
     skipAuth: boolean;
     schemaRequest: JSONObject;
     schemaResponse?: Nullable<JSONObject>;
@@ -901,8 +927,16 @@ export interface Workflow {
     name: string;
     state?: Nullable<string>;
     runOnFailure?: Nullable<string>;
+    address?: Nullable<string>;
+    network?: Nullable<string>;
     trigger?: Nullable<WorkflowTrigger>;
     actions?: Nullable<WorkflowActionsConnection>;
+}
+
+export interface CompileWorkflow {
+    bytecode: string;
+    abi: JSONObject[];
+    sourcecode: string;
 }
 
 export interface WorkflowDeleteResponse {
@@ -912,6 +946,8 @@ export interface WorkflowDeleteResponse {
     name?: Nullable<string>;
     state?: Nullable<string>;
     runOnFailure?: Nullable<string>;
+    address?: Nullable<string>;
+    network?: Nullable<string>;
 }
 
 export interface WorkflowEdge {
@@ -1100,6 +1136,7 @@ export interface IQuery {
     integrationTriggers(search?: Nullable<string>, paging?: Nullable<CursorPaging>, filter?: Nullable<IntegrationTriggerFilter>, sorting?: Nullable<IntegrationTriggerSort[]>): IntegrationTriggerConnection | Promise<IntegrationTriggerConnection>;
     workflow(id: string): Workflow | Promise<Workflow>;
     workflows(paging?: Nullable<CursorPaging>, filter?: Nullable<WorkflowFilter>, sorting?: Nullable<WorkflowSort[]>): WorkflowConnection | Promise<WorkflowConnection>;
+    compileWorkflow(workflowId: string): CompileWorkflow | Promise<CompileWorkflow>;
     workflowAction(id: string): WorkflowAction | Promise<WorkflowAction>;
     workflowActions(paging?: Nullable<CursorPaging>, filter?: Nullable<WorkflowActionFilter>, sorting?: Nullable<WorkflowActionSort[]>): WorkflowActionConnection | Promise<WorkflowActionConnection>;
     workflowNextAction(id: string): WorkflowNextAction | Promise<WorkflowNextAction>;

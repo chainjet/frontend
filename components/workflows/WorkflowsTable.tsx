@@ -29,6 +29,10 @@ WorkflowsTable.fragments = {
     fragment WorkflowsTable_Workflow on Workflow {
       id
       name
+      trigger {
+        id
+        enabled
+      }
     }
   `,
 }

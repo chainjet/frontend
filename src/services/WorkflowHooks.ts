@@ -79,3 +79,24 @@ export function useDeleteOneWorkflow() {
     },
   })
 }
+
+export function useCompileWorkflow(
+  options: QueryHookOptions<
+    { compileWorkflow: { bytecode: string; abi: string; sourcecode: string } },
+    { workflowId: string }
+  >,
+) {
+  const query = gql`
+    query ($workflowId: ID!) {
+      compileWorkflow(workflowId: $workflowId) {
+        bytecode
+        abi
+        sourcecode
+      }
+    }
+  `
+  return useQuery<{ compileWorkflow: { bytecode: string; abi: string; sourcecode: string } }, { workflowId: string }>(
+    query,
+    options,
+  )
+}
