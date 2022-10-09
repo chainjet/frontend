@@ -1,10 +1,10 @@
 import { EditOutlined, HistoryOutlined, SettingOutlined } from '@ant-design/icons'
 import { gql } from '@apollo/client'
-import { Button, Switch } from 'antd'
+import { Button } from 'antd'
 import { NextPageContext } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { PageWrapper } from '../../../components/common/PageLayout/PageWrapper'
 import { Loading } from '../../../components/common/RequestStates/Loading'
 import { RequestError } from '../../../components/common/RequestStates/RequestError'
@@ -13,10 +13,10 @@ import { WorkflowDiagramContainer } from '../../../components/workflow-nodes/Wor
 import { WorkflowRunHistoryModal } from '../../../components/workflow-runs/WorkflowRunHistoryModal'
 import { WorkflowRunsTable } from '../../../components/workflow-runs/WorkflowRunsTable'
 import { DeployWorkflowModal } from '../../../components/workflows/DeployWorkflowModal'
+import { EnableWorkflowSwitch } from '../../../components/workflows/EnableWorkflowSwitch'
 import { RenameWorkflowModal } from '../../../components/workflows/RenameWorkflowModal'
 import { withApollo } from '../../../src/apollo'
 import { useGetWorkflowById } from '../../../src/services/WorkflowHooks'
-import { useUpdateOneWorkflowTrigger } from '../../../src/services/WorkflowTriggerHooks'
 import { getQueryParam } from '../../../src/utils/nextUtils'
 require('./workflow.less')
 
@@ -56,11 +56,18 @@ function WorkflowPage({ workflowId }: Props) {
       id: workflowId,
     },
   })
-  const [updateWorkflowTrigger] = useUpdateOneWorkflowTrigger()
   const [runHistoryModalOpen, setRunHistoryModalOpen] = useState(false)
   const [deployWorkflowModalOpen, setDeployWorkflowModalOpen] = useState(false)
   const [renameWorkflowModalOpen, setRenameWorkflowModalOpen] = useState(false)
-  const [changingWorkflowTriggerEnable, setChangingWorkflowTriggerEnable] = useState(false)
+
+  const handleWorkflowChange = useCallback(async () => {
+    await refetch()
+  }, [refetch])
+
+  const handleContractDeploy = useCallback(async () => {
+    setDeployWorkflowModalOpen(false)
+    handleWorkflowChange()
+  }, [handleWorkflowChange])
 
   if (loading) {
     return <Loading />
@@ -71,51 +78,18 @@ function WorkflowPage({ workflowId }: Props) {
 
   const { workflow } = data
 
-  const handleWorkflowChange = async () => {
-    await refetch()
-  }
-
   const handleGoBack = async () => {
     await router.push('/dashboard')
-  }
-
-  const handleContractDeploy = async () => {
-    setDeployWorkflowModalOpen(false)
-    handleWorkflowChange()
   }
 
   const handleSettingsClick = async () => {
     await router.push(`/workflows/${workflowId}/settings`)
   }
 
-  const handleEnableClick = async (enabled: boolean) => {
-    if (workflow.trigger) {
-      setChangingWorkflowTriggerEnable(true)
-      await updateWorkflowTrigger({
-        variables: {
-          input: {
-            id: workflow.trigger.id,
-            update: {
-              enabled,
-            },
-          },
-        },
-      })
-      setChangingWorkflowTriggerEnable(false)
-    }
-  }
-
   const renderHeaderExtra = () => {
     return [
       workflow.trigger && (!workflow.network || workflow.address) && (
-        <Switch
-          key="enable"
-          checkedChildren="On"
-          unCheckedChildren="Off"
-          loading={changingWorkflowTriggerEnable}
-          checked={workflow.trigger.enabled}
-          onClick={handleEnableClick}
-        />
+        <EnableWorkflowSwitch workflow={workflow} onWorkflowEnableChange={handleWorkflowChange} />
       ),
 
       workflow.network && !workflow.address && (
