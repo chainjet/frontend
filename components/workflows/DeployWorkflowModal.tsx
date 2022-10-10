@@ -6,7 +6,9 @@ import { useNetwork, useSigner, useSwitchNetwork } from 'wagmi'
 import { Workflow } from '../../graphql'
 import { CHAINJET_RUNNER_ADDRESS } from '../../src/constants/addresses'
 import { ChainId, NETWORK } from '../../src/constants/networks'
-import { useCompileWorkflow, useUpdateOneWorkflow } from '../../src/services/WorkflowHooks'
+import { useUpdateOneWorkflowAction } from '../../src/services/WorkflowActionHooks'
+import { useCompileWorkflow } from '../../src/services/WorkflowHooks'
+import { getEvmRootAction } from '../../src/utils/workflow-action.utils'
 import { Loading } from '../common/RequestStates/Loading'
 
 interface Props {
@@ -32,7 +34,7 @@ export const DeployWorkflowModal = ({ workflow, visible, onWorkflowDeploy, onClo
   const { data: signer, isLoading } = useSigner()
   const [deployLoading, setDeployLoading] = useState(false)
   const [deployError, setDeployError] = useState<Error | null>(null)
-  const [updateWorkflow] = useUpdateOneWorkflow()
+  const [updateWorkflowAction] = useUpdateOneWorkflowAction()
 
   const bytecode = data?.compileWorkflow.bytecode
   const abi = data?.compileWorkflow.abi
@@ -50,13 +52,19 @@ export const DeployWorkflowModal = ({ workflow, visible, onWorkflowDeploy, onClo
     setDeployLoading(true)
     const contract = new ethers.ContractFactory(abi, bytecode, signer)
     try {
+      const evmRootAction = getEvmRootAction(workflow.actions?.edges?.map((action) => action.node) ?? [])
+      if (!evmRootAction) {
+        setDeployError(new Error('No on-chain action found'))
+        return
+      }
       const res = await contract.deploy(CHAINJET_RUNNER_ADDRESS[workflowChainId])
       if (res?.address && isAddress(res.address)) {
-        await updateWorkflow({
+        await updateWorkflowAction({
           variables: {
             input: {
-              id: workflow.id,
+              id: evmRootAction.id,
               update: {
+                name: evmRootAction.name,
                 address: res.address,
               },
             },

@@ -25,6 +25,7 @@ export const WorkflowDiagramFragments = {
       id
       name
       isRootAction
+      type
       nextActions {
         action {
           id
