@@ -230,7 +230,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
         <Divider />
       </div> */}
 
-      {currentStep > 0 && (
+      {action === 'create' && currentStep > 0 && (
         <div className="flex items-center gap-1 mb-4 cursor-pointer" onClick={() => onPreviousStep(currentStep - 1)}>
           <ArrowLeftOutlined />
           <span className="font-bold">Back</span>
