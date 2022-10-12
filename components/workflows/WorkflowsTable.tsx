@@ -21,7 +21,7 @@ export const WorkflowsTable = ({ workflows }: Props) => {
     },
   ]
 
-  return <Table dataSource={workflows} columns={tableColumns} />
+  return <Table dataSource={workflows} columns={tableColumns} pagination={{ pageSize: 120 }} />
 }
 
 WorkflowsTable.fragments = {
