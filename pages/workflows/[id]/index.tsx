@@ -30,6 +30,7 @@ const workflowFragment = gql`
     name
     network
     address
+    isTemplate
     trigger {
       id
       enabled
@@ -88,19 +89,26 @@ function WorkflowPage({ workflowId }: Props) {
 
   const renderHeaderExtra = () => {
     return [
-      workflow.trigger && (!workflow.network || workflow.address) && (
+      !workflow.isTemplate && workflow.trigger && (!workflow.network || workflow.address) && (
         <EnableWorkflowSwitch workflow={workflow} onWorkflowEnableChange={handleWorkflowChange} />
       ),
 
-      workflow.network && !workflow.address && (
+      !workflow.isTemplate && workflow.network && !workflow.address && (
         <Button type="primary" key="deploy" onClick={() => setDeployWorkflowModalOpen(true)}>
           Deploy
         </Button>
       ),
 
-      <Button type="default" key="run-history" icon={<HistoryOutlined />} onClick={() => setRunHistoryModalOpen(true)}>
-        Run history
-      </Button>,
+      !workflow.isTemplate && (
+        <Button
+          type="default"
+          key="run-history"
+          icon={<HistoryOutlined />}
+          onClick={() => setRunHistoryModalOpen(true)}
+        >
+          Run history
+        </Button>
+      ),
 
       <Button key="settings" onClick={handleSettingsClick} icon={<SettingOutlined />}>
         Settings
