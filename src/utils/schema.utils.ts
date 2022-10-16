@@ -1,10 +1,10 @@
-import { UiSchema } from '@rjsf/core'
+import { UiSchema } from '@rjsf/utils'
 import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
 
-export function removeHiddenProperties(schema: JSONSchema7): JSONSchema7 | undefined {
+export function removeHiddenProperties(schema: JSONSchema7): JSONSchema7 {
   if ((schema as { 'x-hidden'?: boolean })['x-hidden']) {
-    return undefined
+    return {}
   }
 
   // Remove hidden properties from required array
@@ -105,7 +105,7 @@ export function extractUISchema(schema: JSONSchema7): UiSchema {
  * Helper for applying a schema modification recursively to schema properties and items
  * This method also exists on backend jsonSchemaUtils
  */
-function applySchemaChangeRecursively<T>(
+function applySchemaChangeRecursively<T extends JSONSchema7>(
   schema: JSONSchema7,
   fn: (schema: JSONSchema7, ...args: any[]) => T,
   ...callbackArgs: any[]

@@ -1,5 +1,7 @@
 import { cloneDeep } from '@apollo/client/utilities'
-import { UiSchema, WidgetProps, withTheme } from '@rjsf/core'
+import { withTheme } from '@rjsf/core'
+import { UiSchema, WidgetProps } from '@rjsf/utils'
+import validator from '@rjsf/validator-ajv6'
 import { Button } from 'antd'
 import dayjs from 'dayjs'
 import localeData from 'dayjs/plugin/localeData'
@@ -79,7 +81,7 @@ export const SchemaForm = ({
     ...jsonSchemaDefinitions,
   }
 
-  formSchema = removeHiddenProperties(formSchema) as JSONSchema7
+  formSchema = removeHiddenProperties(formSchema)
   formSchema = fixArraysWithoutItems(formSchema)
 
   let formIsEmpty = !formSchema || isEmptyObj(formSchema.properties ?? {})
@@ -112,6 +114,7 @@ export const SchemaForm = ({
       </Head>
       <ThemedForm
         schema={formSchema}
+        validator={validator}
         uiSchema={uiSchema}
         formData={initialInputs}
         formContext={{ outputs }}
@@ -143,14 +146,15 @@ export const SchemaForm = ({
             errors
               // filter out errors for stringified numbers
               .filter((error) => {
-                if (['should be number', 'should be integer'].includes(error.message)) {
+                if (error.property && ['should be number', 'should be integer'].includes(error.message ?? '')) {
                   const value = formData[error.property.slice(1)]
                   return !Number.isFinite(Number(value))
                 }
+                return true
               })
               // filter out validation for objects inside arrays due to an open issue in rjsf
               //   https://github.com/rjsf-team/react-jsonschema-form/issues/2103
-              .filter((error) => !error.property.match(/\[\d+\]/))
+              .filter((error) => error.property && !error.property.match(/\[\d+\]/))
           )
         }}
       >

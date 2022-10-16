@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
-
-import { WidgetProps } from '@rjsf/core'
+import { WidgetProps } from '@rjsf/utils'
 import { Button, Col, Row, Tooltip } from 'antd'
 import { InputProps } from 'antd/es/input'
 import Input from 'antd/lib/input'
+import React, { useState } from 'react'
 import { ImMagicWand } from 'react-icons/im'
 import { assertNever } from '../../../../src/utils/typescript.utils'
 import { SelectNodeOutputs } from './SelectNodeOutputs'
