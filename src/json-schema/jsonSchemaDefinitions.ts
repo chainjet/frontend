@@ -120,7 +120,7 @@ export const jsonSchemaDefinitions = {
             },
           },
           {
-            required: ['dayOfWeek', 'dayOfMonth', 'time'],
+            required: ['dayOfMonth', 'time'],
             properties: {
               frequency: {
                 const: 'month',
