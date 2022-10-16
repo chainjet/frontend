@@ -128,14 +128,30 @@ export const SchemaForm = ({
         onSubmit={(args: any) => onSubmit(args.formData)}
         onError={onError ? onError : () => {}}
         onChange={(data) => {
+          // stringify numbers greater than the max safe integer
+          for (const [key, value] of Object.entries(data.formData)) {
+            if (typeof value === 'number' && value > Number.MAX_SAFE_INTEGER) {
+              data.formData[key] = value.toString()
+            }
+          }
+
           onChange?.(data.formData)
           formData = data.formData
         }}
-        // Skip validation for objects inside arrays due to bug:
-        //   - https://github.com/flowoid/flowoid/issues/32
-        //   - https://github.com/rjsf-team/react-jsonschema-form/issues/2103
         transformErrors={(errors) => {
-          return errors.filter((error) => !error.property.match(/\[\d+\]/))
+          return (
+            errors
+              // filter out errors for stringified numbers
+              .filter((error) => {
+                if (['should be number', 'should be integer'].includes(error.message)) {
+                  const value = formData[error.property.slice(1)]
+                  return !Number.isFinite(Number(value))
+                }
+              })
+              // filter out validation for objects inside arrays due to an open issue in rjsf
+              //   https://github.com/rjsf-team/react-jsonschema-form/issues/2103
+              .filter((error) => !error.property.match(/\[\d+\]/))
+          )
         }}
       >
         {loadingSchema ? (
