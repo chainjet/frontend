@@ -46,7 +46,6 @@ export function NotificationWizard() {
   )
 
   const onTriggerOptionSelected = (option: TriggerOption) => {
-    console.log(`Selected option: ${option.id}`)
     setTriggerOption(option)
   }
 

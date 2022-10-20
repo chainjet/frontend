@@ -6,7 +6,7 @@ import { Integration, IntegrationAction, IntegrationTrigger } from '../../../gra
 import { integrationCategories } from '../../../src/constants/integration-categories'
 import { GoogleAnalyticsService } from '../../../src/services/GoogleAnalyticsService'
 import { ActionInputsForm } from './steps/ActionInputsForm'
-import { SelectCredentials } from './steps/SelectCredentials'
+import { SelectCredentials } from './steps/credentials/SelectCredentials'
 import { SelectIntegration } from './steps/SelectIntegration'
 import { SelectTrigger } from './steps/SelectTrigger'
 import { SelectWorkflowAction } from './steps/SelectWorkflowAction'

@@ -1,14 +1,15 @@
 import { gql } from '@apollo/client'
 import { Button, Select, Typography } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { IntegrationAccount } from '../../../../graphql'
+import { IntegrationAccount } from '../../../../../graphql'
 import {
   useCreateOneAccountCredential,
   useGetAccountCredentials,
-} from '../../../../src/services/AccountCredentialHooks'
-import { SchemaForm } from '../../../common/Forms/schema-form/SchemaForm'
-import { Loading } from '../../../common/RequestStates/Loading'
-import { RequestError } from '../../../common/RequestStates/RequestError'
+} from '../../../../../src/services/AccountCredentialHooks'
+import { SchemaForm } from '../../../../common/Forms/schema-form/SchemaForm'
+import { Loading } from '../../../../common/RequestStates/Loading'
+import { RequestError } from '../../../../common/RequestStates/RequestError'
+import { SelectCustomCredentials } from './SelectCustomCredentials'
 
 interface Props {
   integrationAccount: IntegrationAccount
@@ -161,6 +162,14 @@ export const SelectCredentials = ({
     loading,
   ])
 
+  const onCustomCredentialsSelected = useCallback(
+    async (id: string) => {
+      await onCredentialsSelected(id)
+      refetch?.(queryVars)
+    },
+    [onCredentialsSelected, queryVars, refetch],
+  )
+
   if (loading) {
     return <Loading />
   }
@@ -225,6 +234,13 @@ export const SelectCredentials = ({
           <Button type="primary" onClick={() => handleConnectOauthAccountClick(integrationAccount.key)}>
             Connect {integrationAccount.name} account
           </Button>
+        )
+      case 'custom':
+        return (
+          <SelectCustomCredentials
+            integrationAccount={integrationAccount}
+            onCredentialsSelected={onCustomCredentialsSelected}
+          />
         )
     }
   }

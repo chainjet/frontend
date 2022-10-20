@@ -8,7 +8,7 @@ import { integrationCategories, IntegrationCategory } from '../../../../src/cons
 import { useGetIntegrations } from '../../../../src/services/IntegrationHooks'
 import { IntegrationAvatar } from '../../../integrations/IntegrationAvatar'
 import { IntegrationFilters } from '../../../integrations/IntegrationFilters'
-import { SelectCredentials } from './SelectCredentials'
+import { SelectCredentials } from './credentials/SelectCredentials'
 
 interface Props {
   nodeType?: 'trigger' | 'action'

@@ -6,7 +6,7 @@ import { useGetIntegrations } from '../../../../src/services/IntegrationHooks'
 import { useGetIntegrationTriggers } from '../../../../src/services/IntegrationTriggerHooks'
 import { SchemaForm } from '../../../common/Forms/schema-form/SchemaForm'
 import { Loading } from '../../../common/RequestStates/Loading'
-import { SelectCredentials } from '../steps/SelectCredentials'
+import { SelectCredentials } from '../steps/credentials/SelectCredentials'
 import { SelectWorkflowNode } from '../steps/SelectWorkflowNode'
 import { PopularTrigger } from './types'
 

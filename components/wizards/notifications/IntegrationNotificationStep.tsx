@@ -8,7 +8,7 @@ import { useGetIntegrations } from '../../../src/services/IntegrationHooks'
 import { SchemaForm } from '../../common/Forms/schema-form/SchemaForm'
 import { Loading } from '../../common/RequestStates/Loading'
 import { IntegrationAvatar } from '../../integrations/IntegrationAvatar'
-import { SelectCredentials } from '../../workflow-nodes/drawer/steps/SelectCredentials'
+import { SelectCredentials } from '../../workflow-nodes/drawer/steps/credentials/SelectCredentials'
 
 const integrationFragment = gql`
   fragment IntegrationNotificationStepFragment on Integration {
