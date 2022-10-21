@@ -103,6 +103,7 @@ export function SelectLensCredentials({ integrationAccount, onCredentialsSelecte
               integrationAccount: integrationAccount.id,
               credentialInputs: {
                 profileId: mainProfile.id,
+                handle: mainProfile.handle,
                 accessToken,
                 refreshToken,
               },
