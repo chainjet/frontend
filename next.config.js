@@ -36,7 +36,7 @@ module.exports = withHtml(
         : [
             {
               source: '/',
-              destination: '/go-register.html',
+              destination: '/go-login.html',
             },
           ],
   }),
