@@ -10,6 +10,7 @@ import { Loading } from '../../../../components/common/RequestStates/Loading'
 import { RequestError } from '../../../../components/common/RequestStates/RequestError'
 import { WorkflowRunStartedByOptions, WorkflowRunStatus } from '../../../../graphql'
 import { withApollo } from '../../../../src/apollo'
+import { ChainId, NETWORK } from '../../../../src/constants/networks'
 import { useGetWorkflowRunById } from '../../../../src/services/WorkflowRunHooks'
 import { getQueryParam } from '../../../../src/utils/nextUtils'
 import { assertNever } from '../../../../src/utils/typescript.utils'
@@ -42,6 +43,10 @@ const workflowRunFragment = gql`
       finishedAt
       integrationName
       operationName
+      transactions {
+        chainId
+        hash
+      }
     }
   }
 `
@@ -65,7 +70,7 @@ function WorkflowRunPage({ workflowId, workflowRunId }: Props) {
         stopPolling()
       }
     }
-  }, [data?.workflowRun.status])
+  }, [data?.workflowRun.status, startPolling, stopPolling])
 
   if (loading) {
     return <Loading />
@@ -125,19 +130,45 @@ function WorkflowRunPage({ workflowId, workflowRunId }: Props) {
 
   // Add action logs
   for (const actionRun of workflowRun.actionRuns || []) {
+    const key = new Date(actionRun.createdAt).getTime()
+    const time = dayjs(actionRun.createdAt).format('YYYY-MM-DD HH:mm:ss')
     dataSource.push({
-      key: `${new Date(actionRun.createdAt).getTime()}-0`,
-      time: dayjs(actionRun.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+      key: `${key}-0`,
+      time,
       operation: actionRun.operationName,
       integration: actionRun.integrationName,
       log: 'Running operation.',
       level: LOG_LEVEL_INFO,
     })
+    for (const transaction of actionRun.transactions || []) {
+      const network = NETWORK[transaction.chainId as ChainId]
+      const txLink = `${network?.explorerUrl}/tx/${transaction.hash}`
+      dataSource.push({
+        key: `${key}-1`,
+        time,
+        operation: actionRun.operationName,
+        integration: actionRun.integrationName,
+        log: (
+          <>
+            Submitted transaction{' '}
+            {txLink ? (
+              <a href={txLink} target="_blank" rel="noreferrer nofollower">
+                {transaction.hash}
+              </a>
+            ) : (
+              transaction.hash
+            )}
+            .
+          </>
+        ),
+        level: LOG_LEVEL_INFO,
+      })
+    }
     if (['completed', 'failed'].includes(actionRun.status)) {
       const log = actionRun.status === 'failed' ? 'Operation run failed.' : 'Operation ran succesfully.'
       dataSource.push({
-        key: `${new Date(actionRun.createdAt).getTime()}-1`,
-        time: dayjs(actionRun.finishedAt).format('YYYY-MM-DD HH:mm:ss'),
+        key: `${key}-2`,
+        time,
         operation: actionRun.operationName,
         integration: actionRun.integrationName,
         log,

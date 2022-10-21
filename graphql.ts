@@ -977,6 +977,11 @@ export interface WorkflowActionsConnection {
     edges: WorkflowActionEdge[];
 }
 
+export interface BlockchainTransaction {
+    chainId: number;
+    hash: string;
+}
+
 export interface WorkflowRunAction {
     id: string;
     createdAt: DateTime;
@@ -985,6 +990,7 @@ export interface WorkflowRunAction {
     operationName: string;
     status: WorkflowRunStatus;
     finishedAt?: Nullable<DateTime>;
+    transactions?: Nullable<BlockchainTransaction[]>;
 }
 
 export interface WorkflowRunTrigger {
