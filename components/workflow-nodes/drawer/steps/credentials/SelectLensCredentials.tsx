@@ -36,64 +36,84 @@ export function SelectLensCredentials({ integrationAccount, onCredentialsSelecte
     const authWithLens = async () => {
       setAuthLoading(true)
       const query = `
-      mutation Authenticate {
-        authenticate(request: {
-          address: "${address}",
-          signature: "${data}"
-        }) {
-          accessToken
-          refreshToken
-        }
-      }
-      `
+        mutation Authenticate {
+          authenticate(request: {
+            address: "${address}",
+            signature: "${data}"
+          }) {
+            accessToken
+            refreshToken
+          }
+        }`
       const res = await sendGraphqlQuery('https://api.lens.dev/', query)
-      if (res?.data?.authenticate) {
-        const accessToken = res.data.authenticate.accessToken
-        const refreshToken = res.data.authenticate.refreshToken
-        if (accessToken && refreshToken) {
-          const getProfileQuery = `
-          query DefaultProfile {
-            defaultProfile(request: { ethereumAddress: "${address}"}) {
+      if (!res?.data?.authenticate) {
+        setAuthLoading(false)
+        return
+      }
+
+      const accessToken = res.data.authenticate.accessToken
+      const refreshToken = res.data.authenticate.refreshToken
+      if (!accessToken || !refreshToken) {
+        setAuthLoading(false)
+        return
+      }
+
+      const getProfilesQuery = `
+        query Profiles {
+          profiles(request: { ownedBy: ["${address}"], limit: 50 }) {
+            items {
               id
               handle
+              isDefault
               dispatcher {
                 address
                 canUseRelay
               }
             }
-          }`
-          const profileRes = await sendGraphqlQuery('https://api.lens.dev/', getProfileQuery)
-          if (profileRes?.data?.defaultProfile?.id) {
-            const profileId = profileRes.data.defaultProfile.id
-            const dispatcher = profileRes.data.defaultProfile.dispatcher
-            if (dispatcher?.address && dispatcher?.canUseRelay) {
-              const res = await createCredential({
-                variables: {
-                  input: {
-                    accountCredential: {
-                      name: profileRes.data.defaultProfile.handle ?? profileRes.data.defaultProfile.id,
-                      integrationAccount: integrationAccount.id,
-                      credentialInputs: {
-                        profileId,
-                        accessToken,
-                        refreshToken,
-                      },
-                    },
-                  },
-                },
-              })
-              if (res.data?.createOneAccountCredential?.id) {
-                await onCredentialsSelected(res.data.createOneAccountCredential.id)
-              } else {
-                setError('Failed to create account credential')
-              }
-            } else {
-              // TODO enable dispatcher
-            }
-          } else {
-            setError(`No lens profile found for address ${address}`)
           }
-        }
+        }`
+      const profileRes = await sendGraphqlQuery('https://api.lens.dev/', getProfilesQuery)
+      if (!profileRes?.data?.profiles?.items?.length) {
+        setError(`No lens profiles found for ${address}`)
+        setAuthLoading(false)
+        return
+      }
+      const profiles = profileRes.data.profiles.items
+      const mainProfile =
+        profiles.length === 1 ? profiles[0] : profiles.find((profile: any) => profile.isDefault) ?? profiles[0]
+
+      if (!mainProfile?.id) {
+        setError(`No lens profiles found for ${address}`)
+        setAuthLoading(false)
+        return
+      }
+
+      // TODO enable dispatcher
+      if (!mainProfile.dispatcher?.address || !mainProfile.dispatcher?.canUseRelay) {
+        setError(`Dispatcher must be enable for lens profile ${mainProfile.handle ?? mainProfile.id}`)
+        setAuthLoading(false)
+        return
+      }
+
+      const createCredentialRes = await createCredential({
+        variables: {
+          input: {
+            accountCredential: {
+              name: `Lens Profile ${mainProfile.handle ?? mainProfile.id}`,
+              integrationAccount: integrationAccount.id,
+              credentialInputs: {
+                profileId: mainProfile.id,
+                accessToken,
+                refreshToken,
+              },
+            },
+          },
+        },
+      })
+      if (createCredentialRes.data?.createOneAccountCredential?.id) {
+        await onCredentialsSelected(createCredentialRes.data.createOneAccountCredential.id)
+      } else {
+        setError('Failed to create account credential')
       }
       setAuthLoading(false)
     }
