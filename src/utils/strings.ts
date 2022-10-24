@@ -19,3 +19,7 @@ export function shortenAddress(address: string, chars = 4): string {
     throw Error(`Invalid address "${address}"`)
   }
 }
+
+export function hasInterpolation(str: string) {
+  return /{{\s*([^}]+)\s*}}/.test(str)
+}

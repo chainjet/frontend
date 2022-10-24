@@ -72,19 +72,17 @@ export const BaseWidget = ({
 
   let inputType: string
   let autoComplete = 'off' // Otherwise the suggestions are displayed above the "Add outputs" popover
+
+  // don't use html5 validations because they won't work with interpolation
   switch (widgetType) {
     case 'text':
+    case 'url':
+    case 'email':
       inputType = isNumberInput ? 'number' : (options.inputType as InputProps['type']) || 'text'
       break
     case 'password':
       inputType = 'password'
       autoComplete = 'new-password'
-      break
-    case 'url':
-      inputType = 'url'
-      break
-    case 'email':
-      inputType = 'email'
       break
     case 'textarea':
       inputType = 'textarea'

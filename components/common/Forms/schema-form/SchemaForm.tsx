@@ -6,13 +6,13 @@ import { Button } from 'antd'
 import dayjs from 'dayjs'
 import localeData from 'dayjs/plugin/localeData'
 import weekday from 'dayjs/plugin/weekday'
-import { JSONSchema7 } from 'json-schema'
 import Head from 'next/head'
 import { useEffect } from 'react'
 import { jsonSchemaDefinitions } from '../../../../src/json-schema/jsonSchemaDefinitions'
 import { WorkflowOutput } from '../../../../src/typings/Workflow'
 import { isEmptyObj } from '../../../../src/utils/object.utils'
 import { extractUISchema, fixArraysWithoutItems, removeHiddenProperties } from '../../../../src/utils/schema.utils'
+import { hasInterpolation } from '../../../../src/utils/strings'
 import { Loading } from '../../RequestStates/Loading'
 import { BaseWidget } from './BaseWidget'
 import TitleField from './TitleField'
@@ -144,6 +144,14 @@ export const SchemaForm = ({
         transformErrors={(errors) => {
           return (
             errors
+              // filter out errors on fields that have interpolation (foo is not a valid email but {{trigger.email}} might be)
+              .filter((error) => {
+                if (error.property) {
+                  const value = formData[error.property.slice(1)] ?? ''
+                  return !hasInterpolation(value)
+                }
+                return true
+              })
               // filter out errors for stringified numbers
               .filter((error) => {
                 if (error.property && ['should be number', 'should be integer'].includes(error.message ?? '')) {
