@@ -303,6 +303,7 @@ export function ActionInputsForm({
   const onFormSubmit = async (data: Record<string, any>) => {
     setSubmitLoading(true)
     setSubmitError(null)
+    setInputs(data)
     try {
       await onSubmitActionInputs(data)
     } catch (e: any) {

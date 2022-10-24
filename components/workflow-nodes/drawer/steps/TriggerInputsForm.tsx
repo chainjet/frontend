@@ -76,11 +76,6 @@ export function TriggerInputsForm({
     },
   })
 
-  // update inputs if initial inputs has an external change
-  useEffect(() => {
-    setInputs(initialInputs)
-  }, [initialInputs])
-
   // add schema defaults to dependency inputs
   useEffect(() => {
     setDependencyInputs(deepmerge(getSchemaDefaults(integrationTrigger?.schemaRequest ?? {}), initialInputs))
@@ -220,6 +215,7 @@ export function TriggerInputsForm({
   const onFormSubmit = async (data: Record<string, any>) => {
     setSubmitLoading(true)
     setSubmitError(null)
+    setInputs(data)
     try {
       await onSubmitOperationInputs(data)
     } catch (e: any) {

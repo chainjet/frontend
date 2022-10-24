@@ -105,7 +105,7 @@ export const SchemaForm = ({
   }
 
   const outputs = parentOutputs || []
-  let formData: any
+  let formData: Record<string, any> = initialInputs || {}
 
   return (
     <>
