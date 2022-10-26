@@ -14,14 +14,25 @@ const LoginPage = ({}: Props) => {
   const [error, setError] = useState<Error | undefined>()
   const router = useRouter()
 
-  const onSignInSuccess = () => {
+  const onSignInSuccess = async () => {
     setError(undefined)
+
+    let redirectTo: string
     switch (router.query.go) {
       case 'notifications':
-        router.push('/create/notification')
+        redirectTo = '/create/notification'
         break
       default:
-        router.push('/dashboard')
+        redirectTo = '/dashboard'
+    }
+
+    const url = new URL(window.location.href)
+    const integrationAccountKey = router.query.adding_integration_account
+    if (integrationAccountKey) {
+      const completeOAuthPath = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/account-credentials/oauth/${integrationAccountKey}/callback${url.search}`
+      await router.push(`${completeOAuthPath}&redirect_to=${redirectTo}`)
+    } else {
+      await router.push(redirectTo)
     }
   }
 
