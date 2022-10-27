@@ -123,6 +123,9 @@ export function ActionInputsForm({
           in: parentActionIds,
         },
       },
+      paging: {
+        first: 120,
+      },
     },
   })
   const credentialsRes = useGetAccountCredentialById(credentialsFragment, {
