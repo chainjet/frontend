@@ -1,6 +1,5 @@
 import { IntegrationAction, WorkflowAction } from '../../../graphql'
-import { useCreateOneWorkflowAction } from '../../../src/services/WorkflowActionHooks'
-import { useTestWorkflowTrigger } from '../../../src/services/WorkflowTriggerHooks'
+import { useCreateOneWorkflowAction, useTestWorkflowAction } from '../../../src/services/WorkflowActionHooks'
 import { WorkflowNodeDrawer } from './WorkflowNodeDrawer'
 
 interface Props {
@@ -25,7 +24,7 @@ export const CreateWorkflowActionDrawer = ({
   onCancel,
 }: Props) => {
   const [createOneWorkflowAction] = useCreateOneWorkflowAction()
-  const [testWorkflowTrigger] = useTestWorkflowTrigger()
+  const [testWorkflowAction] = useTestWorkflowAction()
 
   const onSubmitInputs = async (inputs: { [key: string]: any }, action: IntegrationAction, credentialsID?: string) => {
     const previousAction = parentActionIds.length ? parentActionIds[parentActionIds.length - 1] : undefined
@@ -44,14 +43,13 @@ export const CreateWorkflowActionDrawer = ({
         },
       },
     })
-    if (workflowTriggerId) {
-      await testWorkflowTrigger({
+    if (res.data?.createOneWorkflowAction) {
+      // TODO show error and show UpdateWorkflowActionDrawer
+      await testWorkflowAction({
         variables: {
-          id: workflowTriggerId,
+          id: res.data.createOneWorkflowAction.id,
         },
       })
-    }
-    if (res.data?.createOneWorkflowAction) {
       onCreateWorkflowAction(res.data.createOneWorkflowAction)
     } else {
       // TODO display error

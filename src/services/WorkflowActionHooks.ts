@@ -88,3 +88,14 @@ export function useDeleteOneWorkflowAction() {
     },
   })
 }
+
+export function useTestWorkflowAction() {
+  const mutation = gql`
+    mutation ($id: String!) {
+      testWorkflowAction(id: $id) {
+        id
+      }
+    }
+  `
+  return useMutation<{ testWorkflowAction: WorkflowAction }, { id: string }>(mutation)
+}
