@@ -11,6 +11,7 @@ interface Props {
   workflowActionId: string
   workflowTriggerId: string | undefined
   parentActionIds: string[]
+  testError: Error | undefined
   onUpdateWorkflowAction: (workflowAction: WorkflowAction) => void
   onCancel: () => void
 }
@@ -40,6 +41,7 @@ export const UpdateWorkflowActionDrawer = ({
   workflowActionId,
   workflowTriggerId,
   parentActionIds,
+  testError,
   onUpdateWorkflowAction,
   onCancel,
 }: Props) => {
@@ -103,6 +105,7 @@ export const UpdateWorkflowActionDrawer = ({
           },
         },
       }}
+      testError={testError}
       onSubmitInputs={onSubmitInputs}
       onCancel={onCancel}
     />

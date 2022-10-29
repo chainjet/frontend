@@ -10,6 +10,7 @@ interface Props {
   previousActionCondition?: string
   nextAction?: string
   onCreateWorkflowAction: (workflowAction: WorkflowAction) => void
+  onActionTestError: (workflowAction: WorkflowAction, error: Error) => void
   onCancel: () => void
 }
 
@@ -21,6 +22,7 @@ export const CreateWorkflowActionDrawer = ({
   nextAction,
   visible,
   onCreateWorkflowAction,
+  onActionTestError,
   onCancel,
 }: Props) => {
   const [createOneWorkflowAction] = useCreateOneWorkflowAction()
@@ -44,13 +46,16 @@ export const CreateWorkflowActionDrawer = ({
       },
     })
     if (res.data?.createOneWorkflowAction) {
-      // TODO show error and show UpdateWorkflowActionDrawer
-      await testWorkflowAction({
-        variables: {
-          id: res.data.createOneWorkflowAction.id,
-        },
-      })
-      onCreateWorkflowAction(res.data.createOneWorkflowAction)
+      try {
+        await testWorkflowAction({
+          variables: {
+            id: res.data.createOneWorkflowAction.id,
+          },
+        })
+        onCreateWorkflowAction(res.data.createOneWorkflowAction)
+      } catch (e) {
+        onActionTestError(res.data.createOneWorkflowAction, e as Error)
+      }
     } else {
       // TODO display error
     }

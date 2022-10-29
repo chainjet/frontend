@@ -45,6 +45,7 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
   const [creatingAction, setCreatingAction] = useState<{ node?: WorkflowNode | boolean; condition?: string }>({})
   const [updatingAction, setUpdatingAction] = useState<WorkflowAction | undefined>()
   const [deletingAction, setDeletingAction] = useState<WorkflowAction | undefined>()
+  const [testError, setTestError] = useState<Error | undefined>()
 
   const handleCreateTrigger = (workflowTrigger: WorkflowTrigger) => {
     props.onCreateWorkflowTrigger(workflowTrigger)
@@ -63,6 +64,12 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
 
   const handleCreateAction = (workflowAction: WorkflowAction) => {
     props.onCreateWorkflowAction(workflowAction)
+    setCreatingAction({})
+  }
+
+  const handleTestActionError = (workflowAction: WorkflowAction, error: Error) => {
+    setTestError(error)
+    setUpdatingAction(workflowAction)
     setCreatingAction({})
   }
 
@@ -184,6 +191,7 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
           previousActionCondition={creatingAction.condition}
           visible={true}
           onCreateWorkflowAction={handleCreateAction}
+          onActionTestError={handleTestActionError}
           onCancel={() => setCreatingAction({})}
         />
       )}
@@ -193,6 +201,7 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
           workflowTriggerId={workflowTrigger?.id}
           parentActionIds={getParentActionIds(updatingAction, false)}
           visible={true}
+          testError={testError}
           onUpdateWorkflowAction={handleUpdateAction}
           onCancel={() => setUpdatingAction(undefined)}
         />

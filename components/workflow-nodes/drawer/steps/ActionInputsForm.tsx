@@ -29,6 +29,7 @@ interface Props {
   accountCredentialId: string | undefined
   initialInputs: ActionInputs
   extraSchemaProps?: JSONSchema7
+  testError?: Error | undefined
   onSubmitActionInputs: (inputs: ActionInputs) => Promise<any>
 }
 
@@ -97,6 +98,7 @@ export function ActionInputsForm({
   accountCredentialId,
   initialInputs,
   extraSchemaProps,
+  testError,
   onSubmitActionInputs,
 }: Props) {
   const [submitLoading, setSubmitLoading] = useState(false)
@@ -332,12 +334,12 @@ export function ActionInputsForm({
           !!workflowTriggerId ? (action === 'create' ? 'Test and create' : 'Update') : capitalize(action)
         }
       />
-      {(submitError ?? contractSchemaError) && (
+      {(submitError ?? contractSchemaError ?? testError) && (
         <div className="mt-8">
           <Alert
             type="error"
             message="Error executing the trigger:"
-            description={submitError ?? contractSchemaError?.message}
+            description={submitError ?? contractSchemaError?.message ?? testError?.message}
             showIcon
           />
         </div>

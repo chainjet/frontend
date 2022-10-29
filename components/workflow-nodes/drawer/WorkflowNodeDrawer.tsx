@@ -38,6 +38,9 @@ type Props<T extends IntegrationTrigger | IntegrationAction> = (TriggerProps | A
 
   overrideStep?: JSX.Element
 
+  // error testing the trigger or action
+  testError?: Error | undefined
+
   onSubmitInputs: (inputs: Record<string, any>, node: T, credentialsID?: string) => Promise<any>
   onCancel: () => void
 }
@@ -52,6 +55,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
     initialCredentialId,
     overrideStep,
     extraSchemaProps,
+    testError,
     onSubmitInputs,
   } = props
   const [currentStep, setCurrentStep] = useState(initialNodeInputs ? 3 : 0)
@@ -184,6 +188,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
               accountCredentialId={selectedCredentialID}
               initialInputs={initialNodeInputs || {}}
               extraSchemaProps={extraSchemaProps}
+              testError={testError}
               onSubmitActionInputs={(inputs) => onSubmitInputs(inputs, selectedNode, selectedCredentialID)}
             />
           )
