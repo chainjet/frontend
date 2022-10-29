@@ -28,7 +28,12 @@ export const CreateWorkflowActionDrawer = ({
   const [createOneWorkflowAction] = useCreateOneWorkflowAction()
   const [testWorkflowAction] = useTestWorkflowAction()
 
-  const onSubmitInputs = async (inputs: { [key: string]: any }, action: IntegrationAction, credentialsID?: string) => {
+  const onSubmitInputs = async (
+    inputs: { [key: string]: any },
+    action: IntegrationAction,
+    credentialsID?: string,
+    testAction?: boolean,
+  ) => {
     const previousAction = parentActionIds.length ? parentActionIds[parentActionIds.length - 1] : undefined
     const res = await createOneWorkflowAction({
       variables: {
@@ -47,11 +52,13 @@ export const CreateWorkflowActionDrawer = ({
     })
     if (res.data?.createOneWorkflowAction) {
       try {
-        await testWorkflowAction({
-          variables: {
-            id: res.data.createOneWorkflowAction.id,
-          },
-        })
+        if (testAction) {
+          await testWorkflowAction({
+            variables: {
+              id: res.data.createOneWorkflowAction.id,
+            },
+          })
+        }
         onCreateWorkflowAction(res.data.createOneWorkflowAction)
       } catch (e) {
         onActionTestError(res.data.createOneWorkflowAction, e as Error)

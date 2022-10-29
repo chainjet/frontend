@@ -35,6 +35,7 @@ interface Props {
   loadingSchema?: boolean
   hideSubmit?: boolean
   submitButtonText?: string
+  submitButtons?: (loading: boolean) => JSX.Element
   onChange?: (inputs: OperationInputs) => any
   onSubmit: (inputs: OperationInputs) => any
   onError?: () => any
@@ -69,6 +70,7 @@ export const SchemaForm = ({
   loadingSchema,
   hideSubmit,
   submitButtonText,
+  submitButtons,
   onChange,
   onSubmit,
   onError,
@@ -170,6 +172,8 @@ export const SchemaForm = ({
           <Loading />
         ) : hideSubmit ? (
           <></>
+        ) : submitButtons ? (
+          submitButtons(!!loading)
         ) : (
           <Button type="primary" htmlType="submit" loading={loading}>
             {submitButtonText ?? 'Submit'}

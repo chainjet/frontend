@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 import { isAddress } from '@ethersproject/address'
-import { Alert } from 'antd'
+import { Alert, Button } from 'antd'
 import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
 import { useEffect, useState } from 'react'
@@ -30,7 +30,7 @@ interface Props {
   initialInputs: ActionInputs
   extraSchemaProps?: JSONSchema7
   testError?: Error | undefined
-  onSubmitActionInputs: (inputs: ActionInputs) => Promise<any>
+  onSubmitActionInputs: (inputs: ActionInputs, testAction: boolean) => Promise<any>
 }
 
 const actionInputsFormFragment = gql`
@@ -103,6 +103,7 @@ export function ActionInputsForm({
 }: Props) {
   const [submitLoading, setSubmitLoading] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [testAction, setTestAction] = useState(false)
 
   const [inputs, setInputs] = useState(initialInputs)
   const [dependencyInputs, setDependencyInputs] = useState(initialInputs)
@@ -310,7 +311,7 @@ export function ActionInputsForm({
     setSubmitError(null)
     setInputs(data)
     try {
-      await onSubmitActionInputs(data)
+      await onSubmitActionInputs(data, testAction)
     } catch (e: any) {
       setSubmitError(e.message ?? 'Unknown error')
     } finally {
@@ -330,8 +331,24 @@ export function ActionInputsForm({
         loading={submitLoading}
         onSubmit={onFormSubmit}
         onChange={onChange}
-        submitButtonText={
-          !!workflowTriggerId ? (action === 'create' ? 'Test and create' : 'Update') : capitalize(action)
+        submitButtonText={!!workflowTriggerId ? 'Update' : capitalize(action)}
+        submitButtons={
+          !!workflowTriggerId && action === 'create'
+            ? (loading) => (
+                <div className="flex flex-row gap-4">
+                  <div>
+                    <Button htmlType="submit" loading={loading} onClick={() => setTestAction(false)}>
+                      Skip test
+                    </Button>
+                  </div>
+                  <div>
+                    <Button type="primary" htmlType="submit" loading={loading} onClick={() => setTestAction(true)}>
+                      Test and create
+                    </Button>
+                  </div>
+                </div>
+              )
+            : undefined
         }
       />
       {(submitError ?? contractSchemaError ?? testError) && (
