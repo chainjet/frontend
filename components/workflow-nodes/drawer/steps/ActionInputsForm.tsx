@@ -49,6 +49,7 @@ const triggerFragment = gql`
     id
     name
     schemaResponse
+    lastItem
     integrationTrigger {
       schemaResponse
       integration {
@@ -68,6 +69,7 @@ const actionFragment = gql`
     id
     name
     schemaResponse
+    lastItem
     integrationAction {
       id
       schemaResponse
@@ -212,6 +214,7 @@ export function ActionInputsForm({
       nodeName: trigger.name,
       nodeLogo: trigger.integrationTrigger.integration.logo,
       schema,
+      lastItem: trigger.lastItem,
     })
   }
   parentWorkflowActions.forEach((action) => {
@@ -230,6 +233,7 @@ export function ActionInputsForm({
       nodeName: action.name,
       nodeLogo: action.integrationAction.integration.logo,
       schema,
+      lastItem: action.lastItem,
     })
   })
 

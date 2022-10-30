@@ -8,4 +8,5 @@ export type WorkflowOutput = {
   nodeName: string
   nodeLogo?: string | null
   schema: JSONSchema7
+  lastItem?: Record<string, any>
 }

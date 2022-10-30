@@ -1,8 +1,9 @@
 import { DownOutlined } from '@ant-design/icons'
-import { Avatar, Modal, Tree } from 'antd'
+import { Modal, Tree } from 'antd'
 import { JSONSchema7, JSONSchema7TypeName } from 'json-schema'
 import { DataNode, Key } from 'rc-tree/lib/interface'
 import { WorkflowOutput } from '../../../../src/typings/Workflow'
+import { TypeColor } from '../../TypeColor'
 
 interface Props {
   visible: boolean
@@ -11,9 +12,7 @@ interface Props {
   onCancel: () => void
 }
 
-export const SelectNodeOutputs = (props: Props) => {
-  const { visible, outputs, onSelectOutput, onCancel } = props
-
+export const SelectNodeOutputs = ({ visible, outputs, onSelectOutput, onCancel }: Props) => {
   const handleOutputSelect = (selectedKeys: Key[]) => {
     if (selectedKeys[0] && typeof selectedKeys[0] === 'string' && selectedKeys[0].includes('.')) {
       onSelectOutput(selectedKeys[0])
@@ -24,10 +23,11 @@ export const SelectNodeOutputs = (props: Props) => {
     key: output.nodeId,
     title: (
       <>
-        {output.nodeLogo && <Avatar src={output.nodeLogo} size="small" />} {output.nodeName}
+        {output.nodeLogo && <img src={output.nodeLogo} width={24} height={24} alt={output.nodeName} />}{' '}
+        {output.nodeName}
       </>
     ),
-    children: createOutputsTree(output.schema, output.nodeId),
+    children: createOutputsTree(output.schema, output.nodeId, output.lastItem),
   }))
 
   return (
@@ -39,12 +39,13 @@ export const SelectNodeOutputs = (props: Props) => {
         defaultExpandAll={true}
         onSelect={handleOutputSelect}
         treeData={treeData}
+        selectedKeys={[]}
       />
     </Modal>
   )
 }
 
-export function createOutputsTree(schema: JSONSchema7, parentKey: string): DataNode[] {
+export function createOutputsTree(schema: JSONSchema7, parentKey: string, lastItem?: Record<string, any>): DataNode[] {
   return Object.entries(schema?.properties || {})
     .filter(([_, value]) => {
       if (typeof value === 'boolean') {
@@ -74,7 +75,16 @@ export function createOutputsTree(schema: JSONSchema7, parentKey: string): DataN
 
       const dataNode: DataNode = {
         key: `${parentKey}.${key}`,
-        title: key, // property.title || key
+        title:
+          lastItem &&
+          lastItem?.[key] !== undefined &&
+          !['', '[object Object]'].includes(lastItem[key].toString().trim()) ? (
+            <>
+              <strong>{key}</strong>: <TypeColor value={lastItem[key]} />
+            </>
+          ) : (
+            <strong>{key}</strong>
+          ),
       }
       const propertyType = (typeof property.type === 'string' ? [property.type] : property.type) as
         | JSONSchema7TypeName[]
@@ -92,12 +102,12 @@ export function createOutputsTree(schema: JSONSchema7, parentKey: string): DataN
         return {
           ...dataNode,
           title: `${key} <list>`,
-          children: createOutputsTree(property.items, '' + dataNode.key + '[0]'),
+          children: createOutputsTree(property.items, '' + dataNode.key + '[0]', lastItem?.[key]?.[0]),
         }
       }
       return {
         ...dataNode,
-        children: createOutputsTree(property, '' + dataNode.key),
+        children: createOutputsTree(property, '' + dataNode.key, lastItem?.[key]),
       }
     })
 }
