@@ -341,12 +341,7 @@ export function ActionInputsForm({
             ? (loading) => (
                 <div className="flex flex-row gap-4">
                   <div>
-                    <Button htmlType="submit" loading={loading} onClick={() => setTestAction(false)}>
-                      Skip test
-                    </Button>
-                  </div>
-                  <div>
-                    <Button type="primary" htmlType="submit" loading={loading} onClick={() => setTestAction(true)}>
+                    <Button type="primary" htmlType="submit" loading={loading}>
                       Test and create
                     </Button>
                   </div>
