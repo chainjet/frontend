@@ -1,18 +1,16 @@
 import { DownOutlined } from '@ant-design/icons'
-import { Modal, Tree } from 'antd'
+import { Tree } from 'antd'
 import { JSONSchema7, JSONSchema7TypeName } from 'json-schema'
 import { DataNode, Key } from 'rc-tree/lib/interface'
 import { WorkflowOutput } from '../../../../src/typings/Workflow'
 import { TypeColor } from '../../TypeColor'
 
 interface Props {
-  visible: boolean
   outputs: WorkflowOutput[]
   onSelectOutput: (key: string) => void
-  onCancel: () => void
 }
 
-export const SelectNodeOutputs = ({ visible, outputs, onSelectOutput, onCancel }: Props) => {
+export const NodeOutputsTree = ({ outputs, onSelectOutput }: Props) => {
   const handleOutputSelect = (selectedKeys: Key[]) => {
     if (selectedKeys[0] && typeof selectedKeys[0] === 'string' && selectedKeys[0].includes('.')) {
       onSelectOutput(selectedKeys[0])
@@ -31,17 +29,15 @@ export const SelectNodeOutputs = ({ visible, outputs, onSelectOutput, onCancel }
   }))
 
   return (
-    <Modal visible={visible} onOk={onCancel} onCancel={onCancel} footer={null}>
-      <Tree
-        height={500}
-        showLine
-        switcherIcon={<DownOutlined />}
-        defaultExpandAll={true}
-        onSelect={handleOutputSelect}
-        treeData={treeData}
-        selectedKeys={[]}
-      />
-    </Modal>
+    <Tree
+      height={350}
+      showLine
+      switcherIcon={<DownOutlined />}
+      defaultExpandAll={true}
+      onSelect={handleOutputSelect}
+      treeData={treeData}
+      selectedKeys={[]}
+    />
   )
 }
 

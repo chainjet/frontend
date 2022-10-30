@@ -1,7 +1,7 @@
-import { createOutputsTree } from '../SelectNodeOutputs'
 import { JSONSchema7 } from 'json-schema'
+import { createOutputsTree } from '../NodeOutputsTree'
 
-describe('SelectNodeOutputs', () => {
+describe('NodeOutputsTree', () => {
   describe('createOutputsTree', () => {
     it('should return an array of single level DataNode for scalar properties', async () => {
       const schema: JSONSchema7 = {
@@ -22,19 +22,19 @@ describe('SelectNodeOutputs', () => {
       }
       expect(createOutputsTree(schema, 'test')).toEqual([
         {
-          title: 'str',
+          title: <strong>str</strong>,
           key: 'test.str',
         },
         {
-          title: 'boolean',
+          title: <strong>boolean</strong>,
           key: 'test.boolean',
         },
         {
-          title: 'int',
+          title: <strong>int</strong>,
           key: 'test.int',
         },
         {
-          title: 'number',
+          title: <strong>number</strong>,
           key: 'test.number',
         },
       ])
@@ -62,19 +62,19 @@ describe('SelectNodeOutputs', () => {
       }
       expect(createOutputsTree(schema, 'test')).toEqual([
         {
-          title: 'str',
+          title: <strong>str</strong>,
           key: 'test.str',
         },
         {
-          title: 'boolean',
+          title: <strong>boolean</strong>,
           key: 'test.boolean',
         },
         {
-          title: 'int',
+          title: <strong>int</strong>,
           key: 'test.int',
         },
         {
-          title: 'number',
+          title: <strong>number</strong>,
           key: 'test.number',
         },
       ])
@@ -95,11 +95,11 @@ describe('SelectNodeOutputs', () => {
       }
       expect(createOutputsTree(schema, 'test')).toEqual([
         {
-          title: 'object',
+          title: <strong>object</strong>,
           key: 'test.object',
           children: [
             {
-              title: 'str',
+              title: <strong>str</strong>,
               key: 'test.object.str',
             },
           ],

@@ -1,11 +1,11 @@
+import { DownOutlined } from '@ant-design/icons'
 import { WidgetProps } from '@rjsf/utils'
-import { Button, Col, Row, Tooltip } from 'antd'
+import { Dropdown } from 'antd'
 import { InputProps } from 'antd/es/input'
 import Input from 'antd/lib/input'
-import React, { useState } from 'react'
-import { ImMagicWand } from 'react-icons/im'
+import React, { useEffect, useRef, useState } from 'react'
 import { assertNever } from '../../../../src/utils/typescript.utils'
-import { SelectNodeOutputs } from './SelectNodeOutputs'
+import { NodeOutputsTree } from './NodeOutputsTree'
 
 // Based on:
 //   https://github.com/rjsf-team/react-jsonschema-form/blob/master/packages/antd/src/widgets/TextWidget/index.js
@@ -36,8 +36,27 @@ export const BaseWidget = ({
   widgetType,
 }: WidgetProps & { widgetType: WidgetType }) => {
   const [inputValue, setInputValue] = useState(value)
-  const [addingOutputs, setAddingOutputs] = useState(false)
+  const [outputSelectorOpen, setOutputSelectorOpen] = useState(false)
   const { outputs, readonlyAsDisabled = true } = formContext
+  const wrapperRef = useRef<any>(null)
+  const treeRef = useRef<any>(null)
+
+  // close output selector on clicks outside this component
+  useEffect(() => {
+    function handleClickOutside(event: any) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target) &&
+        !treeRef.current?.contains?.(event.target)
+      ) {
+        setOutputSelectorOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   // inputs with type number don't allow for output interpolation
   const isNumberInput = false // schema.type === 'number' || schema.type === 'integer'
@@ -52,26 +71,22 @@ export const BaseWidget = ({
 
   const handleBlur = ({ target }: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     onBlur(id, parseValue(target.value))
-    setAddingOutputs(false)
   }
 
   const handleFocus = ({ target }: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     onFocus(id, parseValue(target.value))
-  }
-
-  const handleSelectOutputClick = () => {
-    setAddingOutputs(true)
+    setOutputSelectorOpen(true)
   }
 
   const handleOutputSelect = (output: string) => {
     const newValue = (inputValue || '') + `{{${output}}}`
     onChange(newValue)
     setInputValue(newValue)
-    setAddingOutputs(false)
+    setOutputSelectorOpen(false)
   }
 
   let inputType: string
-  let autoComplete = 'off' // Otherwise the suggestions are displayed above the "Add outputs" popover
+  let autoComplete = 'disabled' // chrome sometimes ignores autocomplete="off" (i.e. when label includes address)
 
   // don't use html5 validations because they won't work with interpolation
   switch (widgetType) {
@@ -123,25 +138,29 @@ export const BaseWidget = ({
         style={INPUT_STYLE}
         type={inputType}
         value={inputValue}
+        suffix={<DownOutlined />}
       />
     )
 
+  const nodeOutputsTree = (
+    <div className="p-2 mt-1 bg-white shadow-2xl" ref={treeRef}>
+      <NodeOutputsTree outputs={outputs} onSelectOutput={handleOutputSelect} />
+    </div>
+  )
+
   return (
-    <>
+    <div ref={wrapperRef}>
       {outputs.length ? (
-        <Row>
-          <Col xs={23}>{inputElement}</Col>
-          <Col xs={1}>
-            <Tooltip title="Add outputs from previous operations" placement="left">
-              <Button
-                type="primary"
-                style={{ borderRadius: '0 2px 2px 0' }}
-                icon={<ImMagicWand />}
-                onClick={handleSelectOutputClick}
-              />
-            </Tooltip>
-          </Col>
-        </Row>
+        <>
+          <Dropdown
+            overlay={nodeOutputsTree}
+            open={outputSelectorOpen}
+            placement="bottom"
+            getPopupContainer={wrapperRef ? () => wrapperRef.current : undefined}
+          >
+            <a onClick={(e) => e.preventDefault()}>{inputElement}</a>
+          </Dropdown>
+        </>
       ) : (
         inputElement
       )}
@@ -150,12 +169,6 @@ export const BaseWidget = ({
             {schema.description}
           </Typography.Paragraph>
         )} */}
-      <SelectNodeOutputs
-        outputs={outputs}
-        onSelectOutput={handleOutputSelect}
-        onCancel={() => setAddingOutputs(false)}
-        visible={addingOutputs}
-      />
-    </>
+    </div>
   )
 }
