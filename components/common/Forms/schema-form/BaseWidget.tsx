@@ -31,7 +31,7 @@ export const BaseWidget = ({
   placeholder,
   readonly,
   // required,
-  // schema,
+  schema,
   value,
   widgetType,
 }: WidgetProps & { widgetType: WidgetType }) => {
@@ -150,7 +150,7 @@ export const BaseWidget = ({
 
   return (
     <div ref={wrapperRef}>
-      {outputs.length ? (
+      {outputs.length && !(schema as any)['x-noInterpolation'] ? (
         <>
           <Dropdown
             overlay={nodeOutputsTree}

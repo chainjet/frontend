@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client'
+import { JSONSchema7 } from 'json-schema'
 import { IntegrationAction, WorkflowAction } from '../../../graphql'
 import { useGetWorkflowActionById, useUpdateOneWorkflowAction } from '../../../src/services/WorkflowActionHooks'
 import { Loading } from '../../common/RequestStates/Loading'
@@ -102,7 +103,8 @@ export const UpdateWorkflowActionDrawer = ({
             title: 'Display name',
             type: 'string',
             description: 'Operation name to use on the flow chart and logs.',
-          },
+            'x-noInterpolation': true,
+          } as JSONSchema7,
         },
       }}
       testError={testError}
