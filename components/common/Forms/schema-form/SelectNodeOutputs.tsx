@@ -78,7 +78,7 @@ export function createOutputsTree(schema: JSONSchema7, parentKey: string, lastIt
         title:
           lastItem &&
           lastItem?.[key] !== undefined &&
-          !['', '[object Object]'].includes(lastItem[key].toString().trim()) ? (
+          (!lastItem[key] || !['', '[object Object]'].includes(lastItem[key].toString().trim())) ? (
             <>
               <strong>{key}</strong>: <TypeColor value={lastItem[key]} />
             </>

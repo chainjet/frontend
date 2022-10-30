@@ -105,7 +105,7 @@ export function ActionInputsForm({
 }: Props) {
   const [submitLoading, setSubmitLoading] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
-  const [testAction, setTestAction] = useState(false)
+  let testAction = false // using state causes unwanted re-rendering and inputs are not send correctly
 
   const [inputs, setInputs] = useState(initialInputs)
   const [dependencyInputs, setDependencyInputs] = useState(initialInputs)
@@ -341,7 +341,12 @@ export function ActionInputsForm({
             ? (loading) => (
                 <div className="flex flex-row gap-4">
                   <div>
-                    <Button type="primary" htmlType="submit" loading={loading}>
+                    <Button htmlType="submit" loading={loading} onClick={() => (testAction = false)}>
+                      Skip test
+                    </Button>
+                  </div>
+                  <div>
+                    <Button type="primary" htmlType="submit" loading={loading} onClick={() => (testAction = true)}>
                       Test and create
                     </Button>
                   </div>
