@@ -51,6 +51,7 @@ const triggerFragment = gql`
     schemaResponse
     lastItem
     integrationTrigger {
+      instant
       schemaResponse
       integration {
         id
@@ -335,9 +336,9 @@ export function ActionInputsForm({
         loading={submitLoading}
         onSubmit={onFormSubmit}
         onChange={onChange}
-        submitButtonText={!!workflowTriggerId ? 'Update' : capitalize(action)}
+        submitButtonText={capitalize(action)}
         submitButtons={
-          !!workflowTriggerId && action === 'create'
+          !!workflowTriggerId && action === 'create' && (!trigger?.integrationTrigger.instant || trigger?.lastItem)
             ? (loading) => (
                 <div className="flex flex-row gap-4">
                   <div>
