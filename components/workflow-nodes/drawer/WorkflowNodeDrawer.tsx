@@ -41,6 +41,7 @@ type Props<T extends IntegrationTrigger | IntegrationAction> = (TriggerProps | A
   // error testing the trigger or action
   testError?: Error | undefined
 
+  readonly?: boolean
   onSubmitInputs: (inputs: Record<string, any>, node: T, credentialsID?: string, testAction?: boolean) => Promise<any>
   onCancel: () => void
 }
@@ -56,6 +57,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
     overrideStep,
     extraSchemaProps,
     testError,
+    readonly,
     onSubmitInputs,
   } = props
   const [currentStep, setCurrentStep] = useState(initialNodeInputs ? 3 : 0)
@@ -175,6 +177,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
               accountCredentialId={selectedCredentialID}
               initialInputs={initialNodeInputs || {}}
               extraSchemaProps={extraSchemaProps}
+              readonly={readonly}
               onSubmitOperationInputs={(inputs) => onSubmitInputs(inputs, selectedNode, selectedCredentialID, false)}
             />
           )
@@ -189,6 +192,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
               initialInputs={initialNodeInputs || {}}
               extraSchemaProps={extraSchemaProps}
               testError={testError}
+              readonly={readonly}
               onSubmitActionInputs={(inputs, testAction) =>
                 onSubmitInputs(inputs, selectedNode, selectedCredentialID, testAction)
               }

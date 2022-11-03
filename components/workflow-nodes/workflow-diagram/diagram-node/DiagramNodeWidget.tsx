@@ -1,4 +1,4 @@
-import { DeleteTwoTone, EditTwoTone, PlayCircleTwoTone, PlusOutlined } from '@ant-design/icons'
+import { DeleteTwoTone, EditTwoTone, PlayCircleTwoTone, PlusOutlined, UnorderedListOutlined } from '@ant-design/icons'
 import { DiagramEngine, PortWidget } from '@projectstorm/react-diagrams-core'
 import { Button, Card, Row, Tooltip } from 'antd'
 import Meta from 'antd/es/card/Meta'
@@ -20,22 +20,21 @@ interface DiagramNodeWidgetProps {
 
 // Fragments are defined on WorkflowDiagramFragments because react-diagram modules can't be directly imported with ssr
 
-export const DiagramNodeWidget = (props: DiagramNodeWidgetProps) => {
-  const { node, engine } = props
+export const DiagramNodeWidget = ({ node, engine }: DiagramNodeWidgetProps) => {
   const [checkWorkflowTrigger] = useCheckWorkflowTrigger()
   const [isCheckingWorkflowTrigger, setIsCheckingWorkflowTrigger] = useState(false)
 
   const portIn = node.getPort('in')
   const portOut = node.getPort('out')
 
-  const { workflowNode, workflow } = node.nodeOptions
+  const { workflowNode, workflow, readonly } = node.nodeOptions
   const integration = getIntegrationFromWorkflowNode(workflowNode)
   const integrationNode = getIntegrationNodeFromWorkflowNode(workflowNode)
   const nodeIsTrigger = workflowNodeIsTrigger(workflowNode)
   const actions: JSX.Element[] = []
   const nodeType = nodeIsTrigger ? 'trigger' : 'action'
   const isInstantTrigger = nodeIsTrigger && (integrationNode as IntegrationTrigger).instant
-  const canRunNode = nodeIsTrigger && !isInstantTrigger && workflow.actions?.edges?.length
+  const canRunNode = !readonly && nodeIsTrigger && !isInstantTrigger && workflow.actions?.edges?.length
 
   const handleCheckTriggerClick = async () => {
     setIsCheckingWorkflowTrigger(true)
@@ -47,16 +46,55 @@ export const DiagramNodeWidget = (props: DiagramNodeWidgetProps) => {
     setIsCheckingWorkflowTrigger(false)
   }
 
-  if (canRunNode) {
+  if (readonly) {
     actions.push(
-      <Tooltip title="Run trigger check" placement="bottom">
+      <Tooltip title={`View ${nodeType}`} placement="bottom" key="view-trigger-option">
+        <Button
+          block
+          type="text"
+          title={`View ${nodeType} details`}
+          key="view"
+          icon={<UnorderedListOutlined />}
+          onClick={() => node.nodeOptions.onUpdateClick(workflowNode)}
+        >
+          Details
+        </Button>
+      </Tooltip>,
+    )
+  } else {
+    if (canRunNode) {
+      actions.push(
+        <Tooltip title="Run trigger check" placement="bottom">
+          <Button
+            type="link"
+            key="run-trigger-check"
+            title="Run trigger check"
+            icon={<PlayCircleTwoTone />}
+            onClick={handleCheckTriggerClick}
+            loading={isCheckingWorkflowTrigger}
+          />
+        </Tooltip>,
+      )
+    }
+    actions.push(
+      <Tooltip title={`Update ${nodeType}`} placement="bottom" key="update-trigger-option">
         <Button
           type="link"
-          key="run-trigger-check"
-          title="Run trigger check"
-          icon={<PlayCircleTwoTone />}
-          onClick={handleCheckTriggerClick}
-          loading={isCheckingWorkflowTrigger}
+          title={`Update ${nodeType}`}
+          key="update"
+          icon={<EditTwoTone />}
+          onClick={() => node.nodeOptions.onUpdateClick(workflowNode)}
+        />
+      </Tooltip>,
+    )
+    actions.push(
+      <Tooltip title={`Delete ${nodeType}`} placement="bottom" key="delete-trigger-option">
+        <Button
+          type="link"
+          title={`Delete ${nodeType}`}
+          key="delete"
+          icon={<DeleteTwoTone />}
+          onClick={() => node.nodeOptions.onDeleteClick(workflowNode)}
         />
       </Tooltip>,
     )
@@ -80,30 +118,7 @@ export const DiagramNodeWidget = (props: DiagramNodeWidgetProps) => {
           <div className="circle-port" />
         </PortWidget>
       )}
-      <Card
-        size="small"
-        actions={[
-          ...actions,
-          <Tooltip title={`Update ${nodeType}`} placement="bottom" key={actions.length}>
-            <Button
-              type="link"
-              title={`Update ${nodeType}`}
-              key="update"
-              icon={<EditTwoTone />}
-              onClick={() => node.nodeOptions.onUpdateClick(workflowNode)}
-            />
-          </Tooltip>,
-          <Tooltip title={`Delete ${nodeType}`} placement="bottom" key={actions.length + 1}>
-            <Button
-              type="link"
-              title={`Delete ${nodeType}`}
-              key="delete"
-              icon={<DeleteTwoTone />}
-              onClick={() => node.nodeOptions.onDeleteClick(workflowNode)}
-            />
-          </Tooltip>,
-        ]}
-      >
+      <Card size="small" actions={actions}>
         <Meta
           avatar={<IntegrationAvatar integration={integration} />}
           title={integration.name.replace(/\([^)]*\)/, '')}
@@ -111,19 +126,21 @@ export const DiagramNodeWidget = (props: DiagramNodeWidgetProps) => {
         />
       </Card>
       {portOut && (
-        <PortWidget engine={props.engine} port={portOut}>
+        <PortWidget engine={engine} port={portOut}>
           <div className="circle-port" />
         </PortWidget>
       )}
 
-      <Row justify="center" align="middle" style={{ marginTop: '4px' }}>
-        <Button
-          type="dashed"
-          shape="circle"
-          icon={<PlusOutlined />}
-          onClick={() => node.nodeOptions.onCreateClick(workflowNode)}
-        />
-      </Row>
+      {!readonly && (
+        <Row justify="center" align="middle" style={{ marginTop: '4px' }}>
+          <Button
+            type="dashed"
+            shape="circle"
+            icon={<PlusOutlined />}
+            onClick={() => node.nodeOptions.onCreateClick(workflowNode)}
+          />
+        </Row>
+      )}
     </div>
   )
 }

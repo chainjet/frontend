@@ -8,6 +8,7 @@ interface NodeOptions {
   workflow: Workflow
   workflowNode: WorkflowNode
   isRootNode: boolean
+  readonly: boolean
   onCreateClick: (previousWorkflowNode?: WorkflowNode, condition?: string) => void
   onUpdateClick: (workflowNode: WorkflowNode) => void
   onDeleteClick: (workflowNode: WorkflowNode) => void

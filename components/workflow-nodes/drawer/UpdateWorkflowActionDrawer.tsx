@@ -13,6 +13,7 @@ interface Props {
   workflowTriggerId: string | undefined
   parentActionIds: string[]
   testError: Error | undefined
+  readonly: boolean
   onUpdateWorkflowAction: (workflowAction: WorkflowAction) => void
   onCancel: () => void
 }
@@ -43,6 +44,7 @@ export const UpdateWorkflowActionDrawer = ({
   workflowTriggerId,
   parentActionIds,
   testError,
+  readonly,
   onUpdateWorkflowAction,
   onCancel,
 }: Props) => {
@@ -89,7 +91,7 @@ export const UpdateWorkflowActionDrawer = ({
     <WorkflowNodeDrawer
       nodeType="action"
       visible={visible}
-      title={`Update Action "${workflowAction.name}"`}
+      title={`${readonly ? '' : 'Update '} Action "${workflowAction.name}"`}
       action="update"
       workflowTriggerId={workflowTriggerId}
       parentActionIds={parentActionIds}
@@ -108,6 +110,7 @@ export const UpdateWorkflowActionDrawer = ({
         },
       }}
       testError={testError}
+      readonly={readonly}
       onSubmitInputs={onSubmitInputs}
       onCancel={onCancel}
     />

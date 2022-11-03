@@ -34,6 +34,7 @@ interface Props {
   loading?: boolean
   loadingSchema?: boolean
   hideSubmit?: boolean
+  readonly?: boolean
   submitButtonText?: string
   submitButtons?: (loading: boolean) => JSX.Element
   onChange?: (inputs: OperationInputs) => any
@@ -69,6 +70,7 @@ export const SchemaForm = ({
   loading,
   loadingSchema,
   hideSubmit,
+  readonly,
   submitButtonText,
   submitButtons,
   onChange,
@@ -130,6 +132,7 @@ export const SchemaForm = ({
         fields={{
           TitleField,
         }}
+        readonly={readonly}
         autoComplete="disabled"
         onSubmit={(args: any) => onSubmit(args.formData)}
         onError={onError ? onError : () => {}}
@@ -171,7 +174,7 @@ export const SchemaForm = ({
       >
         {loadingSchema ? (
           <Loading />
-        ) : hideSubmit ? (
+        ) : hideSubmit || readonly ? (
           <></>
         ) : submitButtons ? (
           submitButtons(!!loading)

@@ -5,6 +5,7 @@ import { NextPageContext } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
+import { useAccount } from 'wagmi'
 import { PageWrapper } from '../../../components/common/PageLayout/PageWrapper'
 import { Loading } from '../../../components/common/RequestStates/Loading'
 import { RequestError } from '../../../components/common/RequestStates/RequestError'
@@ -31,6 +32,8 @@ const workflowFragment = gql`
     network
     address
     isTemplate
+    ownerAddress
+    isPublic
     trigger {
       id
       enabled
@@ -60,6 +63,7 @@ function WorkflowPage({ workflowId }: Props) {
   const [runHistoryModalOpen, setRunHistoryModalOpen] = useState(false)
   const [deployWorkflowModalOpen, setDeployWorkflowModalOpen] = useState(false)
   const [renameWorkflowModalOpen, setRenameWorkflowModalOpen] = useState(false)
+  const { address } = useAccount()
 
   const handleWorkflowChange = useCallback(async () => {
     await refetch()
@@ -78,6 +82,7 @@ function WorkflowPage({ workflowId }: Props) {
   }
 
   const { workflow } = data
+  const isOwnerByViewer = workflow.ownerAddress === address
 
   const handleGoBack = async () => {
     await router.push('/dashboard')
@@ -88,32 +93,34 @@ function WorkflowPage({ workflowId }: Props) {
   }
 
   const renderHeaderExtra = () => {
-    return [
-      !workflow.isTemplate && workflow.trigger && (!workflow.network || workflow.address) && (
-        <EnableWorkflowSwitch workflow={workflow} onWorkflowEnableChange={handleWorkflowChange} />
-      ),
+    return isOwnerByViewer
+      ? [
+          !workflow.isTemplate && workflow.trigger && (!workflow.network || workflow.address) && (
+            <EnableWorkflowSwitch workflow={workflow} onWorkflowEnableChange={handleWorkflowChange} />
+          ),
 
-      !workflow.isTemplate && workflow.network && !workflow.address && (
-        <Button type="primary" key="deploy" onClick={() => setDeployWorkflowModalOpen(true)}>
-          Deploy
-        </Button>
-      ),
+          !workflow.isTemplate && workflow.network && !workflow.address && (
+            <Button type="primary" key="deploy" onClick={() => setDeployWorkflowModalOpen(true)}>
+              Deploy
+            </Button>
+          ),
 
-      !workflow.isTemplate && (
-        <Button
-          type="default"
-          key="run-history"
-          icon={<HistoryOutlined />}
-          onClick={() => setRunHistoryModalOpen(true)}
-        >
-          Run history
-        </Button>
-      ),
+          !workflow.isTemplate && (
+            <Button
+              type="default"
+              key="run-history"
+              icon={<HistoryOutlined />}
+              onClick={() => setRunHistoryModalOpen(true)}
+            >
+              Run history
+            </Button>
+          ),
 
-      <Button key="settings" onClick={handleSettingsClick} icon={<SettingOutlined />}>
-        Settings
-      </Button>,
-    ]
+          <Button key="settings" onClick={handleSettingsClick} icon={<SettingOutlined />}>
+            Settings
+          </Button>,
+        ]
+      : []
   }
 
   return (
@@ -131,15 +138,20 @@ function WorkflowPage({ workflowId }: Props) {
 
       <PageWrapper
         title={
-          <div className="group" onClick={() => setRenameWorkflowModalOpen(true)}>
-            {workflow.name} <EditOutlined className="invisible cursor-pointer group-hover:visible" />
+          <div className="group" onClick={() => isOwnerByViewer && setRenameWorkflowModalOpen(true)}>
+            {workflow.name}{' '}
+            {isOwnerByViewer && <EditOutlined className="invisible cursor-pointer group-hover:visible" />}
           </div>
         }
         extra={renderHeaderExtra()}
         onBack={handleGoBack}
         className="workflow-diagram-container"
       >
-        <WorkflowDiagramContainer workflow={workflow} onWorkflowChange={handleWorkflowChange} />
+        <WorkflowDiagramContainer
+          workflow={workflow}
+          readonly={!isOwnerByViewer}
+          onWorkflowChange={handleWorkflowChange}
+        />
 
         {runHistoryModalOpen && (
           <WorkflowRunHistoryModal

@@ -25,6 +25,7 @@ interface WorkflowDiagramProps {
   workflow: Workflow
   workflowTrigger?: WorkflowTrigger | null
   workflowActions: WorkflowAction[]
+  readonly?: boolean
   onCreateWorkflowTrigger: (workflowTrigger: WorkflowTrigger) => void
   onUpdateWorkflowTrigger: (workflowTrigger: WorkflowTrigger) => void
   onDeleteWorkflowTrigger: (id: string) => void
@@ -35,8 +36,18 @@ interface WorkflowDiagramProps {
 
 // Fragments are defined on WorkflowDiagramFragments because react-diagram modules can't be directly imported with ssr
 
-const WorkflowDiagram = (props: WorkflowDiagramProps) => {
-  const { workflow, workflowTrigger, workflowActions } = props
+const WorkflowDiagram = ({
+  workflow,
+  workflowTrigger,
+  workflowActions,
+  readonly,
+  onCreateWorkflowTrigger,
+  onUpdateWorkflowTrigger,
+  onDeleteWorkflowTrigger,
+  onCreateWorkflowAction,
+  onUpdateWorkflowAction,
+  onDeleteWorkflowAction,
+}: WorkflowDiagramProps) => {
   const [diagramEngine, setDiagramEngine] = useState<DiagramEngine>()
 
   const [creatingTrigger, setCreatingTrigger] = useState<boolean>(false)
@@ -48,22 +59,22 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
   const [testError, setTestError] = useState<Error | undefined>()
 
   const handleCreateTrigger = (workflowTrigger: WorkflowTrigger) => {
-    props.onCreateWorkflowTrigger(workflowTrigger)
+    onCreateWorkflowTrigger(workflowTrigger)
     setCreatingTrigger(false)
   }
 
   const handleUpdateTrigger = (workflowTrigger: WorkflowTrigger) => {
-    props.onUpdateWorkflowTrigger(workflowTrigger)
+    onUpdateWorkflowTrigger(workflowTrigger)
     setUpdatingTrigger(undefined)
   }
 
   const handleDeleteTrigger = (id: string) => {
-    props.onDeleteWorkflowTrigger(id)
+    onDeleteWorkflowTrigger(id)
     setDeletingTrigger(undefined)
   }
 
   const handleCreateAction = (workflowAction: WorkflowAction) => {
-    props.onCreateWorkflowAction(workflowAction)
+    onCreateWorkflowAction(workflowAction)
     setCreatingAction({})
   }
 
@@ -74,12 +85,12 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
   }
 
   const handleUpdateAction = (workflowAction: WorkflowAction) => {
-    props.onUpdateWorkflowAction(workflowAction)
+    onUpdateWorkflowAction(workflowAction)
     setUpdatingAction(undefined)
   }
 
   const handleDeleteAction = (id: string) => {
-    props.onDeleteWorkflowAction(id)
+    onDeleteWorkflowAction(id)
     setDeletingAction(undefined)
   }
 
@@ -120,10 +131,11 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
 
     const model = new DiagramModel()
     createWorkflowTree({
-      model: model,
+      model,
       workflow,
       workflowTrigger: workflowTrigger,
       workflowActions: workflowActions,
+      readonly: !!readonly,
       onCreateTriggerClick: () => setCreatingTrigger(true),
       onUpdateTriggerClick: (trigger) => setUpdatingTrigger(trigger as WorkflowTrigger),
       onDeleteTriggerClick: (trigger) => setDeletingTrigger(trigger as WorkflowTrigger),
@@ -146,7 +158,7 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
       includeLinks: true,
     })
     dagreEngine.redistribute(model)
-  }, [props.workflowTrigger, props.workflowActions, diagramEngine, workflow, workflowTrigger, workflowActions])
+  }, [diagramEngine, workflow, workflowTrigger, workflowActions, readonly])
 
   if (!diagramEngine) {
     return <></>
@@ -170,6 +182,7 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
         <UpdateWorkflowTriggerDrawer
           workflowTriggerId={updatingTrigger.id}
           visible={true}
+          readonly={!!readonly}
           onUpdateWorkflowTrigger={handleUpdateTrigger}
           onCancel={() => setUpdatingTrigger(undefined)}
         />
@@ -202,6 +215,7 @@ const WorkflowDiagram = (props: WorkflowDiagramProps) => {
           parentActionIds={getParentActionIds(updatingAction, false)}
           visible={true}
           testError={testError}
+          readonly={!!readonly}
           onUpdateWorkflowAction={handleUpdateAction}
           onCancel={() => setUpdatingAction(undefined)}
         />
@@ -224,6 +238,7 @@ function addNode(
   workflow: Workflow,
   workflowNode: WorkflowNode,
   isRootNode: boolean,
+  readonly: boolean,
   onCreateClick: (node?: WorkflowNode, condition?: string) => void,
   onUpdateClick: (node: WorkflowNode) => void,
   onDeleteClick: (node: WorkflowNode) => void,
@@ -233,6 +248,7 @@ function addNode(
     workflow,
     workflowNode,
     isRootNode,
+    readonly,
     onCreateClick,
     onUpdateClick,
     onDeleteClick,
@@ -266,6 +282,7 @@ interface CreateWorkflowTreeOpts {
   workflow: Workflow
   workflowTrigger?: WorkflowTrigger | null
   workflowActions: WorkflowAction[]
+  readonly: boolean
   onCreateTriggerClick: (node?: WorkflowNode) => void
   onUpdateTriggerClick: (node: WorkflowNode) => void
   onDeleteTriggerClick: (node: WorkflowNode) => void
@@ -285,6 +302,7 @@ function createWorkflowTree(options: CreateWorkflowTreeOpts) {
       options.workflow,
       options.workflowTrigger,
       true,
+      options.readonly,
       options.onCreateActionClick,
       options.onUpdateTriggerClick,
       options.onDeleteTriggerClick,
@@ -299,6 +317,7 @@ function createWorkflowTree(options: CreateWorkflowTreeOpts) {
       rootAction,
       triggerNode,
       null,
+      !!options.readonly,
       options.onCreateTriggerClick,
       options.onCreateActionClick,
       options.onUpdateActionClick,
@@ -314,6 +333,7 @@ function createActionNodes(
   rootAction: WorkflowAction,
   parentNode: NodeModel | undefined,
   parentCondition: string | null,
+  readonly: boolean,
   onCreateTriggerClick: (node?: WorkflowNode) => void,
   onCreateActionClick: (node?: WorkflowNode, condition?: string) => void,
   onUpdateActionClick: (node: WorkflowNode) => void,
@@ -324,6 +344,7 @@ function createActionNodes(
     workflow,
     rootAction,
     !parentNode,
+    readonly,
     (node?: WorkflowNode, condition?: string) =>
       node ? onCreateActionClick(node, condition) : onCreateTriggerClick(node),
     onUpdateActionClick,
@@ -366,6 +387,7 @@ function createActionNodes(
           action,
           node,
           nextAction.condition ?? null,
+          readonly,
           onCreateTriggerClick,
           onCreateActionClick,
           onUpdateActionClick,

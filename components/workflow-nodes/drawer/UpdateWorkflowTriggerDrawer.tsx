@@ -9,6 +9,7 @@ import { WorkflowNodeDrawer } from './WorkflowNodeDrawer'
 interface Props {
   workflowTriggerId: string
   visible: boolean
+  readonly: boolean
   onUpdateWorkflowTrigger: (workflowTrigger: WorkflowTrigger) => void
   onCancel: () => void
 }
@@ -37,6 +38,7 @@ const workflowTriggerFragment = gql`
 export const UpdateWorkflowTriggerDrawer = ({
   workflowTriggerId,
   visible,
+  readonly,
   onUpdateWorkflowTrigger,
   onCancel,
 }: Props) => {
@@ -86,7 +88,7 @@ export const UpdateWorkflowTriggerDrawer = ({
   return (
     <WorkflowNodeDrawer
       nodeType="trigger"
-      title={`Update Trigger "${workflowTrigger.name}"`}
+      title={`${readonly ? '' : 'Update '}Trigger "${workflowTrigger.name}"`}
       action="update"
       initialNode={workflowTrigger.integrationTrigger}
       initialNodeInputs={initialInputs ?? {}}
@@ -102,6 +104,7 @@ export const UpdateWorkflowTriggerDrawer = ({
         },
       }}
       visible={visible}
+      readonly={readonly}
       onSubmitInputs={onSubmitInputs}
       onCancel={onCancel}
     />

@@ -58,7 +58,6 @@ export enum IntegrationActionSortFields {
 export enum WorkflowActionSortFields {
     id = "id",
     createdAt = "createdAt",
-    owner = "owner",
     workflow = "workflow",
     isRootAction = "isRootAction"
 }
@@ -79,7 +78,6 @@ export enum WorkflowRunStartedByOptions {
 export enum AccountCredentialSortFields {
     id = "id",
     createdAt = "createdAt",
-    owner = "owner",
     integrationAccount = "integrationAccount"
 }
 
@@ -106,7 +104,6 @@ export enum IntegrationAccountSortFields {
 export enum WorkflowSortFields {
     id = "id",
     createdAt = "createdAt",
-    owner = "owner",
     name = "name"
 }
 
@@ -117,7 +114,6 @@ export enum WorkflowNextActionSortFields {
 export enum WorkflowTriggerSortFields {
     id = "id",
     createdAt = "createdAt",
-    owner = "owner",
     workflow = "workflow"
 }
 
@@ -266,7 +262,6 @@ export interface WorkflowActionFilter {
     or?: Nullable<WorkflowActionFilter[]>;
     id?: Nullable<IDFilterComparison>;
     createdAt?: Nullable<DateFieldComparison>;
-    owner?: Nullable<IDFilterComparison>;
     workflow?: Nullable<IDFilterComparison>;
     isRootAction?: Nullable<BooleanFieldComparison>;
 }
@@ -282,7 +277,6 @@ export interface AccountCredentialFilter {
     or?: Nullable<AccountCredentialFilter[]>;
     id?: Nullable<IDFilterComparison>;
     createdAt?: Nullable<DateFieldComparison>;
-    owner?: Nullable<IDFilterComparison>;
     integrationAccount?: Nullable<IDFilterComparison>;
 }
 
@@ -353,7 +347,6 @@ export interface WorkflowFilter {
     or?: Nullable<WorkflowFilter[]>;
     id?: Nullable<IDFilterComparison>;
     createdAt?: Nullable<DateFieldComparison>;
-    owner?: Nullable<IDFilterComparison>;
     name?: Nullable<StringFieldComparison>;
 }
 
@@ -380,7 +373,6 @@ export interface WorkflowTriggerFilter {
     or?: Nullable<WorkflowTriggerFilter[]>;
     id?: Nullable<IDFilterComparison>;
     createdAt?: Nullable<DateFieldComparison>;
-    owner?: Nullable<IDFilterComparison>;
     workflow?: Nullable<IDFilterComparison>;
 }
 
@@ -512,7 +504,6 @@ export interface AccountCredentialUpdateFilter {
     or?: Nullable<AccountCredentialUpdateFilter[]>;
     id?: Nullable<IDFilterComparison>;
     createdAt?: Nullable<DateFieldComparison>;
-    owner?: Nullable<IDFilterComparison>;
     integrationAccount?: Nullable<IDFilterComparison>;
 }
 
@@ -529,7 +520,6 @@ export interface AccountCredentialDeleteFilter {
     or?: Nullable<AccountCredentialDeleteFilter[]>;
     id?: Nullable<IDFilterComparison>;
     createdAt?: Nullable<DateFieldComparison>;
-    owner?: Nullable<IDFilterComparison>;
     integrationAccount?: Nullable<IDFilterComparison>;
 }
 
@@ -540,6 +530,7 @@ export interface CreateOneWorkflowInput {
 export interface CreateWorkflowInput {
     name: string;
     runOnFailure?: Nullable<string>;
+    isPublic?: Nullable<boolean>;
 }
 
 export interface CreateManyWorkflowsInput {
@@ -554,6 +545,7 @@ export interface UpdateOneWorkflowInput {
 export interface UpdateWorkflowInput {
     name?: Nullable<string>;
     runOnFailure?: Nullable<string>;
+    isPublic?: Nullable<boolean>;
 }
 
 export interface UpdateManyWorkflowsInput {
@@ -566,7 +558,6 @@ export interface WorkflowUpdateFilter {
     or?: Nullable<WorkflowUpdateFilter[]>;
     id?: Nullable<IDFilterComparison>;
     createdAt?: Nullable<DateFieldComparison>;
-    owner?: Nullable<IDFilterComparison>;
     name?: Nullable<StringFieldComparison>;
 }
 
@@ -583,7 +574,6 @@ export interface WorkflowDeleteFilter {
     or?: Nullable<WorkflowDeleteFilter[]>;
     id?: Nullable<IDFilterComparison>;
     createdAt?: Nullable<DateFieldComparison>;
-    owner?: Nullable<IDFilterComparison>;
     name?: Nullable<StringFieldComparison>;
 }
 
@@ -627,7 +617,6 @@ export interface WorkflowActionUpdateFilter {
     or?: Nullable<WorkflowActionUpdateFilter[]>;
     id?: Nullable<IDFilterComparison>;
     createdAt?: Nullable<DateFieldComparison>;
-    owner?: Nullable<IDFilterComparison>;
     workflow?: Nullable<IDFilterComparison>;
     isRootAction?: Nullable<BooleanFieldComparison>;
 }
@@ -645,7 +634,6 @@ export interface WorkflowActionDeleteFilter {
     or?: Nullable<WorkflowActionDeleteFilter[]>;
     id?: Nullable<IDFilterComparison>;
     createdAt?: Nullable<DateFieldComparison>;
-    owner?: Nullable<IDFilterComparison>;
     workflow?: Nullable<IDFilterComparison>;
     isRootAction?: Nullable<BooleanFieldComparison>;
 }
@@ -692,7 +680,6 @@ export interface WorkflowTriggerUpdateFilter {
     or?: Nullable<WorkflowTriggerUpdateFilter[]>;
     id?: Nullable<IDFilterComparison>;
     createdAt?: Nullable<DateFieldComparison>;
-    owner?: Nullable<IDFilterComparison>;
     workflow?: Nullable<IDFilterComparison>;
 }
 
@@ -709,7 +696,6 @@ export interface WorkflowTriggerDeleteFilter {
     or?: Nullable<WorkflowTriggerDeleteFilter[]>;
     id?: Nullable<IDFilterComparison>;
     createdAt?: Nullable<DateFieldComparison>;
-    owner?: Nullable<IDFilterComparison>;
     workflow?: Nullable<IDFilterComparison>;
 }
 
@@ -864,7 +850,6 @@ export interface User {
 export interface AccountCredential {
     id: string;
     createdAt: DateTime;
-    owner: User;
     integrationAccount: IntegrationAccount;
     name: string;
     fields?: Nullable<JSONObject>;
@@ -879,7 +864,6 @@ export interface WorkflowNextAction {
 export interface WorkflowAction {
     id: string;
     createdAt: DateTime;
-    owner: User;
     workflow: Workflow;
     isRootAction: boolean;
     integrationAction: IntegrationAction;
@@ -893,10 +877,25 @@ export interface WorkflowAction {
     address: string;
 }
 
+export interface Workflow {
+    id: string;
+    createdAt: DateTime;
+    ownerAddress: string;
+    name: string;
+    state?: Nullable<string>;
+    runOnFailure?: Nullable<string>;
+    address?: Nullable<string>;
+    network?: Nullable<string>;
+    isTemplate?: Nullable<boolean>;
+    isPublic: boolean;
+    templateSchema?: Nullable<JSONObject>;
+    trigger?: Nullable<WorkflowTrigger>;
+    actions?: Nullable<WorkflowActionsConnection>;
+}
+
 export interface WorkflowTrigger {
     id: string;
     createdAt: DateTime;
-    owner: User;
     workflow: Workflow;
     integrationTrigger: IntegrationTrigger;
     name: string;
@@ -908,21 +907,6 @@ export interface WorkflowTrigger {
     lastItem?: Nullable<JSONObject>;
     hookId?: Nullable<string>;
     schemaResponse?: Nullable<JSONObject>;
-}
-
-export interface Workflow {
-    id: string;
-    createdAt: DateTime;
-    owner: User;
-    name: string;
-    state?: Nullable<string>;
-    runOnFailure?: Nullable<string>;
-    address?: Nullable<string>;
-    network?: Nullable<string>;
-    isTemplate?: Nullable<boolean>;
-    templateSchema?: Nullable<JSONObject>;
-    trigger?: Nullable<WorkflowTrigger>;
-    actions?: Nullable<WorkflowActionsConnection>;
 }
 
 export interface AuthToken {
@@ -949,13 +933,14 @@ export interface CompileWorkflow {
 export interface WorkflowDeleteResponse {
     id?: Nullable<string>;
     createdAt?: Nullable<DateTime>;
-    owner?: Nullable<string>;
+    ownerAddress?: Nullable<string>;
     name?: Nullable<string>;
     state?: Nullable<string>;
     runOnFailure?: Nullable<string>;
     address?: Nullable<string>;
     network?: Nullable<string>;
     isTemplate?: Nullable<boolean>;
+    isPublic?: Nullable<boolean>;
     templateSchema?: Nullable<JSONObject>;
 }
 
@@ -1051,7 +1036,6 @@ export interface WorkflowRunActionConnection {
 export interface WorkflowTriggerDeleteResponse {
     id?: Nullable<string>;
     createdAt?: Nullable<DateTime>;
-    owner?: Nullable<string>;
     workflow?: Nullable<string>;
     integrationTrigger?: Nullable<string>;
     name?: Nullable<string>;
@@ -1078,7 +1062,6 @@ export interface WorkflowTriggerConnection {
 export interface WorkflowActionDeleteResponse {
     id?: Nullable<string>;
     createdAt?: Nullable<DateTime>;
-    owner?: Nullable<string>;
     workflow?: Nullable<string>;
     isRootAction?: Nullable<boolean>;
     integrationAction?: Nullable<string>;
@@ -1110,7 +1093,6 @@ export interface WorkflowNextActionConnection {
 export interface AccountCredentialDeleteResponse {
     id?: Nullable<string>;
     createdAt?: Nullable<DateTime>;
-    owner?: Nullable<string>;
     integrationAccount?: Nullable<string>;
     name?: Nullable<string>;
     fields?: Nullable<JSONObject>;

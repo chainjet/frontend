@@ -22,6 +22,7 @@ interface Props {
   accountCredentialId: string | undefined
   initialInputs: TriggerInputs
   extraSchemaProps?: JSONSchema7
+  readonly?: boolean
   onSubmitOperationInputs: (inputs: TriggerInputs) => Promise<any>
   onChange?: (inputs: Record<string, any>) => any
   hideSubmit?: boolean
@@ -44,6 +45,7 @@ export function TriggerInputsForm({
   accountCredentialId,
   initialInputs,
   extraSchemaProps,
+  readonly,
   onSubmitOperationInputs,
   onChange,
   hideSubmit,
@@ -234,6 +236,7 @@ export function TriggerInputsForm({
         onSubmit={onFormSubmit}
         loading={submitLoading}
         hideSubmit={hideSubmit}
+        readonly={readonly}
       />
       {contractSchemaLoading && <Loading />}
       {(submitError ?? contractSchemaError) && (

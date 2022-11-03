@@ -30,6 +30,7 @@ interface Props {
   initialInputs: ActionInputs
   extraSchemaProps?: JSONSchema7
   testError?: Error | undefined
+  readonly?: boolean
   onSubmitActionInputs: (inputs: ActionInputs, testAction: boolean) => Promise<any>
 }
 
@@ -102,6 +103,7 @@ export function ActionInputsForm({
   initialInputs,
   extraSchemaProps,
   testError,
+  readonly,
   onSubmitActionInputs,
 }: Props) {
   const [submitLoading, setSubmitLoading] = useState(false)
@@ -334,6 +336,7 @@ export function ActionInputsForm({
         parentOutputs={parentOutputs}
         loadingSchema={isLoading}
         loading={submitLoading}
+        readonly={readonly}
         onSubmit={onFormSubmit}
         onChange={onChange}
         submitButtonText={capitalize(action)}
