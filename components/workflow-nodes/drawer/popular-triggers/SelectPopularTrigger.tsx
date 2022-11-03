@@ -25,6 +25,7 @@ const triggers: PopularIntegration[] = [
       {
         integrationKey: 'schedule',
         operationId: 'schedule',
+        hasSchedule: true,
         name: 'Time interval',
         description: 'Triggered based on a predefined interval',
       },
@@ -37,6 +38,7 @@ const triggers: PopularIntegration[] = [
       {
         integrationKey: 'blockchain',
         operationId: 'newEvent',
+        hasSchedule: true,
         name: 'New event',
         description: 'Triggered when an event is emitted by a smart contract',
       },
@@ -44,6 +46,7 @@ const triggers: PopularIntegration[] = [
         getIntegrationKey: (inputs: Record<string, any>) => inputs.network,
         operationId: 'listTransactions',
         name: 'New transaction',
+        hasSchedule: false,
         description: 'Triggered when a new transaction is made on a smart contract',
         schema: {
           type: 'object',
@@ -62,6 +65,7 @@ const triggers: PopularIntegration[] = [
         getIntegrationKey: (inputs: Record<string, any>) => inputs.network,
         operationId: 'listERC20TokenTransfers',
         name: 'New token transfer',
+        hasSchedule: false,
         description: 'Triggered when a token is transfered',
         schema: {
           type: 'object',
@@ -92,6 +96,7 @@ const triggers: PopularIntegration[] = [
         getOperationId: (inputs: Record<string, any>) =>
           inputs.nftType === 'ERC1155' ? 'listERC1155TokenTransfers' : 'listERC721TokenTransfers',
         name: 'New NFT transfer',
+        hasSchedule: false,
         description: 'Triggered when a NFT is transfered',
         schema: {
           type: 'object',
@@ -132,6 +137,7 @@ const triggers: PopularIntegration[] = [
       {
         integrationKey: 'webhook',
         operationId: 'receiveWebhook',
+        hasSchedule: true,
         name: 'New webhook received',
         description: 'Triggered when a request is received on a specific URL',
       },
@@ -144,6 +150,7 @@ const triggers: PopularIntegration[] = [
       {
         integrationKey: 'discord',
         operationId: 'newSlashCommandGuild',
+        hasSchedule: true,
         name: 'New slash command on a server Instant',
         description: 'Triggered when a slash command is sent on a server',
       },

@@ -80,6 +80,9 @@ export function SelectCustomPopularTrigger({ trigger, onSubmitTriggerInputs }: P
 
   const handleSchemaFormSubmit = async (inputs: Record<string, any>) => {
     setCreateTriggerError(null)
+    if (!trigger.hasSchedule) {
+      inputs.chainjet_schedule = { frequency: 'interval', interval: 900 }
+    }
     setTriggerInputs(inputs)
     if (trigger?.validate) {
       try {

@@ -3,6 +3,7 @@ import { JSONSchema7 } from 'json-schema'
 export interface PopularTrigger {
   integrationKey?: string
   operationId?: string
+  hasSchedule: boolean
   name: string
   description: string
   schema?: JSONSchema7
