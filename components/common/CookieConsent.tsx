@@ -30,7 +30,7 @@ class CookieConsent extends React.PureComponent<{}> {
       },
       showLink: false,
       content: {
-        message: `This website uses cookies for technical, analytical, and marketing purposes.
+        message: `This website uses cookies for technical and analytical purposes.
           <a href="/legal/privacy">Learn more</a>.`,
         dismiss: 'Close',
       },

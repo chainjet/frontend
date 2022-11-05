@@ -23,7 +23,11 @@ const LoginPage = ({}: Props) => {
         redirectTo = '/create/notification'
         break
       default:
-        redirectTo = '/dashboard'
+        if (router.query.go?.toString().startsWith('/')) {
+          redirectTo = router.query.go.toString()
+        } else {
+          redirectTo = '/dashboard'
+        }
     }
 
     const url = new URL(window.location.href)

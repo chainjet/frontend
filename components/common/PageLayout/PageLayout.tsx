@@ -4,6 +4,7 @@ import {
   MenuUnfoldOutlined,
   PlusSquareOutlined,
   ProjectOutlined,
+  WalletOutlined,
 } from '@ant-design/icons'
 import { Button, Dropdown, Layout, Menu } from 'antd'
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
@@ -36,7 +37,7 @@ export default function PageLayout({ children }: Props) {
 
   useEffect(() => {
     if (signer !== address) {
-      router.push('/login')
+      router.push(`/login?go=${router.asPath}`)
     }
   })
 
@@ -84,7 +85,7 @@ export default function PageLayout({ children }: Props) {
     } else {
       return (
         <div className="mr-4">
-          <Button type="primary" href="/login">
+          <Button type="primary" href={`/login?go=${router.asPath}`}>
             Connect Wallet
           </Button>
         </div>
@@ -105,15 +106,25 @@ export default function PageLayout({ children }: Props) {
           theme="dark"
           mode="inline"
           defaultSelectedKeys={[router.pathname]}
-          items={[
-            {
-              key: '/create/notification',
-              label: <Link href="/create/notification">Create Notification</Link>,
-              icon: <PlusSquareOutlined />,
-            },
-            { key: '/dashboard', label: <Link href="/dashboard">Dashboard</Link>, icon: <ProjectOutlined /> },
-            { key: '/credentials', label: <Link href="/credentials">Credentials</Link>, icon: <GoKey /> },
-          ]}
+          items={
+            address
+              ? [
+                  {
+                    key: '/create/notification',
+                    label: <Link href="/create/notification">Create Notification</Link>,
+                    icon: <PlusSquareOutlined />,
+                  },
+                  { key: '/dashboard', label: <Link href="/dashboard">Dashboard</Link>, icon: <ProjectOutlined /> },
+                  { key: '/credentials', label: <Link href="/credentials">Credentials</Link>, icon: <GoKey /> },
+                ]
+              : [
+                  {
+                    key: '/login',
+                    label: <Link href={`/login?go=${router.asPath}`}>Connect Wallet</Link>,
+                    icon: <WalletOutlined />,
+                  },
+                ]
+          }
         />
       </Layout.Sider>
 
