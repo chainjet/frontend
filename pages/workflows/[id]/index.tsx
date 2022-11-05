@@ -1,4 +1,11 @@
-import { EditOutlined, ForkOutlined, HistoryOutlined, SettingOutlined } from '@ant-design/icons'
+import {
+  EditOutlined,
+  ForkOutlined,
+  HistoryOutlined,
+  LockOutlined,
+  SettingOutlined,
+  UnlockOutlined,
+} from '@ant-design/icons'
 import { gql } from '@apollo/client'
 import { Button, Tooltip } from 'antd'
 import { NextPageContext } from 'next'
@@ -9,6 +16,7 @@ import { useAccount } from 'wagmi'
 import { PageWrapper } from '../../../components/common/PageLayout/PageWrapper'
 import { Loading } from '../../../components/common/RequestStates/Loading'
 import { RequestError } from '../../../components/common/RequestStates/RequestError'
+import { Address } from '../../../components/wallet/Address'
 import { WorkflowDiagramFragments } from '../../../components/workflow-nodes/workflow-diagram/WorkflowDiagramFragments'
 import { WorkflowDiagramContainer } from '../../../components/workflow-nodes/WorkflowDiagramContainer'
 import { WorkflowRunHistoryModal } from '../../../components/workflow-runs/WorkflowRunHistoryModal'
@@ -155,6 +163,28 @@ function WorkflowPage({ workflowId }: Props) {
           </div>
         }
         extra={renderHeaderExtra()}
+        header={
+          <>
+            <div className="flex gap-1">
+              <div>
+                Owned by: <Address address={workflow.ownerAddress} />
+              </div>
+              {workflow.isPublic ? (
+                <div>
+                  <Tooltip title="Public workflow" placement="bottom">
+                    <UnlockOutlined />
+                  </Tooltip>
+                </div>
+              ) : (
+                <div>
+                  <Tooltip title="Private workflow" placement="bottom">
+                    <LockOutlined />
+                  </Tooltip>
+                </div>
+              )}
+            </div>
+          </>
+        }
         onBack={handleGoBack}
         className="workflow-diagram-container"
       >

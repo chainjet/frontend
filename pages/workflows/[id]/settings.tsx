@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { PageWrapper } from '../../../components/common/PageLayout/PageWrapper'
 import { Loading } from '../../../components/common/RequestStates/Loading'
 import { RequestError } from '../../../components/common/RequestStates/RequestError'
+import { ChangeWorkflowPrivacyModal } from '../../../components/workflows/ChangeWorkflowPrivacyModal'
 import { DeleteWorkflowModal } from '../../../components/workflows/DeleteWorkflowModal'
 import { WorkflowForm } from '../../../components/workflows/WorkflowForm'
 import { Workflow, WorkflowTrigger } from '../../../graphql'
@@ -22,6 +23,7 @@ interface Props {
 const workflowFragment = gql`
   fragment WorkflowSettingsPage on Workflow {
     id
+    isPublic
     ...WorkflowForm_Workflow
     trigger {
       ...WorkflowForm_WorkflowTrigger
@@ -42,6 +44,7 @@ function WorkflowSettingsPage({ workflowId }: Props) {
   const [updateError, setUpdateError] = useState<string | null>(null)
   const [updateWorkflow] = useUpdateOneWorkflow()
   const [updateWorkflowTrigger] = useUpdateOneWorkflowTrigger()
+  const [changePrivacyModalOpen, setChangePrivacyModalOpen] = useState(false)
   const [deleteWorkflowModalOpen, setDeleteWorkflowModalOpen] = useState(false)
 
   if (loading) {
@@ -87,6 +90,10 @@ function WorkflowSettingsPage({ workflowId }: Props) {
     setUpdateLoading(false)
   }
 
+  const handlePrivacyChange = async () => {
+    await router.push(`/workflows/${workflowId}`)
+  }
+
   const handleWorkflowDelete = async () => {
     await router.push('/dashboard')
   }
@@ -114,11 +121,22 @@ function WorkflowSettingsPage({ workflowId }: Props) {
         </Card>
 
         <Card title="Danger settings" style={{ marginTop: 24, border: '1px solid #d40000' }}>
-          <Button type="primary" danger onClick={() => setDeleteWorkflowModalOpen(true)}>
-            Delete workflow
-          </Button>
+          <div className="flex gap-2">
+            <Button type="primary" danger onClick={() => setChangePrivacyModalOpen(true)}>
+              Change workflow privacy
+            </Button>
+            <Button type="primary" danger onClick={() => setDeleteWorkflowModalOpen(true)}>
+              Delete workflow
+            </Button>
+          </div>
         </Card>
 
+        <ChangeWorkflowPrivacyModal
+          visible={changePrivacyModalOpen}
+          workflow={workflow}
+          onPrivacyChange={handlePrivacyChange}
+          onCancel={() => setDeleteWorkflowModalOpen(false)}
+        />
         <DeleteWorkflowModal
           visible={deleteWorkflowModalOpen}
           workflow={workflow}

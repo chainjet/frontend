@@ -12,9 +12,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { CSSProperties, useEffect, useState } from 'react'
 import { GoKey } from 'react-icons/go'
-import { useAccount, useEnsName } from 'wagmi'
+import { useAccount } from 'wagmi'
 import { useLogout, useSigner } from '../../../src/services/UserHooks'
-import { shortenAddress } from '../../../src/utils/strings'
+import { Address } from '../../wallet/Address'
 require('./PageLayout.less')
 
 interface Props {
@@ -29,7 +29,6 @@ export default function PageLayout({ children }: Props) {
   const [siderCollapsed, setSiderCollapsed] = useState(hasMobileSider)
   const [logout] = useLogout()
   const { address } = useAccount()
-  const { data: ensName } = useEnsName({ address })
 
   useEffect(() => {
     setSiderCollapsed(hasMobileSider)
@@ -78,7 +77,9 @@ export default function PageLayout({ children }: Props) {
       return (
         <Dropdown overlay={menu}>
           <span className="user-menu">
-            <span>{ensName ? ensName : shortenAddress(address)}</span>
+            <span>
+              <Address address={address} />
+            </span>
           </span>
         </Dropdown>
       )
