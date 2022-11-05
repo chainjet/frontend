@@ -1,6 +1,6 @@
-import { EditOutlined, HistoryOutlined, SettingOutlined } from '@ant-design/icons'
+import { EditOutlined, ForkOutlined, HistoryOutlined, SettingOutlined } from '@ant-design/icons'
 import { gql } from '@apollo/client'
-import { Button } from 'antd'
+import { Button, Tooltip } from 'antd'
 import { NextPageContext } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -15,6 +15,7 @@ import { WorkflowRunHistoryModal } from '../../../components/workflow-runs/Workf
 import { WorkflowRunsTable } from '../../../components/workflow-runs/WorkflowRunsTable'
 import { DeployWorkflowModal } from '../../../components/workflows/DeployWorkflowModal'
 import { EnableWorkflowSwitch } from '../../../components/workflows/EnableWorkflowSwitch'
+import { ForkWorkflowModal } from '../../../components/workflows/ForkWorkflowModal'
 import { RenameWorkflowModal } from '../../../components/workflows/RenameWorkflowModal'
 import { withApollo } from '../../../src/apollo'
 import { useGetWorkflowById } from '../../../src/services/WorkflowHooks'
@@ -62,6 +63,7 @@ function WorkflowPage({ workflowId }: Props) {
   })
   const [runHistoryModalOpen, setRunHistoryModalOpen] = useState(false)
   const [deployWorkflowModalOpen, setDeployWorkflowModalOpen] = useState(false)
+  const [forkWorkflowModalOpen, setForkWorkflowModalOpen] = useState(false)
   const [renameWorkflowModalOpen, setRenameWorkflowModalOpen] = useState(false)
   const { address } = useAccount()
 
@@ -73,6 +75,16 @@ function WorkflowPage({ workflowId }: Props) {
     setDeployWorkflowModalOpen(false)
     handleWorkflowChange()
   }, [handleWorkflowChange])
+
+  const handleForkWorkflow = useCallback(
+    (forkId: string) => {
+      if (forkId) {
+        router.push(`/workflows/${forkId}`)
+        setForkWorkflowModalOpen(false)
+      }
+    },
+    [router],
+  )
 
   if (loading) {
     return <Loading />
@@ -92,36 +104,35 @@ function WorkflowPage({ workflowId }: Props) {
     await router.push(`/workflows/${workflowId}/settings`)
   }
 
-  const renderHeaderExtra = () => {
-    return isOwnerByViewer
-      ? [
-          !workflow.isTemplate && workflow.trigger && (!workflow.network || workflow.address) && (
-            <EnableWorkflowSwitch workflow={workflow} onWorkflowEnableChange={handleWorkflowChange} />
-          ),
+  const renderHeaderExtra = () => [
+    isOwnerByViewer && !workflow.isTemplate && workflow.trigger && (!workflow.network || workflow.address) && (
+      <EnableWorkflowSwitch workflow={workflow} onWorkflowEnableChange={handleWorkflowChange} />
+    ),
 
-          !workflow.isTemplate && workflow.network && !workflow.address && (
-            <Button type="primary" key="deploy" onClick={() => setDeployWorkflowModalOpen(true)}>
-              Deploy
-            </Button>
-          ),
+    isOwnerByViewer && !workflow.isTemplate && workflow.network && !workflow.address && (
+      <Button type="primary" key="deploy" onClick={() => setDeployWorkflowModalOpen(true)}>
+        Deploy
+      </Button>
+    ),
 
-          !workflow.isTemplate && (
-            <Button
-              type="default"
-              key="run-history"
-              icon={<HistoryOutlined />}
-              onClick={() => setRunHistoryModalOpen(true)}
-            >
-              Run history
-            </Button>
-          ),
+    <Tooltip title={`Create a copy of this workflow`} placement="bottom" key="fork-tooltip">
+      <Button key="fork" icon={<ForkOutlined />} onClick={() => setForkWorkflowModalOpen(true)}>
+        Fork
+      </Button>
+    </Tooltip>,
 
-          <Button key="settings" onClick={handleSettingsClick} icon={<SettingOutlined />}>
-            Settings
-          </Button>,
-        ]
-      : []
-  }
+    isOwnerByViewer && !workflow.isTemplate && (
+      <Button type="default" key="run-history" icon={<HistoryOutlined />} onClick={() => setRunHistoryModalOpen(true)}>
+        Run history
+      </Button>
+    ),
+
+    isOwnerByViewer && (
+      <Button key="settings" onClick={handleSettingsClick} icon={<SettingOutlined />}>
+        Settings
+      </Button>
+    ),
+  ]
 
   return (
     <>
@@ -167,6 +178,15 @@ function WorkflowPage({ workflowId }: Props) {
             workflow={workflow}
             onWorkflowDeploy={handleContractDeploy}
             onClose={() => setDeployWorkflowModalOpen(false)}
+          />
+        )}
+
+        {forkWorkflowModalOpen && (
+          <ForkWorkflowModal
+            visible={forkWorkflowModalOpen}
+            workflow={workflow}
+            onWorkflowFork={handleForkWorkflow}
+            onClose={() => setForkWorkflowModalOpen(false)}
           />
         )}
       </PageWrapper>

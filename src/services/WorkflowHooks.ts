@@ -100,3 +100,14 @@ export function useCompileWorkflow(
     options,
   )
 }
+
+export function useForkWorkflow() {
+  const mutation = gql`
+    mutation forkWorkflow($workflowId: ID!, $templateInputs: JSONObject, $credentialIds: JSONObject) {
+      forkWorkflow(workflowId: $workflowId, templateInputs: $templateInputs, credentialIds: $credentialIds) {
+        id
+      }
+    }
+  `
+  return useMutation(mutation)
+}
