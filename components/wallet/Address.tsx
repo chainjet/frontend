@@ -1,4 +1,4 @@
-import { useEnsName } from 'wagmi'
+import { Address as AddressType, useEnsName } from 'wagmi'
 import { shortenAddress } from '../../src/utils/strings'
 
 interface Props {
@@ -6,6 +6,6 @@ interface Props {
 }
 
 export function Address({ address }: Props) {
-  const { data: ensName } = useEnsName({ address })
+  const { data: ensName } = useEnsName({ address: address.toLowerCase() as AddressType })
   return <>{ensName || shortenAddress(address)}</>
 }
