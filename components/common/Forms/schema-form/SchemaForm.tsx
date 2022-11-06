@@ -15,6 +15,7 @@ import { extractUISchema, fixArraysWithoutItems, removeHiddenProperties } from '
 import { hasInterpolation } from '../../../../src/utils/strings'
 import { Loading } from '../../RequestStates/Loading'
 import { BaseWidget } from './BaseWidget'
+import { DescriptionFieldTemplate } from './DescriptionFieldTemplate'
 import TitleField from './TitleField'
 require('./SchemaForm.less')
 
@@ -129,6 +130,7 @@ export const SchemaForm = ({
           EmailWidget,
           TextareaWidget,
         }}
+        templates={{ DescriptionFieldTemplate }}
         fields={{
           TitleField,
         }}
