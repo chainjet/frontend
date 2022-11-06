@@ -6,11 +6,11 @@ import { ChainId } from '../constants/networks'
 
 export function useRunnerTask({ chainId, address }: { chainId: ChainId; address: string }) {
   const res = useContractRead({
-    addressOrName: CHAINJET_RUNNER_ADDRESS[chainId] ?? '',
-    contractInterface: CHAINJET_RUNNER_ABI,
+    address: CHAINJET_RUNNER_ADDRESS[chainId] ?? '',
+    abi: CHAINJET_RUNNER_ABI,
     functionName: 'tasks',
     enabled: !!address,
-    args: address,
+    args: [address],
     chainId,
   })
   return {
@@ -19,13 +19,13 @@ export function useRunnerTask({ chainId, address }: { chainId: ChainId; address:
   }
 }
 
-export function useRunnerBalance({ chainId }: { chainId: ChainId }) {
+export function useRunnerBalance({ chainId }: { chainId?: ChainId }) {
   const { address } = useAccount()
   const res = useContractRead({
-    addressOrName: CHAINJET_RUNNER_ADDRESS[chainId] ?? '',
-    contractInterface: CHAINJET_RUNNER_ABI,
+    address: (chainId && CHAINJET_RUNNER_ADDRESS[chainId]) ?? '',
+    abi: CHAINJET_RUNNER_ABI,
     functionName: 'balances',
-    enabled: true,
+    enabled: !!chainId,
     args: [address],
     chainId,
   })

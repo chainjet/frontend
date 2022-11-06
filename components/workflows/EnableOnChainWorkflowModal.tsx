@@ -40,8 +40,8 @@ export const EnableOnChainWorkflowModal = ({ workflow, onWorkflowEnableChange, o
   const { balance, isLoading: balanceLoading } = useRunnerBalance({ chainId: workflowChainId })
 
   const { config } = usePrepareContractWrite({
-    addressOrName: runnerAddress,
-    contractInterface: CHAINJET_RUNNER_ABI,
+    address: runnerAddress,
+    abi: CHAINJET_RUNNER_ABI as any[],
     functionName: isEnablingWorkflow ? 'enableTask' : 'disableTask',
     chainId: workflowChainId,
     args: [workflow.address],
