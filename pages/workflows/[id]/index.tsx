@@ -94,6 +94,14 @@ function WorkflowPage({ workflowId }: Props) {
     [router],
   )
 
+  const handleForkWorkflowClick = () => {
+    if (address) {
+      setForkWorkflowModalOpen(true)
+    } else {
+      router.push(`/login?go=${router.asPath}`)
+    }
+  }
+
   if (loading) {
     return <Loading />
   }
@@ -124,7 +132,7 @@ function WorkflowPage({ workflowId }: Props) {
     ),
 
     <Tooltip title={`Create a copy of this workflow`} placement="bottom" key="fork-tooltip">
-      <Button key="fork" icon={<ForkOutlined />} onClick={() => setForkWorkflowModalOpen(true)}>
+      <Button key="fork" icon={<ForkOutlined />} onClick={handleForkWorkflowClick}>
         Fork
       </Button>
     </Tooltip>,
