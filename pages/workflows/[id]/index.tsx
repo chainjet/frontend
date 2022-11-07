@@ -27,6 +27,8 @@ import { ForkWorkflowModal } from '../../../components/workflows/ForkWorkflowMod
 import { RenameWorkflowModal } from '../../../components/workflows/RenameWorkflowModal'
 import { withApollo } from '../../../src/apollo'
 import { useGetWorkflowById } from '../../../src/services/WorkflowHooks'
+import { isServer } from '../../../src/utils/environment'
+import { getHeadMetatags } from '../../../src/utils/html.utils'
 import { getQueryParam } from '../../../src/utils/nextUtils'
 require('./workflow.less')
 
@@ -150,10 +152,30 @@ function WorkflowPage({ workflowId }: Props) {
     ),
   ]
 
+  if (isServer) {
+    return (
+      <Head>
+        {getHeadMetatags({
+          path: `/workflows/${workflow.id}`,
+          title: workflow.name,
+          description: `${workflow.isTemplate ? 'Template' : 'Workflow'} "${workflow.name}" created by ${
+            workflow.ownerAddress
+          }`,
+        })}
+      </Head>
+    )
+  }
+
   return (
     <>
       <Head>
-        <title>{workflow.name}</title>
+        {getHeadMetatags({
+          path: `/workflows/${workflow.id}`,
+          title: workflow.name,
+          description: `${workflow.isTemplate ? 'Template' : 'Workflow'} "${workflow.name}" created by ${
+            workflow.ownerAddress
+          }`,
+        })}
       </Head>
 
       <RenameWorkflowModal
@@ -238,4 +260,4 @@ WorkflowPage.getInitialProps = async (ctx: NextPageContext): Promise<Props> => {
   }
 }
 
-export default withApollo(WorkflowPage, { ssr: false })
+export default withApollo(WorkflowPage)

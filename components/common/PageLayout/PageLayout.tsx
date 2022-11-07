@@ -14,6 +14,7 @@ import React, { CSSProperties, useEffect, useState } from 'react'
 import { GoKey } from 'react-icons/go'
 import { useAccount } from 'wagmi'
 import { useLogout, useSigner } from '../../../src/services/UserHooks'
+import { isBrowser } from '../../../src/utils/environment'
 import { Address } from '../../wallet/Address'
 require('./PageLayout.less')
 
@@ -94,7 +95,7 @@ export default function PageLayout({ children }: Props) {
     }
   }
 
-  if (signer !== address) {
+  if (isBrowser && signer !== address) {
     return <></>
   }
 

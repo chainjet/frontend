@@ -72,6 +72,10 @@ export default function ChainJetApp({
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@chainjetio" />
         <meta name="twitter:creator" content="@chainjetio" />
+        <meta
+          content="https://raw.githubusercontent.com/chainjet/assets/master/chainjet/logo-backgroud.jpg"
+          property="twitter:image"
+        />
 
         {process.env.SLACK_APP_ID && <meta name="slack-app-id" content={process.env.SLACK_APP_ID}></meta>}
       </Head>

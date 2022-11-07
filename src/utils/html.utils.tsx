@@ -18,9 +18,11 @@ export function getHeadMetatags({
   return (
     <>
       <title>{title}</title>
-      <meta name="description" content={description} />
       <meta property="og:title" content={title} />
+      <meta property="twitter:title" content={title} />
+      <meta name="description" content={description} />
       <meta property="og:description" content={description} />
+      <meta property="twitter:description" content={description} />
       {imageUrl && <meta property="og:image" content={imageUrl} />}
       <link rel="canonical" href={url} />
       <meta property="og:type" content="website" />
