@@ -107,6 +107,8 @@ export const BaseWidget = ({
       inputType = ''
   }
 
+  placeholder = placeholder || (outputs.length ? 'Enter text and/or select a dynamic value' : '')
+
   const inputElement =
     inputType === 'textarea' ? (
       <Input.TextArea
@@ -117,7 +119,7 @@ export const BaseWidget = ({
         onChange={!readonly ? handleTextChange : undefined}
         onBlur={!readonly ? handleBlur : undefined}
         onFocus={!readonly ? handleFocus : undefined}
-        placeholder={placeholder || 'Enter text and/or select a dynamic value'}
+        placeholder={placeholder}
         style={INPUT_STYLE}
         value={inputValue}
         autoSize={{ minRows: options.rows ? Number(options.rows) : 4 }}
@@ -134,11 +136,11 @@ export const BaseWidget = ({
         onChange={!readonly ? handleTextChange : undefined}
         onBlur={!readonly ? handleBlur : undefined}
         onFocus={!readonly ? handleFocus : undefined}
-        placeholder={placeholder || 'Enter text and/or select a dynamic value'}
+        placeholder={placeholder}
         style={INPUT_STYLE}
         type={inputType}
         value={inputValue}
-        suffix={<DownOutlined />}
+        suffix={outputs.length && <DownOutlined />}
       />
     )
 
