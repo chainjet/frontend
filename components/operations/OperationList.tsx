@@ -20,7 +20,11 @@ export function OperationList(props: Props) {
       renderItem={(operation) => (
         <List.Item>
           <List.Item.Meta
-            avatar={<IntegrationAvatar integration={integration} />}
+            avatar={
+              <div className="mt-4">
+                <IntegrationAvatar integration={integration} />
+              </div>
+            }
             title={
               (operation as IntegrationTrigger).instant ? (
                 <span className="text-xl">

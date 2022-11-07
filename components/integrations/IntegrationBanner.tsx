@@ -1,7 +1,6 @@
 import { gql } from '@apollo/client'
 import { Button, Card, Col, Row, Typography } from 'antd'
 import Link from 'next/link'
-import React from 'react'
 import { Integration } from '../../graphql'
 import { IntegrationAvatar } from './IntegrationAvatar'
 
@@ -21,17 +20,17 @@ export function IntegrationBanner(props: Props) {
         </Col>
         <Col xs={24} md={14}>
           <div>
-            <Typography.Title level={2}>{integration.name}</Typography.Title>
+            <Typography.Title level={2}>{integration.name} Integrations</Typography.Title>
             <Typography.Text>
-              ChainJet allows you to automate repetitive tasks in {shortName}. Connect {shortName} with over 300
-              integrations and unlock its potential. No coding skills required.
+              ChainJet allows you to connect {shortName} with web3 dapps and web2 services, so you can automate your
+              work. No code required.
             </Typography.Text>
           </div>
           <div>
-            <Link href={`/register?integration=${integration.key}`}>
+            <Link href={`/login?integration=${integration.key}`}>
               <a>
                 <Button type="primary" style={{ marginTop: 24 }}>
-                  Start for free
+                  Launch App
                 </Button>
               </a>
             </Link>

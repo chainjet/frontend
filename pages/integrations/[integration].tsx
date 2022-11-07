@@ -104,17 +104,16 @@ function IntegrationPage(props: Props) {
       <Head>
         {getHeadMetatags({
           path: `/integrations/${integration.key}`,
-          title: `Automate repetitive tasks in ${integration.name}`,
+          title: `Integrate ${integration.name} with hundreds of apps`,
           description:
-            `ChainJet allows you to automate repetitive tasks in ${shortName}. ` +
-            `Connect ${shortName} with over 300 integrations and unlock its potential. ` +
-            `No coding skills required.`,
+            `ChainJet allows you to connect ${shortName} with web3 dapps and web2 services, ` +
+            `so you can automate your work. No code required.`,
           image: integration.logo,
         })}
       </Head>
       <LandingHeader />
 
-      <div style={{ marginTop: 200 }}>
+      <div className="container mx-auto">
         <IntegrationBanner integration={integration} />
 
         {!!triggers.length && (
