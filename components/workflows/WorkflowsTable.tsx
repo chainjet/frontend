@@ -35,13 +35,12 @@ export const WorkflowsTable = ({ workflows }: Props) => {
         }
         return (
           <div className="hidden md:block">
-            <Avatar.Group>
-              {integrations.slice(0, 5).map((integration) => (
+            <Avatar.Group maxCount={5}>
+              {integrations.map((integration) => (
                 <Tooltip key={integration.id} title={integration.name}>
                   <Avatar src={integration.logo} style={{ width: 28, height: 28 }} />
                 </Tooltip>
               ))}
-              {integrations.length > 5 && <div className="mt-0.5 ml-2">+ {integrations.length - 5} more</div>}
             </Avatar.Group>
           </div>
         )
