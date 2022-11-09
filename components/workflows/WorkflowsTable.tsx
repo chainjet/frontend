@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client'
-import { Table } from 'antd'
+import { Avatar, Table, Tooltip } from 'antd'
 import Link from 'next/link'
 import { Workflow } from '../../graphql'
 
@@ -19,6 +19,40 @@ export const WorkflowsTable = ({ workflows }: Props) => {
         </Link>
       ),
     },
+    {
+      title: <span className="hidden md:block">Integrations</span>,
+      dataIndex: 'integrations',
+      key: 'integrations',
+      render: (_: any, workflow: Workflow) => {
+        const integrations = []
+        if (workflow.trigger) {
+          integrations.push(workflow.trigger.integrationTrigger.integration)
+        }
+        for (const action of workflow.actions?.edges ?? []) {
+          if (!integrations.some((integration) => integration.id === action.node.integrationAction.integration.id)) {
+            integrations.push(action.node.integrationAction.integration)
+          }
+        }
+        return (
+          <div className="hidden md:block">
+            <Avatar.Group>
+              {integrations.slice(0, 5).map((integration) => (
+                <Tooltip key={integration.id} title={integration.name}>
+                  <Avatar src={integration.logo} style={{ width: 28, height: 28 }} />
+                </Tooltip>
+              ))}
+              {integrations.length > 5 && <div className="mt-0.5 ml-2">+ {integrations.length - 5} more</div>}
+            </Avatar.Group>
+          </div>
+        )
+      },
+    },
+    {
+      title: 'Enabled',
+      dataIndex: 'enabled',
+      key: 'enabled',
+      render: (_: any, workflow: Workflow) => <>{workflow.trigger?.enabled ? 'Yes' : 'No'}</>,
+    },
   ]
 
   return <Table dataSource={workflows} columns={tableColumns} pagination={{ pageSize: 120 }} />
@@ -32,6 +66,29 @@ WorkflowsTable.fragments = {
       trigger {
         id
         enabled
+        integrationTrigger {
+          id
+          integration {
+            id
+            name
+            logo
+          }
+        }
+      }
+      actions {
+        edges {
+          node {
+            id
+            integrationAction {
+              id
+              integration {
+                id
+                name
+                logo
+              }
+            }
+          }
+        }
       }
     }
   `,
