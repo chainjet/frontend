@@ -118,7 +118,7 @@ export const DiagramNodeWidget = ({ node, engine }: DiagramNodeWidgetProps) => {
           <div className="circle-port" />
         </PortWidget>
       )}
-      <Card size="small" actions={actions}>
+      <Card size="small" actions={actions} style={{ minWidth: 250 }}>
         <Meta
           avatar={<IntegrationAvatar integration={integration} />}
           title={integration.name.replace(/\([^)]*\)/, '')}
