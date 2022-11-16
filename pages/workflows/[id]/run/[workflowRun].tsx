@@ -13,6 +13,7 @@ import { withApollo } from '../../../../src/apollo'
 import { ChainId, NETWORK } from '../../../../src/constants/networks'
 import { useGetWorkflowRunById } from '../../../../src/services/WorkflowRunHooks'
 import { getQueryParam } from '../../../../src/utils/nextUtils'
+import { isEmptyObj } from '../../../../src/utils/object.utils'
 import { assertNever } from '../../../../src/utils/typescript.utils'
 
 interface Props {
@@ -28,6 +29,7 @@ const workflowRunFragment = gql`
     startedBy
     errorMessage
     errorResponse
+    inputs
     triggerRun {
       status
       workflowTriggered
@@ -79,7 +81,9 @@ function WorkflowRunPage({ workflowId, workflowRunId }: Props) {
     return <RequestError error={error} />
   }
 
+  const LOG_LEVEL_DEBUG = <Tag color="gold">Debug</Tag>
   const LOG_LEVEL_INFO = <Tag color="cyan">Info</Tag>
+  const LOG_LEVEL_WARNING = <Tag color="orange">Warning</Tag>
   const LOG_LEVEL_ERROR = <Tag color="red">Error</Tag>
 
   const workflowRun = data.workflowRun
@@ -133,7 +137,7 @@ function WorkflowRunPage({ workflowId, workflowRunId }: Props) {
     const key = new Date(actionRun.createdAt).getTime()
     const time = dayjs(actionRun.createdAt).format('YYYY-MM-DD HH:mm:ss')
     dataSource.push({
-      key: `${key}-0`,
+      key: `${key}-${dataSource.length}`,
       time,
       operation: actionRun.operationName,
       integration: actionRun.integrationName,
@@ -144,7 +148,7 @@ function WorkflowRunPage({ workflowId, workflowRunId }: Props) {
       const network = NETWORK[transaction.chainId as ChainId]
       const txLink = `${network?.explorerUrl}/tx/${transaction.hash}`
       dataSource.push({
-        key: `${key}-1`,
+        key: `${key}-${dataSource.length}`,
         time,
         operation: actionRun.operationName,
         integration: actionRun.integrationName,
@@ -167,7 +171,7 @@ function WorkflowRunPage({ workflowId, workflowRunId }: Props) {
     if (['completed', 'failed'].includes(actionRun.status)) {
       const log = actionRun.status === 'failed' ? 'Operation run failed.' : 'Operation ran succesfully.'
       dataSource.push({
-        key: `${key}-2`,
+        key: `${key}-${dataSource.length}`,
         time,
         operation: actionRun.operationName,
         integration: actionRun.integrationName,
@@ -181,7 +185,7 @@ function WorkflowRunPage({ workflowId, workflowRunId }: Props) {
     const lastDataSource = dataSource[dataSource.length - 1]
     dataSource.push({
       ...lastDataSource,
-      key: 'error',
+      key: `error-${dataSource.length}`,
       log: `Error: ${workflowRun.errorMessage}`,
       level: LOG_LEVEL_ERROR,
     })
@@ -190,9 +194,18 @@ function WorkflowRunPage({ workflowId, workflowRunId }: Props) {
     const lastDataSource = dataSource[dataSource.length - 1]
     dataSource.push({
       ...lastDataSource,
-      key: 'error',
+      key: `error-${dataSource.length}`,
       log: `Response: ${workflowRun.errorResponse}`,
       level: LOG_LEVEL_ERROR,
+    })
+  }
+  if (!isEmptyObj(workflowRun.inputs ?? {})) {
+    const lastDataSource = dataSource[dataSource.length - 1]
+    dataSource.push({
+      ...lastDataSource,
+      key: `debug-${dataSource.length}`,
+      log: `Inputs: ${JSON.stringify(workflowRun.inputs, null, 2)}`,
+      level: LOG_LEVEL_DEBUG,
     })
   }
 
@@ -202,10 +215,14 @@ function WorkflowRunPage({ workflowId, workflowRunId }: Props) {
       dataIndex: 'level',
       key: 'level',
       filters: [
+        { text: 'Debug', value: 'Debug' },
         { text: 'Info', value: 'Info' },
         { text: 'Error', value: 'Error' },
       ],
       onFilter: (value: any, record: any) => {
+        if (record.level === LOG_LEVEL_DEBUG) {
+          return value === 'Debug'
+        }
         if (record.level === LOG_LEVEL_INFO) {
           return value === 'Info'
         }
@@ -313,7 +330,7 @@ function WorkflowRunPage({ workflowId, workflowRunId }: Props) {
       </Head>
 
       <PageWrapper title="Workflow Run Logs" onBack={handleGoBack} tags={[getWorkflowStatusTag(), getStartedByTag()]}>
-        <Table dataSource={dataSource} columns={columns} />
+        <Table dataSource={dataSource} columns={columns} pagination={{ pageSize: 100 }} />
       </PageWrapper>
     </>
   )

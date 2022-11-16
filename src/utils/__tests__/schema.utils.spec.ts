@@ -21,6 +21,7 @@ describe('Schema Utils', () => {
       } as JSONSchema7
       expect(removeHiddenProperties(schema)).toEqual({
         properties: {
+          foo: {},
           bar: {
             type: 'string',
             'x-hidden': false,
