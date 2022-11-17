@@ -145,8 +145,10 @@ export const BaseWidget = ({
     )
 
   const nodeOutputsTree = (
-    <div className="p-2 mt-1 bg-white shadow-2xl" ref={treeRef}>
-      <NodeOutputsTree outputs={outputs} onSelectOutput={handleOutputSelect} />
+    <div className="h-0">
+      <div className="p-2 bg-white shadow-2xl" ref={treeRef}>
+        <NodeOutputsTree outputs={outputs} onSelectOutput={handleOutputSelect} />
+      </div>
     </div>
   )
 
