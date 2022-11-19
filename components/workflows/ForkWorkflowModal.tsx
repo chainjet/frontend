@@ -1,8 +1,12 @@
 import { gql } from '@apollo/client'
 import { Alert, Button, Modal } from 'antd'
+import { JSONSchema7 } from 'json-schema'
 import { useCallback, useMemo, useState } from 'react'
 import { Integration, IntegrationAccount, Workflow } from '../../graphql'
+import { useGetIntegrationActions } from '../../src/services/IntegrationActionHooks'
+import { useGetIntegrationTriggers } from '../../src/services/IntegrationTriggerHooks'
 import { useForkWorkflow, useGetWorkflowById } from '../../src/services/WorkflowHooks'
+import { replaceInheritFields } from '../../src/utils/schema.utils'
 import { SchemaForm } from '../common/Forms/schema-form/SchemaForm'
 import { Loading } from '../common/RequestStates/Loading'
 import { SelectCredentials } from '../workflow-nodes/drawer/steps/credentials/SelectCredentials'
@@ -56,6 +60,36 @@ const workflowFragment = gql`
   ${SelectCredentials.fragments.IntegrationAccount}
 `
 
+const integrationTriggerFragment = gql`
+  fragment ForkWorkflowModal_IntegrationTrigger on IntegrationTrigger {
+    id
+    schemaRequest
+  }
+`
+
+const integrationActionFragment = gql`
+  fragment ForkWorkflowModal_IntegrationAction on IntegrationAction {
+    id
+    schemaRequest
+  }
+`
+
+const getInheritedFieldIds = (schema: JSONSchema7, type: 'integrationTrigger' | 'integrationAction') => {
+  const inheritedFieldIds: string[] = []
+  const properties = schema?.properties || {}
+  for (const [key, value] of Object.entries(properties)) {
+    if (typeof value === 'boolean') {
+      continue
+    }
+    const inheritField = (value as any)['x-inheritField']
+    if (inheritField?.[type]) {
+      inheritedFieldIds.push(inheritField?.[type])
+    }
+    inheritedFieldIds.push(...getInheritedFieldIds(value, type))
+  }
+  return inheritedFieldIds
+}
+
 export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }: Props) => {
   const [forkLoading, setForkLoading] = useState(false)
   const [forkError, setForkError] = useState<Error | null>(null)
@@ -67,6 +101,49 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
   const [templateInputs, setTemplateInputs] = useState<Record<string, any>>()
   const [forkWorkflow] = useForkWorkflow()
   const [credentialIds, setCredentialIds] = useState<Record<string, string>>({})
+
+  const fetchIntegrationTriggers = useMemo(
+    () =>
+      data?.workflow?.templateSchema ? getInheritedFieldIds(data.workflow.templateSchema, 'integrationTrigger') : [],
+    [data],
+  )
+  const fetchIntegrationActions = useMemo(
+    () =>
+      data?.workflow?.templateSchema ? getInheritedFieldIds(data.workflow.templateSchema, 'integrationAction') : [],
+    [data],
+  )
+  const { data: integrationTriggers } = useGetIntegrationTriggers(integrationTriggerFragment, {
+    skip: !fetchIntegrationTriggers.length,
+    variables: {
+      filter: {
+        id: {
+          in: fetchIntegrationTriggers,
+        },
+      },
+    },
+  })
+  const { data: integrationActions } = useGetIntegrationActions(integrationActionFragment, {
+    skip: !fetchIntegrationActions.length,
+    variables: {
+      filter: {
+        id: {
+          in: fetchIntegrationActions,
+        },
+      },
+    },
+  })
+
+  const templateSchema = useMemo(
+    () =>
+      data?.workflow?.templateSchema &&
+      replaceInheritFields(
+        data.workflow.templateSchema,
+        integrationTriggers?.integrationTriggers?.edges.map((trigger) => trigger.node) ?? [],
+        integrationActions?.integrationActions?.edges.map((action) => action.node) ?? [],
+      ),
+    [data?.workflow, integrationActions, integrationTriggers],
+  )
+  console.log(`schema =>`, templateSchema)
 
   const handleFork = async () => {
     setForkLoading(true)
@@ -168,9 +245,9 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
           />
         </div>
       ))}
-      {data?.workflow?.templateSchema && (
+      {templateSchema && (
         <SchemaForm
-          schema={data.workflow.templateSchema}
+          schema={templateSchema}
           initialInputs={{}}
           hideSubmit
           onChange={handleTemplateInputsChange}

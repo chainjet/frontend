@@ -1,6 +1,7 @@
 import { UiSchema } from '@rjsf/utils'
 import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
+import { IntegrationAction, IntegrationTrigger } from '../../graphql'
 
 export function removeHiddenProperties(schema: JSONSchema7): JSONSchema7 {
   if ((schema as { 'x-hidden'?: boolean })['x-hidden']) {
@@ -22,6 +23,41 @@ export function fixArraysWithoutItems(schema: JSONSchema7): JSONSchema7 {
     schema.items = { type: 'string' }
   }
   return applySchemaChangeRecursively(schema, fixArraysWithoutItems)
+}
+
+export function replaceInheritFields(
+  schema: JSONSchema7,
+  integrationTriggers: IntegrationTrigger[],
+  integrationActions: IntegrationAction[],
+): JSONSchema7 {
+  schema = { ...schema }
+  schema.properties = { ...(schema.properties ?? {}) }
+  for (const [key, value] of Object.entries(schema.properties ?? {})) {
+    if (typeof value === 'boolean') {
+      continue
+    }
+    const inheritField = (value as any)['x-inheritField']
+    if (inheritField?.integrationTrigger) {
+      const trigger = integrationTriggers.find((t) => t.id === inheritField.integrationTrigger)
+      if (trigger) {
+        const field = trigger.schemaRequest?.properties?.[inheritField.key]
+        if (field) {
+          schema.properties![key] = field
+        }
+      }
+    }
+    if (inheritField?.integrationAction) {
+      const action = integrationActions.find((t) => t.id === inheritField.integrationAction)
+      if (action) {
+        const field = action.schemaRequest?.properties?.[inheritField.key]
+        if (field) {
+          schema.properties![key] = field
+        }
+      }
+    }
+  }
+
+  return applySchemaChangeRecursively(schema, replaceInheritFields, integrationTriggers, integrationActions)
 }
 
 export function mergePropSchema(schema: JSONSchema7, propSchemas: { [key: string]: JSONSchema7 }): JSONSchema7 {
