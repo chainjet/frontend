@@ -3,6 +3,7 @@ import {
   ForkOutlined,
   HistoryOutlined,
   LockOutlined,
+  PlusOutlined,
   SettingOutlined,
   UnlockOutlined,
 } from '@ant-design/icons'
@@ -133,11 +134,19 @@ function WorkflowPage({ workflowId }: Props) {
       </Button>
     ),
 
-    <Tooltip title={`Create a copy of this workflow`} placement="bottom" key="fork-tooltip">
-      <Button key="fork" icon={<ForkOutlined />} onClick={handleForkWorkflowClick}>
-        Fork
-      </Button>
-    </Tooltip>,
+    workflow.isTemplate ? (
+      <Tooltip title={`Create a workflow using this template`} placement="bottom" key="fork-tooltip">
+        <Button key="use-template" icon={<PlusOutlined />} onClick={handleForkWorkflowClick}>
+          Use Template
+        </Button>
+      </Tooltip>
+    ) : (
+      <Tooltip title={`Create a copy of this workflow`} placement="bottom" key="fork-tooltip">
+        <Button key="fork" icon={<ForkOutlined />} onClick={handleForkWorkflowClick}>
+          Fork
+        </Button>
+      </Tooltip>
+    ),
 
     isOwnerByViewer && !workflow.isTemplate && (
       <Button type="default" key="run-history" icon={<HistoryOutlined />} onClick={() => setRunHistoryModalOpen(true)}>
