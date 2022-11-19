@@ -143,7 +143,6 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
       ),
     [data?.workflow, integrationActions, integrationTriggers],
   )
-  console.log(`schema =>`, templateSchema)
 
   const handleFork = async () => {
     setForkLoading(true)
@@ -167,9 +166,15 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
     setForkLoading(false)
   }
 
-  const handleTemplateInputsChange = useCallback((inputs: Record<string, any>) => {
-    setTemplateInputs(inputs)
-  }, [])
+  const handleTemplateInputsChange = useCallback(
+    (inputs: Record<string, any>) => {
+      setTemplateInputs({
+        ...templateInputs,
+        ...inputs,
+      })
+    },
+    [templateInputs],
+  )
 
   const handleCredentialSelect = useCallback(
     (account: IntegrationAccount, id: string) => {
@@ -257,7 +262,7 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
       {!forkLoading && (
         <>
           <Button type="primary" key="deploy" onClick={() => handleFork()} loading={forkLoading}>
-            Fork
+            {workflow.isTemplate ? 'Use Template' : 'Fork'}
           </Button>
         </>
       )}
