@@ -1,6 +1,8 @@
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import { gql } from '@apollo/client'
 import { Avatar, Table, Tooltip } from 'antd'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { Workflow } from '../../graphql'
 
 interface Props {
@@ -8,6 +10,12 @@ interface Props {
 }
 
 export const WorkflowsTable = ({ workflows }: Props) => {
+  const router = useRouter()
+
+  const onRowClick = (workflow: Workflow) => {
+    router.push(`/workflows/${workflow.id}`)
+  }
+
   const tableColumns = [
     {
       title: 'Name',
@@ -15,7 +23,7 @@ export const WorkflowsTable = ({ workflows }: Props) => {
       key: 'name',
       render: (name: string, workflow: Workflow) => (
         <Link href={`/workflows/${workflow.id}`}>
-          <a>{name}</a>
+          <a className="font-medium text-black">{name}</a>
         </Link>
       ),
     },
@@ -47,14 +55,38 @@ export const WorkflowsTable = ({ workflows }: Props) => {
       },
     },
     {
-      title: 'Enabled',
+      title: 'Enabled?',
       dataIndex: 'enabled',
       key: 'enabled',
-      render: (_: any, workflow: Workflow) => <>{workflow.trigger?.enabled ? 'Yes' : 'No'}</>,
+      render: (_: any, workflow: Workflow) => (
+        <>
+          {workflow.isTemplate ? (
+            '-'
+          ) : workflow.trigger?.enabled ? (
+            <span className="text-green-600">
+              <CheckOutlined />
+            </span>
+          ) : (
+            <span className="text-red-600">
+              <CloseOutlined />
+            </span>
+          )}
+        </>
+      ),
     },
   ]
 
-  return <Table dataSource={workflows} columns={tableColumns} pagination={{ pageSize: 120 }} />
+  return (
+    <Table
+      dataSource={workflows}
+      columns={tableColumns}
+      pagination={{ pageSize: 120 }}
+      onRow={(record) => ({
+        onClick: () => onRowClick(record),
+      })}
+      rowClassName="cursor-pointer"
+    />
+  )
 }
 
 WorkflowsTable.fragments = {
@@ -62,6 +94,7 @@ WorkflowsTable.fragments = {
     fragment WorkflowsTable_Workflow on Workflow {
       id
       name
+      isTemplate
       trigger {
         id
         enabled
