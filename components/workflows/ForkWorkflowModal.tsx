@@ -3,10 +3,12 @@ import { Alert, Button, Modal } from 'antd'
 import { JSONSchema7 } from 'json-schema'
 import { useCallback, useMemo, useState } from 'react'
 import { Integration, IntegrationAccount, Workflow } from '../../graphql'
+import { useGetAsyncSchemas } from '../../src/services/AsyncSchemaHooks'
 import { useGetIntegrationActions } from '../../src/services/IntegrationActionHooks'
 import { useGetIntegrationTriggers } from '../../src/services/IntegrationTriggerHooks'
 import { useForkWorkflow, useGetWorkflowById } from '../../src/services/WorkflowHooks'
-import { replaceInheritFields } from '../../src/utils/schema.utils'
+import { isEmptyObj } from '../../src/utils/object.utils'
+import { mergePropSchema, replaceInheritFields } from '../../src/utils/schema.utils'
 import { SchemaForm } from '../common/Forms/schema-form/SchemaForm'
 import { Loading } from '../common/RequestStates/Loading'
 import { SelectCredentials } from '../workflow-nodes/drawer/steps/credentials/SelectCredentials'
@@ -64,6 +66,12 @@ const integrationTriggerFragment = gql`
   fragment ForkWorkflowModal_IntegrationTrigger on IntegrationTrigger {
     id
     schemaRequest
+    integration {
+      id
+      integrationAccount {
+        id
+      }
+    }
   }
 `
 
@@ -71,6 +79,12 @@ const integrationActionFragment = gql`
   fragment ForkWorkflowModal_IntegrationAction on IntegrationAction {
     id
     schemaRequest
+    integration {
+      id
+      integrationAccount {
+        id
+      }
+    }
   }
 `
 
@@ -133,16 +147,38 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
     },
   })
 
-  const templateSchema = useMemo(
+  let templateSchema = useMemo(
     () =>
       data?.workflow?.templateSchema &&
       replaceInheritFields(
         data.workflow.templateSchema,
         integrationTriggers?.integrationTriggers?.edges.map((trigger) => trigger.node) ?? [],
         integrationActions?.integrationActions?.edges.map((action) => action.node) ?? [],
+        credentialIds,
       ),
-    [data?.workflow, integrationActions, integrationTriggers],
+    [data?.workflow, integrationActions, integrationTriggers, credentialIds],
   )
+
+  // support async schemas for templates
+  const asyncSchemas: Array<{ name: string; integrationId: string; integrationAction?: string; accountId?: string }> =
+    templateSchema?.['x-asyncSchemas']
+  const asyncSchemaNames = asyncSchemas?.map((prop: { name: string }) => prop.name) ?? []
+  const asyncSchemaRes = useGetAsyncSchemas({
+    skip: !asyncSchemaNames.length,
+    variables: {
+      integrationId: asyncSchemas?.[0].integrationId ?? '',
+      accountCredentialId: asyncSchemas?.[0].accountId ?? '',
+      names: asyncSchemaNames,
+      integrationActionId: asyncSchemas?.[0]?.integrationAction ?? '',
+      inputs: {},
+    },
+  })
+  templateSchema = useMemo(() => {
+    if (!isEmptyObj(asyncSchemaRes?.data?.asyncSchemas.schemas ?? {})) {
+      return mergePropSchema(templateSchema, asyncSchemaRes?.data?.asyncSchemas.schemas!)
+    }
+    return templateSchema
+  }, [asyncSchemaRes?.data?.asyncSchemas.schemas, templateSchema])
 
   const handleFork = async () => {
     setForkLoading(true)
@@ -253,7 +289,7 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
       {templateSchema && (
         <SchemaForm
           schema={templateSchema}
-          initialInputs={{}}
+          initialInputs={templateInputs ?? {}}
           hideSubmit
           onChange={handleTemplateInputsChange}
           onSubmit={handleFork}

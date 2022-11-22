@@ -136,7 +136,7 @@ function WorkflowPage({ workflowId }: Props) {
 
     workflow.isTemplate ? (
       <Tooltip title={`Create a workflow using this template`} placement="bottom" key="fork-tooltip">
-        <Button key="use-template" icon={<PlusOutlined />} onClick={handleForkWorkflowClick}>
+        <Button type="primary" key="use-template" icon={<PlusOutlined />} onClick={handleForkWorkflowClick}>
           Use Template
         </Button>
       </Tooltip>
