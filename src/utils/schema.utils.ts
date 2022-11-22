@@ -45,7 +45,7 @@ export function replaceInheritFields(
         const field = trigger.schemaRequest?.properties?.[inheritField.key]
         if (field) {
           schema.properties![key] = field
-          const asyncSchema = { ...trigger.schemaRequest?.['x-asyncSchemas'].find((s: any) => s.name === key) }
+          const asyncSchema = { ...trigger.schemaRequest?.['x-asyncSchemas']?.find((s: any) => s.name === key) }
           if (!isEmptyObj(asyncSchema)) {
             ;(schema as any)['x-asyncSchemas'] = [
               ...((schema as any)['x-asyncSchemas'] ?? []),
@@ -66,7 +66,7 @@ export function replaceInheritFields(
         const field = action.schemaRequest?.properties?.[inheritField.key]
         if (field) {
           schema.properties![key] = field
-          const asyncSchema = { ...action.schemaRequest?.['x-asyncSchemas'].find((s: any) => s.name === key) }
+          const asyncSchema = { ...action.schemaRequest?.['x-asyncSchemas']?.find((s: any) => s.name === key) }
           if (!isEmptyObj(asyncSchema)) {
             ;(schema as any)['x-asyncSchemas'] = [
               ...((schema as any)['x-asyncSchemas'] ?? []),
