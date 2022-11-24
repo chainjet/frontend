@@ -32,7 +32,11 @@ export const WorkflowsTable = ({ workflows }: Props) => {
       title: <span className="hidden md:block">Integrations</span>,
       dataIndex: 'integrations',
       key: 'integrations',
-      render: (_: any, workflow: Workflow) => <WorkflowIntegrationsGroup workflow={workflow} />,
+      render: (_: any, workflow: Workflow) => (
+        <div className="hidden md:block">
+          <WorkflowIntegrationsGroup workflow={workflow} />
+        </div>
+      ),
     },
     {
       title: 'Enabled?',

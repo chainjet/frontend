@@ -18,14 +18,12 @@ export const WorkflowIntegrationsGroup = ({ workflow, maxCount, size }: Props) =
     }
   }
   return (
-    <div className="hidden md:block">
-      <Avatar.Group maxCount={maxCount ?? 5}>
-        {integrations.map((integration) => (
-          <Tooltip key={integration.id} title={integration.name}>
-            <Avatar src={integration.logo} style={{ width: size ?? 28, height: size ?? 28 }} />
-          </Tooltip>
-        ))}
-      </Avatar.Group>
-    </div>
+    <Avatar.Group maxCount={maxCount ?? 5}>
+      {integrations.map((integration) => (
+        <Tooltip key={integration.id} title={integration.name}>
+          <Avatar src={integration.logo} style={{ width: size ?? 28, height: size ?? 28 }} />
+        </Tooltip>
+      ))}
+    </Avatar.Group>
   )
 }

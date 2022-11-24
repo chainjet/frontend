@@ -56,7 +56,7 @@ function DashboardPage() {
             Create Workflow
           </Button> */}
         </div>
-        <div className="container px-24 mx-auto">
+        <div className="container px-0 mx-auto lg:px-24">
           <div className="mb-4">
             <span className="text-xl font-bold">Recommended Templates</span>
           </div>
