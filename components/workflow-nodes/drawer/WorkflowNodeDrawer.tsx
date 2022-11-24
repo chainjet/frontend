@@ -77,7 +77,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
     setSelectedIntegration(integration)
     setCurrentStep(1)
     GoogleAnalyticsService.sendEvent({
-      action: 'integration_selected',
+      action: props.nodeType === 'trigger' ? 'integration_selected_trigger' : 'integration_selected_action',
       category: 'engagement',
       label: integration.key,
     })

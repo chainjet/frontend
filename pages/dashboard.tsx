@@ -1,9 +1,9 @@
-import { Alert, Button } from 'antd'
+import { Alert } from 'antd'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { PageWrapper } from '../components/common/PageLayout/PageWrapper'
-import { UserWorkflows } from '../components/workflows/UserWorkflows'
+import { RecommendedTemplates } from '../components/templates/RecommendedTemplates'
 import { withApollo } from '../src/apollo'
 import { useRedirectGuests } from '../src/services/UserHooks'
 import { useCreateOneWorkflow } from '../src/services/WorkflowHooks'
@@ -49,14 +49,19 @@ function DashboardPage() {
       <Head>
         <title>ChainJet Dashboard</title>
       </Head>
-      <PageWrapper title="Workflows">
+      <PageWrapper title="Dashboard">
         <div style={{ marginBottom: 16 }}>
           {error && <Alert message="Error" description={error} type="error" showIcon closable />}
-          <Button type="primary" onClick={handleCreateWorkflow} loading={loading}>
+          {/* <Button type="primary" onClick={handleCreateWorkflow} loading={loading}>
             Create Workflow
-          </Button>
+          </Button> */}
         </div>
-        <UserWorkflows />
+        <div className="container px-24 mx-auto">
+          <div className="mb-4">
+            <span className="text-xl font-bold">Recommended Templates</span>
+          </div>
+          <RecommendedTemplates />
+        </div>
       </PageWrapper>
     </>
   )

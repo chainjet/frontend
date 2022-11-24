@@ -111,3 +111,16 @@ export function useForkWorkflow() {
   `
   return useMutation(mutation)
 }
+
+export function useRecommendedTemplates(
+  fragment: DocumentNode,
+  options: QueryHookOptions<{ recommendedTemplates: WorkflowConnection }, QueryMany<WorkflowFilter, WorkflowSort>>,
+) {
+  const query = getListEntitiesQuery({
+    entityName: 'workflow',
+    pluralEntityName: 'recommendedTemplates',
+    fragment,
+    options,
+  })
+  return useQuery<{ recommendedTemplates: WorkflowConnection }, QueryMany<WorkflowFilter, WorkflowSort>>(query, options)
+}

@@ -2,7 +2,8 @@ import {
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  PlusSquareOutlined,
+  PlusOutlined,
+  ProfileOutlined,
   ProjectOutlined,
   WalletOutlined,
 } from '@ant-design/icons'
@@ -14,6 +15,7 @@ import React, { CSSProperties, useEffect, useState } from 'react'
 import { GoKey } from 'react-icons/go'
 import { useAccount } from 'wagmi'
 import { useLogout, useSigner } from '../../../src/services/UserHooks'
+import { useCreateOneWorkflow } from '../../../src/services/WorkflowHooks'
 import { isBrowser } from '../../../src/utils/environment'
 import { Address } from '../../wallet/Address'
 require('./PageLayout.less')
@@ -30,6 +32,9 @@ export default function PageLayout({ children }: Props) {
   const [siderCollapsed, setSiderCollapsed] = useState(hasMobileSider)
   const [logout] = useLogout()
   const { address } = useAccount()
+  const [createWorkflow] = useCreateOneWorkflow()
+  const [workflowLoading, setWorkflowLoading] = useState(false)
+  const [workflowError, setWorkflowError] = useState<string | null>(null)
 
   useEffect(() => {
     setSiderCollapsed(hasMobileSider)
@@ -48,6 +53,31 @@ export default function PageLayout({ children }: Props) {
   const handleLogoutClick = async () => {
     await logout()
     window.location.href = '/'
+  }
+
+  const handleCreateWorkflow = async () => {
+    setWorkflowLoading(true)
+    try {
+      const workflowRes = await createWorkflow({
+        variables: {
+          input: {
+            workflow: {
+              name: 'Untitled Workflow',
+            },
+          },
+        },
+      })
+      const workflowId = workflowRes.data?.createOneWorkflow?.id
+      if (workflowId) {
+        await router.push(`/workflows/${workflowId}`)
+      } else {
+        setWorkflowError('Unexpected error, please try again')
+        setWorkflowLoading(false)
+      }
+    } catch (e: any) {
+      setWorkflowError(e.message)
+      setWorkflowLoading(false)
+    }
   }
 
   const renderLogo = () => {
@@ -104,6 +134,12 @@ export default function PageLayout({ children }: Props) {
       <Layout.Sider trigger={null} collapsible collapsed={siderCollapsed} collapsedWidth={hasMobileSider ? 0 : 80}>
         {renderLogo()}
 
+        <div className="flex justify-center mt-2 mb-6">
+          <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateWorkflow} loading={workflowLoading}>
+            Create Workflow
+          </Button>
+        </div>
+
         <Menu
           theme="dark"
           mode="inline"
@@ -111,12 +147,13 @@ export default function PageLayout({ children }: Props) {
           items={
             address
               ? [
-                  {
-                    key: '/create/notification',
-                    label: <Link href="/create/notification">Create Notification</Link>,
-                    icon: <PlusSquareOutlined />,
-                  },
+                  // {
+                  //   key: '/create/notification',
+                  //   label: <Link href="/create/notification">Create Notification</Link>,
+                  //   icon: <PlusSquareOutlined />,
+                  // },
                   { key: '/dashboard', label: <Link href="/dashboard">Dashboard</Link>, icon: <ProjectOutlined /> },
+                  { key: '/workflows', label: <Link href="/workflows">Workflows</Link>, icon: <ProfileOutlined /> },
                   { key: '/credentials', label: <Link href="/credentials">Credentials</Link>, icon: <GoKey /> },
                 ]
               : [

@@ -1,9 +1,10 @@
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import { gql } from '@apollo/client'
-import { Avatar, Table, Tooltip } from 'antd'
+import { Table } from 'antd'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Workflow } from '../../graphql'
+import { WorkflowIntegrationsGroup } from './WorkflowIntegrationsGroup'
 
 interface Props {
   workflows: Workflow[]
@@ -31,28 +32,7 @@ export const WorkflowsTable = ({ workflows }: Props) => {
       title: <span className="hidden md:block">Integrations</span>,
       dataIndex: 'integrations',
       key: 'integrations',
-      render: (_: any, workflow: Workflow) => {
-        const integrations = []
-        if (workflow.trigger) {
-          integrations.push(workflow.trigger.integrationTrigger.integration)
-        }
-        for (const action of workflow.actions?.edges ?? []) {
-          if (!integrations.some((integration) => integration.id === action.node.integrationAction.integration.id)) {
-            integrations.push(action.node.integrationAction.integration)
-          }
-        }
-        return (
-          <div className="hidden md:block">
-            <Avatar.Group maxCount={5}>
-              {integrations.map((integration) => (
-                <Tooltip key={integration.id} title={integration.name}>
-                  <Avatar src={integration.logo} style={{ width: 28, height: 28 }} />
-                </Tooltip>
-              ))}
-            </Avatar.Group>
-          </div>
-        )
-      },
+      render: (_: any, workflow: Workflow) => <WorkflowIntegrationsGroup workflow={workflow} />,
     },
     {
       title: 'Enabled?',
