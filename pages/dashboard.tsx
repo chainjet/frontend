@@ -1,4 +1,4 @@
-import { NotificationOutlined, PlusCircleOutlined } from '@ant-design/icons'
+import { ClockCircleOutlined, NotificationOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { Alert, Card } from 'antd'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -84,6 +84,18 @@ function DashboardPage() {
                     </div>
                     <div>
                       <p className="text-lg font-semibold">Create Notification</p>
+                    </div>
+                  </div>
+                </Card>
+              </Link>
+              <Link href="/create/schedule">
+                <Card className="w-full" hoverable style={{ height: 78 }}>
+                  <div className="flex justify-center gap-4">
+                    <div className="mt-0.5">
+                      <ClockCircleOutlined style={{ fontSize: 24 }} />
+                    </div>
+                    <div>
+                      <p className="text-lg font-semibold">Schedule Task</p>
                     </div>
                   </div>
                 </Card>

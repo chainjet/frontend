@@ -12,6 +12,7 @@ type OperationData = {
   key: string
   inputs: Record<string, any>
   credentialsId?: string
+  name?: string
 }
 
 type TriggerData = OperationData & { schedule?: Record<string, any> }
@@ -53,6 +54,7 @@ export function useCreateWorkflowWithOperations() {
   const [error, setError] = useState<string | null>(null)
   const [trigger, setTrigger] = useState<TriggerData>()
   const [actions, setActions] = useState<Array<OperationData>>()
+  const [runStarted, setRunStarted] = useState(false)
   const [integrationQuery, setIntegrationQuery] = useState<{ id?: string; key: string; version?: string }>()
   const [workflow, setWorkflow] = useState<Workflow>()
   const [workflowActions, setWorkflowActions] = useState<WorkflowAction[]>()
@@ -123,9 +125,9 @@ export function useCreateWorkflowWithOperations() {
   )
 
   useEffect(() => {
-    let alreadyRunning = false
+    let runStartedInternal = false
     const run = async () => {
-      if (alreadyRunning || dataLoading || !integrationTrigger || !workflow || !trigger || !actions) {
+      if (runStarted || runStartedInternal || dataLoading || !integrationTrigger || !workflow || !trigger || !actions) {
         return
       }
       if (!integrationTrigger) {
@@ -133,7 +135,8 @@ export function useCreateWorkflowWithOperations() {
         setError(`Integration trigger not found`)
         return
       }
-      alreadyRunning = true
+      setRunStarted(true)
+      runStartedInternal = true
 
       const workflowTriggerRes = await createWorkflowTrigger({
         variables: {
@@ -144,6 +147,7 @@ export function useCreateWorkflowWithOperations() {
               inputs: trigger.inputs,
               credentials: trigger.credentialsId,
               schedule: trigger.schedule,
+              name: trigger.name,
             },
           },
         },
@@ -159,6 +163,7 @@ export function useCreateWorkflowWithOperations() {
                 integrationAction: integrationActions[0].id,
                 inputs: actions[0].inputs,
                 credentials: actions[0].credentialsId,
+                name: actions[0].name,
               },
             },
           },
@@ -168,7 +173,7 @@ export function useCreateWorkflowWithOperations() {
         }
       }
 
-      alreadyRunning = false
+      runStartedInternal = false
       setLoading(false)
     }
 
@@ -182,6 +187,7 @@ export function useCreateWorkflowWithOperations() {
     trigger,
     actions,
     dataLoading,
+    runStarted,
   ])
 
   return {

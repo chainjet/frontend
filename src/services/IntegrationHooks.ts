@@ -4,7 +4,7 @@ import { Integration, IntegrationConnection, IntegrationFilter, IntegrationSort 
 import { QueryById, QueryMany } from '../typings/GraphQL'
 import { getEntityQuery, getListEntitiesQuery } from './GraphQLHooks'
 
-export function useGetIntegrationIntegrationById(
+export function useGetIntegrationById(
   fragment: DocumentNode,
   options: QueryHookOptions<{ integration: Integration }, QueryById>,
 ) {
