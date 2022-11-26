@@ -102,7 +102,7 @@ export function TransactionNotificationStep() {
     try {
       await createWorflowWithOperations({
         workflowName: 'Send notification when a transaction occurs',
-        integration: {
+        triggerIntegration: {
           key: inputs.network,
         },
         trigger: {

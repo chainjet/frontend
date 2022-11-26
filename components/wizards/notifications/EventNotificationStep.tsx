@@ -133,7 +133,7 @@ export function EventNotificationStep() {
     try {
       await createWorflowWithOperations({
         workflowName: 'Send notification when an event is emitted',
-        integration: {
+        triggerIntegration: {
           key: 'blockchain',
         },
         trigger: {

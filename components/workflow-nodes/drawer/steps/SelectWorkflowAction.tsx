@@ -18,8 +18,7 @@ interface Props {
   onOperationSelected: (operation: IntegrationAction) => any
 }
 
-export const SelectWorkflowAction = (props: Props) => {
-  const { integration, onOperationSelected } = props
+export const SelectWorkflowAction = ({ integration, onOperationSelected }: Props) => {
   const [categorySelected, setCategorySelected] = useState<string | undefined>()
   const [search, setSearch] = useState('')
 

@@ -18,7 +18,7 @@ type TriggerData = OperationData & { schedule?: Record<string, any> }
 
 interface CreateWorkflowWithOperations {
   workflowName: string
-  integration: {
+  triggerIntegration: {
     id?: string
     key: string
     version?: string
@@ -50,7 +50,6 @@ const integrationActionFragment = gql`
 
 export function useCreateWorkflowWithOperations() {
   const [loading, setLoading] = useState(false)
-  const [running, setRunning] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [trigger, setTrigger] = useState<TriggerData>()
   const [actions, setActions] = useState<Array<OperationData>>()
@@ -104,9 +103,9 @@ export function useCreateWorkflowWithOperations() {
   const dataLoading = integrationLoading || integrationTriggerLoading || integrationActionsLoading
 
   const createWorflowWithOperations = useCallback(
-    async ({ workflowName, integration, trigger, actions }: CreateWorkflowWithOperations) => {
+    async ({ workflowName, triggerIntegration, trigger, actions }: CreateWorkflowWithOperations) => {
       setLoading(true)
-      setIntegrationQuery(integration)
+      setIntegrationQuery(triggerIntegration)
       setTrigger(trigger)
       setActions(actions)
       const workflowRes = await createWorkflow({
@@ -124,8 +123,9 @@ export function useCreateWorkflowWithOperations() {
   )
 
   useEffect(() => {
+    let alreadyRunning = false
     const run = async () => {
-      if (running || dataLoading || !integrationTrigger || !workflow || !trigger || !actions) {
+      if (alreadyRunning || dataLoading || !integrationTrigger || !workflow || !trigger || !actions) {
         return
       }
       if (!integrationTrigger) {
@@ -133,7 +133,7 @@ export function useCreateWorkflowWithOperations() {
         setError(`Integration trigger not found`)
         return
       }
-      setRunning(true)
+      alreadyRunning = true
 
       const workflowTriggerRes = await createWorkflowTrigger({
         variables: {
@@ -168,13 +168,12 @@ export function useCreateWorkflowWithOperations() {
         }
       }
 
+      alreadyRunning = false
       setLoading(false)
-      setRunning(false)
     }
 
     run()
   }, [
-    running,
     workflow,
     integrationTrigger,
     integrationActions,

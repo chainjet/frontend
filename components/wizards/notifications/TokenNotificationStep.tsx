@@ -124,7 +124,7 @@ export function TokenNotificationStep() {
     try {
       await createWorflowWithOperations({
         workflowName: 'Send notification when a token is received',
-        integration: {
+        triggerIntegration: {
           key: inputs.network,
         },
         trigger: {

@@ -130,7 +130,7 @@ export function NftNotificationStep() {
     try {
       await createWorflowWithOperations({
         workflowName: 'Send notification when an NFT is received',
-        integration: {
+        triggerIntegration: {
           key: inputs.network,
         },
         trigger: {
