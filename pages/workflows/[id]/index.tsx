@@ -28,6 +28,7 @@ import { ForkWorkflowModal } from '../../../components/workflows/ForkWorkflowMod
 import { RenameWorkflowModal } from '../../../components/workflows/RenameWorkflowModal'
 import { withApollo } from '../../../src/apollo'
 import { useGetWorkflowById } from '../../../src/services/WorkflowHooks'
+import { getLoginUrl } from '../../../src/utils/account.utils'
 import { isServer } from '../../../src/utils/environment'
 import { getHeadMetatags } from '../../../src/utils/html.utils'
 import { getQueryParam } from '../../../src/utils/nextUtils'
@@ -101,7 +102,7 @@ function WorkflowPage({ workflowId }: Props) {
     if (address) {
       setForkWorkflowModalOpen(true)
     } else {
-      router.push(`/login?go=${router.asPath}`)
+      router.push(getLoginUrl(router))
     }
   }
 

@@ -16,6 +16,7 @@ import { GoKey } from 'react-icons/go'
 import { useAccount } from 'wagmi'
 import { useLogout, useSigner } from '../../../src/services/UserHooks'
 import { useCreateOneWorkflow } from '../../../src/services/WorkflowHooks'
+import { getLoginUrl } from '../../../src/utils/account.utils'
 import { isBrowser } from '../../../src/utils/environment'
 import { Address } from '../../wallet/Address'
 require('./PageLayout.less')
@@ -42,7 +43,7 @@ export default function PageLayout({ children }: Props) {
 
   useEffect(() => {
     if (signer !== address) {
-      router.push(`/login?go=${router.asPath}`)
+      router.push(getLoginUrl(router))
     }
   })
 
@@ -117,7 +118,7 @@ export default function PageLayout({ children }: Props) {
     } else {
       return (
         <div className="mr-4">
-          <Button type="primary" href={`/login?go=${router.asPath}`}>
+          <Button type="primary" href={getLoginUrl(router)}>
             Connect Wallet
           </Button>
         </div>
@@ -159,7 +160,7 @@ export default function PageLayout({ children }: Props) {
               : [
                   {
                     key: '/login',
-                    label: <Link href={`/login?go=${router.asPath}`}>Connect Wallet</Link>,
+                    label: <Link href={getLoginUrl(router)}>Connect Wallet</Link>,
                     icon: <WalletOutlined />,
                   },
                 ]
