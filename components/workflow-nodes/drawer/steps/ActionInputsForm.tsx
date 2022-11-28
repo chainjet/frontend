@@ -31,7 +31,9 @@ interface Props {
   extraSchemaProps?: JSONSchema7
   testError?: Error | undefined
   readonly?: boolean
+  hideSubmit?: boolean
   onSubmitActionInputs: (inputs: ActionInputs, testAction: boolean) => Promise<any>
+  onChange?: (inputs: Record<string, any>) => any
 }
 
 const actionInputsFormFragment = gql`
@@ -104,7 +106,9 @@ export function ActionInputsForm({
   extraSchemaProps,
   testError,
   readonly,
+  hideSubmit,
   onSubmitActionInputs,
+  onChange,
 }: Props) {
   const [submitLoading, setSubmitLoading] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -269,7 +273,7 @@ export function ActionInputsForm({
     schema = deepmerge(schema, contractSchemaData.contractSchema.schema ?? {})
   }
 
-  const onChange = (data: Record<string, any>) => {
+  const onInputsChange = (data: Record<string, any>) => {
     // TODO hack for Smart Contracts integration
     //      migrate it to use asyncSchemas
     if (
@@ -282,6 +286,8 @@ export function ActionInputsForm({
         ...data,
       })
     }
+
+    onChange?.(data)
 
     // x-asyncSchema props with any = true refresh properties on any change
     // for performance we are only doing this for selects
@@ -338,7 +344,8 @@ export function ActionInputsForm({
         loading={submitLoading}
         readonly={readonly}
         onSubmit={onFormSubmit}
-        onChange={onChange}
+        onChange={onInputsChange}
+        hideSubmit={hideSubmit}
         submitButtonText={capitalize(action)}
         submitButtons={
           !!workflowTriggerId && action === 'create' && (!trigger?.integrationTrigger.instant || trigger?.lastItem)

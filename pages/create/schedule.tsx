@@ -4,15 +4,32 @@ import { Alert, Button, Card } from 'antd'
 import { JSONSchema7 } from 'json-schema'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { SchemaForm } from '../../components/common/Forms/schema-form/SchemaForm'
 import { PageWrapper } from '../../components/common/PageLayout/PageWrapper'
 import { IntegrationAvatar } from '../../components/integrations/IntegrationAvatar'
+import { ActionInputsForm } from '../../components/workflow-nodes/drawer/steps/ActionInputsForm'
+import { SelectCredentials } from '../../components/workflow-nodes/drawer/steps/credentials/SelectCredentials'
 import { WorkflowNodeDrawer } from '../../components/workflow-nodes/drawer/WorkflowNodeDrawer'
 import { IntegrationAction } from '../../graphql'
 import { withApollo } from '../../src/apollo'
-import { useGetIntegrationActionById } from '../../src/services/IntegrationActionHooks'
+import { useGetIntegrationActionById, useGetIntegrationActions } from '../../src/services/IntegrationActionHooks'
+import { useGetIntegrations } from '../../src/services/IntegrationHooks'
+import { useSigner } from '../../src/services/UserHooks'
 import { useCreateWorkflowWithOperations } from '../../src/services/WizardHooks'
+import { getLoginUrl } from '../../src/utils/account.utils'
+
+const integrationFragment = gql`
+  fragment NewSchedulePage_Integration on Integration {
+    id
+    key
+    integrationAccount {
+      id
+      ...SelectCredentials_IntegrationAccount
+    }
+  }
+  ${SelectCredentials.fragments.IntegrationAccount}
+`
 
 const integrationActionFragment = gql`
   fragment NewSchedulePageFragment on IntegrationAction {
@@ -45,11 +62,39 @@ function NewSchedulePage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
   const router = useRouter()
+  const { signer } = useSigner()
+
+  // Get integration and action if set on query string
+  const integrationResFromUrl = useGetIntegrations(integrationFragment, {
+    skip: !router.query.integration || !router.query.action,
+    variables: {
+      filter: {
+        key: {
+          eq: router.query.integration as string,
+        },
+      },
+    },
+  })
+  const integrationFromUrl = integrationResFromUrl.data?.integrations?.edges?.[0]?.node
+  const integrationActionResFromUrl = useGetIntegrationActions(integrationActionFragment, {
+    skip: !integrationFromUrl,
+    variables: {
+      filter: {
+        integration: {
+          eq: integrationFromUrl?.id,
+        },
+        key: {
+          eq: router.query.action as string,
+        },
+      },
+    },
+  })
+  const integrationActionFromUrl = integrationActionResFromUrl.data?.integrationActions?.edges?.[0]?.node
 
   const integrationActionRes = useGetIntegrationActionById(integrationActionFragment, {
-    skip: !action,
+    skip: !action && !integrationActionFromUrl,
     variables: {
-      id: action?.integrationAction.id ?? '',
+      id: action?.integrationAction.id ?? integrationActionFromUrl?.id ?? '',
     },
   })
   const integrationAction = integrationActionRes?.data?.integrationAction
@@ -60,6 +105,12 @@ function NewSchedulePage() {
       router.push(`/workflows/${workflow.id}`)
     }
   }, [router, workflow, workflowActions])
+
+  useEffect(() => {
+    if (!signer) {
+      router.push(getLoginUrl(router))
+    }
+  }, [router, signer])
 
   const handleSelectAction = async (
     inputs: Record<string, any>,
@@ -118,6 +169,44 @@ function NewSchedulePage() {
     }
   }
 
+  /**
+   * Handle inputs when the action is set in the query string
+   */
+  const handleInputsChange = (inputs: Record<string, any>) => {
+    if (action) {
+      setAction({
+        ...action,
+        inputs,
+      })
+    } else {
+      setAction({
+        integrationAction: integrationActionFromUrl!,
+        inputs,
+      })
+    }
+  }
+
+  /**
+   * Handle credentials when the action is set in the query string
+   */
+  const handleCredentialsSelect = useCallback(
+    (id: string) => {
+      if (action && action.credentialsID !== id) {
+        setAction({
+          ...action,
+          credentialsID: id,
+        })
+      } else if (!action) {
+        setAction({
+          credentialsID: id,
+          integrationAction: integrationActionFromUrl!,
+          inputs: {},
+        })
+      }
+    },
+    [action, integrationActionFromUrl],
+  )
+
   const handleGoBack = async () => {
     await router.push('/dashboard')
   }
@@ -158,11 +247,38 @@ function NewSchedulePage() {
                 <div>
                   <span className="font-bold">{integrationAction.name}</span>
                 </div>
-                <div>
-                  <span className="text-red-600 cursor-pointer" onClick={() => setAction(null)}>
-                    <CloseOutlined />
-                  </span>
-                </div>
+                {!router.query.integration && !router.query.action && (
+                  <div>
+                    <span className="text-red-600 cursor-pointer" onClick={() => setAction(null)}>
+                      <CloseOutlined />
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+            {integrationFromUrl && integrationActionFromUrl && (
+              <div>
+                {integrationFromUrl.integrationAccount && (
+                  <div className="mb-8">
+                    <SelectCredentials
+                      integrationAccount={integrationFromUrl.integrationAccount}
+                      onCredentialsSelected={handleCredentialsSelect}
+                      hideNameInput
+                      hideSubmitButton
+                    />
+                  </div>
+                )}
+                <ActionInputsForm
+                  action="create"
+                  integrationActionId={integrationActionFromUrl.id}
+                  workflowTriggerId={undefined}
+                  parentActionIds={[]}
+                  accountCredentialId={action?.credentialsID}
+                  initialInputs={{}}
+                  hideSubmit
+                  onSubmitActionInputs={async () => {}}
+                  onChange={handleInputsChange}
+                />
               </div>
             )}
             <div className="mb-4">
@@ -179,7 +295,12 @@ function NewSchedulePage() {
                 <Alert message="Error" description={error?.message || createError} type="error" showIcon closable />
               </div>
             )}
-            <Button type="primary" onClick={handleScheduleTask} loading={loading} disabled={!action || !datetime}>
+            <Button
+              type="primary"
+              onClick={handleScheduleTask}
+              loading={loading}
+              disabled={!(action || integrationActionFromUrl) || !datetime}
+            >
               Schedule Task
             </Button>
             {drawerOpen && (

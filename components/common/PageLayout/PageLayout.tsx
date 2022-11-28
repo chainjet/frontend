@@ -19,6 +19,7 @@ import { useCreateOneWorkflow } from '../../../src/services/WorkflowHooks'
 import { getLoginUrl } from '../../../src/utils/account.utils'
 import { isBrowser } from '../../../src/utils/environment'
 import { Address } from '../../wallet/Address'
+import { ConnectWalletButton } from '../../wallet/ConnectWalletButton'
 require('./PageLayout.less')
 
 interface Props {
@@ -118,9 +119,7 @@ export default function PageLayout({ children }: Props) {
     } else {
       return (
         <div className="mr-4">
-          <Button type="primary" href={getLoginUrl(router)}>
-            Connect Wallet
-          </Button>
+          <ConnectWalletButton />
         </div>
       )
     }
