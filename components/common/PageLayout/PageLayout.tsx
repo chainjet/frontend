@@ -1,13 +1,15 @@
 import {
+  FileOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   PlusOutlined,
   ProfileOutlined,
   ProjectOutlined,
+  QuestionCircleOutlined,
   WalletOutlined,
 } from '@ant-design/icons'
-import { Button, Dropdown, Layout, Menu } from 'antd'
+import { Button, Divider, Dropdown, Layout, Menu } from 'antd'
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -147,14 +149,28 @@ export default function PageLayout({ children }: Props) {
           items={
             address
               ? [
-                  // {
-                  //   key: '/create/notification',
-                  //   label: <Link href="/create/notification">Create Notification</Link>,
-                  //   icon: <PlusSquareOutlined />,
-                  // },
                   { key: '/dashboard', label: <Link href="/dashboard">Dashboard</Link>, icon: <ProjectOutlined /> },
                   { key: '/workflows', label: <Link href="/workflows">Workflows</Link>, icon: <ProfileOutlined /> },
                   { key: '/credentials', label: <Link href="/credentials">Credentials</Link>, icon: <GoKey /> },
+                  { key: 'divider1', label: <Divider style={{ backgroundColor: '#ff9c00' }} /> },
+                  {
+                    key: 'documentation',
+                    label: (
+                      <a href="https://docs.chainjet.io" target="_blank" rel="noopener noreferrer">
+                        Docs
+                      </a>
+                    ),
+                    icon: <FileOutlined />,
+                  },
+                  {
+                    key: 'get-help',
+                    label: (
+                      <a href="https://discord.gg/QFnSwqj9YH" target="_blank" rel="noopener noreferrer">
+                        Get Help
+                      </a>
+                    ),
+                    icon: <QuestionCircleOutlined />,
+                  },
                 ]
               : [
                   {
