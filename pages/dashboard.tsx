@@ -83,7 +83,7 @@ function DashboardPage() {
                       <NotificationOutlined style={{ fontSize: 24 }} />
                     </div>
                     <div>
-                      <p className="text-lg font-semibold">Create Notification</p>
+                      <p className="text-lg font-semibold">Blockchain Notifications</p>
                     </div>
                   </div>
                 </Card>
