@@ -10,9 +10,16 @@ const workflowsFragment = gql`
   ${TemplateCard.fragments.Workflow}
 `
 
-export const RecommendedTemplates = () => {
+interface Props {
+  integrationKey?: string
+}
+
+export const RecommendedTemplates = ({ integrationKey }: Props) => {
   const { data, loading, error } = useRecommendedTemplates(workflowsFragment, {
     variables: {
+      filter: {
+        ...(integrationKey ? { integrationKey: { eq: integrationKey } } : {}),
+      },
       paging: {
         first: 12,
       },

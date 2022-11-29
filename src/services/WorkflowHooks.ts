@@ -3,6 +3,8 @@ import { QueryHookOptions } from '@apollo/client/react/types/types'
 import {
   CreateOneWorkflowInput,
   DeleteOneWorkflowInput,
+  TemplateFilter,
+  TemplateSort,
   UpdateOneWorkflowInput,
   Workflow,
   WorkflowConnection,
@@ -114,13 +116,13 @@ export function useForkWorkflow() {
 
 export function useRecommendedTemplates(
   fragment: DocumentNode,
-  options: QueryHookOptions<{ recommendedTemplates: WorkflowConnection }, QueryMany<WorkflowFilter, WorkflowSort>>,
+  options: QueryHookOptions<{ recommendedTemplates: WorkflowConnection }, QueryMany<TemplateFilter, TemplateSort>>,
 ) {
   const query = getListEntitiesQuery({
-    entityName: 'workflow',
+    entityName: 'template',
     pluralEntityName: 'recommendedTemplates',
     fragment,
     options,
   })
-  return useQuery<{ recommendedTemplates: WorkflowConnection }, QueryMany<WorkflowFilter, WorkflowSort>>(query, options)
+  return useQuery<{ recommendedTemplates: WorkflowConnection }, QueryMany<TemplateFilter, TemplateSort>>(query, options)
 }
