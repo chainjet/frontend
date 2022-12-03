@@ -1,4 +1,6 @@
 import { gql } from '@apollo/client'
+import { useEffect } from 'react'
+import { Workflow } from '../../graphql'
 import { useRecommendedTemplates } from '../../src/services/WorkflowHooks'
 import { Loading } from '../common/RequestStates/Loading'
 import { TemplateCard } from './TemplateCard'
@@ -12,9 +14,10 @@ const workflowsFragment = gql`
 
 interface Props {
   integrationKey?: string
+  onTemplatesLoaded?: (templates: Workflow[]) => void
 }
 
-export const RecommendedTemplates = ({ integrationKey }: Props) => {
+export const RecommendedTemplates = ({ integrationKey, onTemplatesLoaded }: Props) => {
   const { data, loading, error } = useRecommendedTemplates(workflowsFragment, {
     variables: {
       filter: {
@@ -26,6 +29,12 @@ export const RecommendedTemplates = ({ integrationKey }: Props) => {
     },
   })
   const recommendedTemplates = data?.recommendedTemplates?.edges.map((edge) => edge.node)
+
+  useEffect(() => {
+    if (data && Array.isArray(recommendedTemplates)) {
+      onTemplatesLoaded?.(recommendedTemplates)
+    }
+  }, [onTemplatesLoaded, data, recommendedTemplates])
 
   if (!recommendedTemplates) {
     return <Loading />

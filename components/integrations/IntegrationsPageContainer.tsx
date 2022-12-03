@@ -26,7 +26,7 @@ export function IntegrationPageContainer(props: Props) {
   return (
     <>
       <LandingHeader />
-      <div style={{ marginTop: 110 }}>
+      <div>
         <Card>
           <SelectIntegration
             initialCategory={category}

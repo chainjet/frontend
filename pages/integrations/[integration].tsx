@@ -3,11 +3,13 @@ import { Card, Typography } from 'antd'
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint'
 import { NextPageContext } from 'next'
 import Head from 'next/head'
+import { useState } from 'react'
 import { Loading } from '../../components/common/RequestStates/Loading'
 import { IntegrationBanner } from '../../components/integrations/IntegrationBanner'
 import { LandingFooter } from '../../components/landing/LandingFooter'
 import { LandingHeader } from '../../components/landing/LandingHeader'
 import { OperationList } from '../../components/operations/OperationList'
+import { RecommendedTemplates } from '../../components/templates/RecommendedTemplates'
 import { withApollo } from '../../src/apollo'
 import { useGetIntegrations } from '../../src/services/IntegrationHooks'
 import { getHeadMetatags } from '../../src/utils/html.utils'
@@ -45,8 +47,8 @@ const integrationFragment = gql`
   ${OperationList.fragments.IntegrationAction}
 `
 
-function IntegrationPage(props: Props) {
-  const { integrationKey } = props
+function IntegrationPage({ integrationKey }: Props) {
+  const [hasTemplates, setHasTemplates] = useState(false)
   const { data, loading, error } = useGetIntegrations(integrationFragment, {
     variables: {
       filter: {
@@ -104,7 +106,7 @@ function IntegrationPage(props: Props) {
       <Head>
         {getHeadMetatags({
           path: `/integrations/${integration.key}`,
-          title: `Integrate ${integration.name} with hundreds of apps`,
+          title: `Integrate ${integration.name} with web2 and web3 of apps`,
           description:
             `ChainJet allows you to connect ${shortName} with web3 dapps and web2 services, ` +
             `so you can automate your work. No code required.`,
@@ -113,25 +115,42 @@ function IntegrationPage(props: Props) {
       </Head>
       <LandingHeader />
 
-      <div className="container mx-auto">
+      <div className="container px-0 mx-auto mt-10 lg:px-24">
         <IntegrationBanner integration={integration} />
 
-        {!!triggers.length && (
-          <Card style={{ padding: breakpoint.xs ? '0' : '16px 128px' }}>
-            <div style={{ textAlign: 'center', marginBottom: 48 }}>
-              <Typography.Title level={3}>Triggers</Typography.Title>
+        <div className="w-full mt-12">
+          {hasTemplates && (
+            <div className="mb-8 text-center">
+              <span className="text-xl font-bold">Popular workflows using {integration.name}</span>
             </div>
-            <OperationList integration={integration} operations={triggers} columns={breakpoint.xs ? 1 : 2} />
-          </Card>
-        )}
+          )}
+          <div className="w-full">
+            <RecommendedTemplates
+              integrationKey={integration.key}
+              onTemplatesLoaded={(templates) => templates.length && setHasTemplates(true)}
+            />
+          </div>
+        </div>
 
+        {!!triggers.length && (
+          <div className="mt-8">
+            <Card style={{ padding: breakpoint.xs ? '0' : '16px 128px' }}>
+              <div style={{ textAlign: 'center', marginBottom: 48 }}>
+                <Typography.Title level={3}>Triggers</Typography.Title>
+              </div>
+              <OperationList integration={integration} operations={triggers} columns={breakpoint.xs ? 1 : 2} />
+            </Card>
+          </div>
+        )}
         {!!actions.length && (
-          <Card style={{ padding: breakpoint.xs ? '0' : '16px 128px' }}>
-            <div style={{ textAlign: 'center', marginBottom: 48 }}>
-              <Typography.Title level={3}>Actions</Typography.Title>
-            </div>
-            <OperationList integration={integration} operations={actions} columns={breakpoint.xs ? 1 : 2} />
-          </Card>
+          <div className="mt-8 mb-8">
+            <Card style={{ padding: breakpoint.xs ? '0' : '16px 128px' }}>
+              <div style={{ textAlign: 'center', marginBottom: 48 }}>
+                <Typography.Title level={3}>Actions</Typography.Title>
+              </div>
+              <OperationList integration={integration} operations={actions} columns={breakpoint.xs ? 1 : 2} />
+            </Card>
+          </div>
         )}
       </div>
 

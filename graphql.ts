@@ -913,6 +913,7 @@ export interface Workflow {
     isTemplate?: Nullable<boolean>;
     isPublic: boolean;
     templateSchema?: Nullable<JSONObject>;
+    usedIntegrations?: Nullable<string[]>;
     trigger?: Nullable<WorkflowTrigger>;
     actions?: Nullable<WorkflowActionsConnection>;
 }
@@ -976,6 +977,7 @@ export interface Template {
     isTemplate?: Nullable<boolean>;
     isPublic: boolean;
     templateSchema?: Nullable<JSONObject>;
+    usedIntegrations?: Nullable<string[]>;
     trigger?: Nullable<WorkflowTrigger>;
     actions?: Nullable<WorkflowActionsConnection>;
     integrationKey?: Nullable<string>;
@@ -998,6 +1000,7 @@ export interface WorkflowDeleteResponse {
     isTemplate?: Nullable<boolean>;
     isPublic?: Nullable<boolean>;
     templateSchema?: Nullable<JSONObject>;
+    usedIntegrations?: Nullable<string[]>;
 }
 
 export interface WorkflowActionEdge {
