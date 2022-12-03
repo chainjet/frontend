@@ -18,7 +18,7 @@ export const PageWrapper = (props: Props) => {
   return (
     <>
       <PageHeader {...pageHeaderProps}>{header}</PageHeader>
-      <div style={{ margin: '24px 24px 0' }}>{children}</div>
+      <div style={{ margin: '24px 24px 0', minHeight: '80vh' }}>{children}</div>
     </>
   )
 }

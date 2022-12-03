@@ -20,6 +20,7 @@ import { useLogout, useSigner } from '../../../src/services/UserHooks'
 import { useCreateOneWorkflow } from '../../../src/services/WorkflowHooks'
 import { getLoginUrl } from '../../../src/utils/account.utils'
 import { isBrowser } from '../../../src/utils/environment'
+import { LandingFooter } from '../../landing/LandingFooter'
 import { Address } from '../../wallet/Address'
 import { ConnectWalletButton } from '../../wallet/ConnectWalletButton'
 require('./PageLayout.less')
@@ -195,18 +196,7 @@ export default function PageLayout({ children }: Props) {
 
         <Layout.Content>{children}</Layout.Content>
 
-        <Layout.Footer>
-          <div>
-            <a href="mailto:admin@chainjet.io">Contact Us</a> |&nbsp;
-            <Link href="/legal/terms">
-              <a>Terms</a>
-            </Link>{' '}
-            |{' '}
-            <Link href="/legal/privacy">
-              <a>Privacy</a>
-            </Link>
-          </div>
-        </Layout.Footer>
+        <LandingFooter />
       </Layout>
     </Layout>
   )
