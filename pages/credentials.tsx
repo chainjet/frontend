@@ -17,7 +17,7 @@ const credentialsFragment = gql`
 `
 
 export function CredentialsPage() {
-  const { data, loading, error } = useGetAccountCredentials(credentialsFragment, {
+  const { data, loading, error, refetch } = useGetAccountCredentials(credentialsFragment, {
     variables: {
       paging: {
         first: 50,
@@ -44,7 +44,7 @@ export function CredentialsPage() {
         <title>Credentials - ChainJet</title>
       </Head>
       <PageWrapper title="Credentials" onBack={handleGoBack}>
-        <CredentialsTable accountCredentials={accountCredentials} />
+        <CredentialsTable accountCredentials={accountCredentials} onChange={refetch} />
       </PageWrapper>
     </>
   )

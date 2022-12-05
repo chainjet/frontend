@@ -11,8 +11,7 @@ interface Props {
   onCancel: () => any
 }
 
-export const DeleteCredentialModal = (props: Props) => {
-  const { accountCredential, visible, onDeleteAccountCredential, onCancel } = props
+export const DeleteCredentialModal = ({ accountCredential, visible, onDeleteAccountCredential, onCancel }: Props) => {
   const [deleteAccountCredential] = useDeleteOneAccountCredential()
   const [loading, setLoading] = useState(false)
 

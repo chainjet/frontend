@@ -1,20 +1,25 @@
 import { Alert, Button } from 'antd'
 import { useCallback, useEffect, useState } from 'react'
 import { useAccount, useSignMessage } from 'wagmi'
-import { IntegrationAccount } from '../../../../../graphql'
-import { useCreateOneAccountCredential } from '../../../../../src/services/AccountCredentialHooks'
+import { AccountCredential, IntegrationAccount } from '../../../../../graphql'
+import {
+  useCreateOneAccountCredential,
+  useUpdateOneAccountCredential,
+} from '../../../../../src/services/AccountCredentialHooks'
 import { sendGraphqlQuery } from '../../../../../src/utils/graphql.utils'
 
 interface Props {
   integrationAccount: IntegrationAccount
+  reconnectAccount?: AccountCredential
   onCredentialsSelected: (id: string) => any
 }
 
-export function SelectLensCredentials({ integrationAccount, onCredentialsSelected }: Props) {
+export function SelectLensCredentials({ integrationAccount, reconnectAccount, onCredentialsSelected }: Props) {
   const { address } = useAccount()
   const [challenge, setChallenge] = useState<string>()
   const [authLoading, setAuthLoading] = useState(false)
   const [createCredential] = useCreateOneAccountCredential()
+  const [updateCredential] = useUpdateOneAccountCredential()
   const [error, setError] = useState<string>()
   const {
     data,
@@ -95,34 +100,66 @@ export function SelectLensCredentials({ integrationAccount, onCredentialsSelecte
         return
       }
 
-      const createCredentialRes = await createCredential({
-        variables: {
-          input: {
-            accountCredential: {
-              name: `Lens Profile ${mainProfile.handle ?? mainProfile.id}`,
-              integrationAccount: integrationAccount.id,
-              credentialInputs: {
-                profileId: mainProfile.id,
-                handle: mainProfile.handle,
-                accessToken,
-                refreshToken,
+      if (reconnectAccount) {
+        const createCredentialRes = await updateCredential({
+          variables: {
+            input: {
+              id: reconnectAccount.id,
+              update: {
+                credentialInputs: {
+                  profileId: mainProfile.id,
+                  handle: mainProfile.handle,
+                  accessToken,
+                  refreshToken,
+                },
               },
             },
           },
-        },
-      })
-      if (createCredentialRes.data?.createOneAccountCredential?.id) {
-        await onCredentialsSelected(createCredentialRes.data.createOneAccountCredential.id)
+        })
+        if (createCredentialRes.data?.updateOneAccountCredential?.id) {
+          await onCredentialsSelected(createCredentialRes.data.updateOneAccountCredential.id)
+        } else {
+          setError('Failed to create account credential')
+        }
       } else {
-        setError('Failed to create account credential')
+        const createCredentialRes = await createCredential({
+          variables: {
+            input: {
+              accountCredential: {
+                name: `Lens Profile ${mainProfile.handle ?? mainProfile.id}`,
+                integrationAccount: integrationAccount.id,
+                credentialInputs: {
+                  profileId: mainProfile.id,
+                  handle: mainProfile.handle,
+                  accessToken,
+                  refreshToken,
+                },
+              },
+            },
+          },
+        })
+        if (createCredentialRes.data?.createOneAccountCredential?.id) {
+          await onCredentialsSelected(createCredentialRes.data.createOneAccountCredential.id)
+        } else {
+          setError('Failed to create account credential')
+        }
       }
+
       setAuthLoading(false)
     }
 
     if (data) {
       authWithLens()
     }
-  }, [address, createCredential, data, integrationAccount.id, onCredentialsSelected])
+  }, [
+    address,
+    createCredential,
+    data,
+    integrationAccount.id,
+    onCredentialsSelected,
+    reconnectAccount,
+    updateCredential,
+  ])
 
   const handleLensSignIn = useCallback(async () => {
     if (!address) {

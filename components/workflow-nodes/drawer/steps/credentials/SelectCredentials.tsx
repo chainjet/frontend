@@ -1,10 +1,11 @@
 import { gql } from '@apollo/client'
 import { Button, Select, Typography } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { IntegrationAccount } from '../../../../../graphql'
+import { AccountCredential, IntegrationAccount } from '../../../../../graphql'
 import {
   useCreateOneAccountCredential,
   useGetAccountCredentials,
+  useUpdateOneAccountCredential,
 } from '../../../../../src/services/AccountCredentialHooks'
 import { SchemaForm } from '../../../../common/Forms/schema-form/SchemaForm'
 import { Loading } from '../../../../common/RequestStates/Loading'
@@ -17,6 +18,7 @@ interface Props {
   hideNameInput?: boolean
   hideSubmitButton?: boolean
   autoConnectIfNoAccount?: boolean // open oauth page automatically if there are no accounts connected
+  reconnectAccount?: AccountCredential
 }
 
 const credentialsFragment = gql`
@@ -35,6 +37,7 @@ export const SelectCredentials = ({
   hideNameInput,
   hideSubmitButton,
   autoConnectIfNoAccount,
+  reconnectAccount,
 }: Props) => {
   const queryVars = useMemo(
     () => ({
@@ -56,18 +59,19 @@ export const SelectCredentials = ({
     data?.accountCredentials?.edges?.[0]?.node?.id,
   )
   const [createCredential] = useCreateOneAccountCredential()
-  const [createCredentialLoading, setCreateCredentialLoading] = useState(false)
+  const [updateCredential] = useUpdateOneAccountCredential()
+  const [credentialRequestLoading, setCredentialRequestLoading] = useState(false)
   const accountNameKey = '__name'
 
   useEffect(() => {
     const credential = data?.accountCredentials?.edges?.[0]?.node
     if (credential) {
       setSelectedCredentialID(credential.id)
-      if (hideSubmitButton && credential.integrationAccount?.id === integrationAccount?.id) {
+      if (!reconnectAccount && hideSubmitButton && credential.integrationAccount?.id === integrationAccount?.id) {
         onCredentialsSelected(credential.id)
       }
     }
-  }, [data, hideSubmitButton, integrationAccount, onCredentialsSelected])
+  }, [data, hideSubmitButton, integrationAccount, onCredentialsSelected, reconnectAccount])
 
   // refetch credentials on page re-focus
   useEffect(() => {
@@ -89,7 +93,7 @@ export const SelectCredentials = ({
     if (!integrationAccount.fieldsSchema) {
       return // TODO
     }
-    setCreateCredentialLoading(true)
+    setCredentialRequestLoading(true)
     const credentialInputs = { ...inputs }
     const exposedInputs: Record<string, unknown> = {}
     const name: string = credentialInputs[accountNameKey]
@@ -100,25 +104,46 @@ export const SelectCredentials = ({
         delete credentialInputs[exposedField]
       }
     }
-    const res = await createCredential({
-      variables: {
-        input: {
-          accountCredential: {
-            name,
-            integrationAccount: integrationAccount.id,
-            credentialInputs,
-            fields: exposedInputs,
+    if (reconnectAccount) {
+      const res = await updateCredential({
+        variables: {
+          input: {
+            id: reconnectAccount.id,
+            update: {
+              name,
+              credentialInputs,
+              fields: exposedInputs,
+            },
           },
         },
-      },
-    })
-    if (res.data?.createOneAccountCredential?.id) {
-      await onCredentialsSelected(res.data.createOneAccountCredential.id)
-      refetch?.(queryVars)
+      })
+      if (res.data?.updateOneAccountCredential?.id) {
+        await onCredentialsSelected(res.data.updateOneAccountCredential.id)
+        refetch?.(queryVars)
+      } else {
+        // TODO show error
+      }
     } else {
-      // TODO show error
+      const res = await createCredential({
+        variables: {
+          input: {
+            accountCredential: {
+              name,
+              integrationAccount: integrationAccount.id,
+              credentialInputs,
+              fields: exposedInputs,
+            },
+          },
+        },
+      })
+      if (res.data?.createOneAccountCredential?.id) {
+        await onCredentialsSelected(res.data.createOneAccountCredential.id)
+        refetch?.(queryVars)
+      } else {
+        // TODO show error
+      }
     }
-    setCreateCredentialLoading(false)
+    setCredentialRequestLoading(false)
   }
 
   const handleContinueClick = () => {
@@ -133,33 +158,43 @@ export const SelectCredentials = ({
 
   const handleConnectOauthAccountClick = useCallback(
     (key: string) => {
-      const popup = window.open(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/account-credentials/oauth/${key}`)
+      const popup = window.open(
+        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/account-credentials/oauth/${key}${
+          reconnectAccount ? `?accountId=${reconnectAccount.id}` : ''
+        }`,
+      )
       if (popup) {
         popup.addEventListener('beforeunload', () => {
           void onOauthAccountConnected()
         })
       }
     },
-    [onOauthAccountConnected],
+    [onOauthAccountConnected, reconnectAccount],
   )
 
-  // if autoConnectIfNoAccount is true, open oauth page automatically if there are no accounts connected
+  // if autoConnectIfNoAccount is true or it's reconnecting, open oauth page automatically if there are no accounts connected
   useEffect(() => {
     if (
-      autoConnectIfNoAccount &&
-      !loading &&
-      !credentials.length &&
+      ((autoConnectIfNoAccount && !credentials.length) || reconnectAccount) &&
+      loading &&
       ['oauth1', 'oauth2'].includes(integrationAccount.authType)
     ) {
       handleConnectOauthAccountClick(integrationAccount.key)
+
+      // if we're reconnecting an account, we won't know when it's completed, so we'll mark it as selected here
+      if (reconnectAccount) {
+        onCredentialsSelected(reconnectAccount.id)
+      }
     }
   }, [
     autoConnectIfNoAccount,
+    reconnectAccount,
     credentials,
     handleConnectOauthAccountClick,
     integrationAccount.authType,
     integrationAccount.key,
     loading,
+    onCredentialsSelected,
   ])
 
   const onCustomCredentialsSelected = useCallback(
@@ -211,18 +246,20 @@ export const SelectCredentials = ({
               ...(hideNameInput ? { 'x-ui:widget': 'hidden' } : {}),
               title: 'Name',
               type: 'string',
-              default: `My ${integrationAccount.name} account`,
+              default: reconnectAccount?.name ?? `My ${integrationAccount.name} account`,
             },
             ...(integrationAccount.fieldsSchema.properties || {}),
           },
         }
         return (
           <>
-            <Typography.Title level={4}>Add a new {integrationAccount.name} account</Typography.Title>
+            <Typography.Title level={4}>
+              {reconnectAccount ? 'Reconnect account' : `Add a new ${integrationAccount.name} account`}
+            </Typography.Title>
             <SchemaForm
               schema={schema}
               initialInputs={{}}
-              loading={createCredentialLoading}
+              loading={credentialRequestLoading}
               onSubmit={handleNewCredentialSubmit}
               submitButtonText="Connect"
             />
@@ -240,6 +277,7 @@ export const SelectCredentials = ({
           <SelectCustomCredentials
             integrationAccount={integrationAccount}
             onCredentialsSelected={onCustomCredentialsSelected}
+            reconnectAccount={reconnectAccount}
           />
         )
     }
@@ -247,9 +285,9 @@ export const SelectCredentials = ({
 
   return (
     <>
-      {credentials.length ? renderAccountSelector() : ''}
+      {credentials.length && !reconnectAccount ? renderAccountSelector() : ''}
 
-      {selectedCredentialID
+      {selectedCredentialID && !reconnectAccount
         ? !hideSubmitButton && (
             <Button type="primary" onClick={handleContinueClick}>
               Continue

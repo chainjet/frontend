@@ -1,16 +1,18 @@
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { gql } from '@apollo/client'
 import { Button, Table } from 'antd'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { AccountCredential } from '../../graphql'
 import { DeleteCredentialModal } from './DeleteCredentialModal'
+import { UpdateCredentialModal } from './UpdateCredentialModal'
 
 interface Props {
   accountCredentials: AccountCredential[]
+  onChange: () => any
 }
 
-export function CredentialsTable(props: Props) {
-  const { accountCredentials } = props
+export function CredentialsTable({ accountCredentials, onChange }: Props) {
+  const [updatingCredential, setUpdatingCredential] = useState<AccountCredential | null>(null)
   const [deletingCredential, setDeletingCredential] = useState<AccountCredential | null>(null)
 
   const dataSource = accountCredentials.map((credential) => ({
@@ -19,14 +21,26 @@ export function CredentialsTable(props: Props) {
     integration: credential.integrationAccount.name,
     actions: (
       <>
-        {/* TODO implement edit credentials */}
-        {/* <Button type="primary"
-                icon={<EditOutlined />}
-                style={{ marginRight: 16 }}/> */}
+        <Button
+          className="mr-4"
+          type="primary"
+          icon={<EditOutlined />}
+          onClick={() => setUpdatingCredential(credential)}
+        />
         <Button danger type="primary" icon={<DeleteOutlined />} onClick={() => setDeletingCredential(credential)} />
       </>
     ),
   }))
+
+  const handleCredentialUpdate = () => {
+    setUpdatingCredential(null)
+    onChange()
+  }
+
+  const handleCredentialDelete = () => {
+    setDeletingCredential(null)
+    onChange()
+  }
 
   return (
     <>
@@ -45,7 +59,7 @@ export function CredentialsTable(props: Props) {
             dataIndex: 'integration',
           },
           {
-            title: 'Delete credential', // TODO rename to actions after editing is implemented
+            title: 'Actions',
             key: 'actions',
             dataIndex: 'actions',
             align: 'right',
@@ -53,11 +67,19 @@ export function CredentialsTable(props: Props) {
         ]}
       />
 
+      {!!updatingCredential && (
+        <UpdateCredentialModal
+          visible={true}
+          accountCredential={updatingCredential}
+          onUpdateAccountCredential={handleCredentialUpdate}
+          onCancel={() => setUpdatingCredential(null)}
+        />
+      )}
       {!!deletingCredential && (
         <DeleteCredentialModal
           visible={true}
           accountCredential={deletingCredential}
-          onDeleteAccountCredential={() => setDeletingCredential(null)}
+          onDeleteAccountCredential={handleCredentialDelete}
           onCancel={() => setDeletingCredential(null)}
         />
       )}
