@@ -22,8 +22,17 @@ export const CreateWorkflowTriggerDrawer = ({ workflowId, visible, onCreateWorkf
     integrationTrigger: IntegrationTrigger,
     credentialsID?: string,
   ) => {
-    const schedule = inputs.chainjet_schedule
-    delete inputs.chainjet_schedule
+    let schedule
+    if (inputs.chainjet_poll_interval) {
+      schedule = {
+        frequency: 'interval',
+        interval: inputs.chainjet_poll_interval,
+      }
+      delete inputs.chainjet_poll_interval
+    } else {
+      schedule = inputs.chainjet_schedule
+      delete inputs.chainjet_schedule
+    }
     const res = await createWorkflowTrigger({
       variables: {
         input: {

@@ -14,6 +14,25 @@ export const jsonSchemaDefinitions = {
     ],
   },
 
+  chainjet_poll_interval: {
+    default: 300,
+    title: 'Polling interval',
+    description: 'How often ChainJet checks the trigger condition.',
+    type: 'integer',
+    oneOf: [
+      { title: '1 minute', const: 60 },
+      { title: '5 minutes', const: 300 },
+      { title: '10 minutes', const: 600 },
+      { title: '15 minutes', const: 900 },
+      { title: '30 minutes', const: 1800 },
+      { title: '1 hour', const: 3600 },
+      { title: '6 hours', const: 21600 },
+      { title: '12 hours', const: 43200 },
+      { title: '1 day', const: 86400 },
+      { title: '1 week', const: 604800 },
+    ],
+  },
+
   chainjet_schedule: {
     type: 'object',
     title: '',
@@ -21,7 +40,7 @@ export const jsonSchemaDefinitions = {
     properties: {
       frequency: {
         type: 'string',
-        title: '',
+        title: 'Run Workflow',
         default: 'interval',
         oneOf: [
           { title: 'Once', const: 'once' },

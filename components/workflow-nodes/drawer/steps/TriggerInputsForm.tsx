@@ -4,7 +4,6 @@ import { Alert } from 'antd'
 import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
 import { useEffect, useState } from 'react'
-import { jsonSchemaDefinitions } from '../../../../src/json-schema/jsonSchemaDefinitions'
 import { useGetAsyncSchemas } from '../../../../src/services/AsyncSchemaHooks'
 import { useGetIntegrationTriggerById } from '../../../../src/services/IntegrationTriggerHooks'
 import { useLazyGetContractSchema } from '../../../../src/services/SmartContractHooks'
@@ -85,7 +84,7 @@ export function TriggerInputsForm({
 
   useEffect(() => {
     // Initialize chainjet_schedule if it's not defined
-    if (integrationTrigger && !integrationTrigger.instant) {
+    if (integrationTrigger && !integrationTrigger.instant && integrationTrigger.key === 'schedule') {
       if (isEmptyObj(inputs?.chainjet_schedule || {})) {
         setInputs({
           ...inputs,
@@ -126,6 +125,33 @@ export function TriggerInputsForm({
   }
 
   let schema = retrocycle(data.integrationTrigger.schemaRequest) as JSONSchema7
+
+  if (!data.integrationTrigger.instant) {
+    if (data.integrationTrigger.key === 'schedule') {
+      schema = {
+        ...schema,
+        properties: {
+          chainjet_schedule: {
+            $ref: '#/definitions/chainjet_schedule',
+          },
+          ...(schema.properties ?? {}),
+        },
+        required: ['chainjet_schedule', ...(schema.required ?? [])],
+      }
+    } else {
+      schema = {
+        ...schema,
+        properties: {
+          chainjet_poll_interval: {
+            $ref: '#/definitions/chainjet_poll_interval',
+          },
+          ...(schema.properties ?? {}),
+        },
+        required: ['chainjet_poll_interval', ...(schema.required ?? [])],
+      }
+    }
+  }
+
   if (extraSchemaProps?.properties) {
     schema = {
       ...schema,
@@ -134,28 +160,6 @@ export function TriggerInputsForm({
         ...extraSchemaProps.properties,
         ...(schema.properties ?? {}),
       },
-    }
-  }
-
-  if (!data.integrationTrigger.instant) {
-    schema = {
-      ...schema,
-      properties: {
-        chainjet_schedule: {
-          $ref: '#/definitions/chainjet_schedule',
-        },
-        ...(schema.properties ?? {}),
-      },
-      required: ['chainjet_schedule', ...(schema.required ?? [])],
-    }
-
-    // Uses a different title for the Schedule Trigger and the trigger scheduling options
-    // We could do something nicer extending the schema with allOf
-    // But this issue is preventing us from using it: https://github.com/rjsf-team/react-jsonschema-form/issues/2071
-    if (data.integrationTrigger.key === 'schedule') {
-      jsonSchemaDefinitions.chainjet_schedule.properties.frequency.title = 'Run Workflow'
-    } else {
-      jsonSchemaDefinitions.chainjet_schedule.properties.frequency.title = 'Check trigger'
     }
   }
 

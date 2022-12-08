@@ -60,9 +60,20 @@ export const UpdateWorkflowTriggerDrawer = ({
 
   const onSubmitInputs = async (inputs: Record<string, any>, _: IntegrationTrigger, credentialsID?: string) => {
     const name = inputs.chainjet_operation_name
-    const schedule = inputs.chainjet_schedule
     delete inputs.chainjet_operation_name
-    delete inputs.chainjet_schedule
+
+    let schedule
+    if (inputs.chainjet_poll_interval) {
+      schedule = {
+        frequency: 'interval',
+        interval: inputs.chainjet_poll_interval,
+      }
+      delete inputs.chainjet_poll_interval
+    } else {
+      schedule = inputs.chainjet_schedule
+      delete inputs.chainjet_schedule
+    }
+
     await updateWorkflowTrigger({
       variables: {
         input: {
@@ -82,6 +93,7 @@ export const UpdateWorkflowTriggerDrawer = ({
   const initialInputs = {
     ...(workflowTrigger.inputs ?? {}),
     chainjet_schedule: workflowTrigger.schedule,
+    chainjet_poll_interval: workflowTrigger.schedule?.interval,
     chainjet_operation_name: workflowTrigger.name,
   }
 
