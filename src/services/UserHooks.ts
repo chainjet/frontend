@@ -49,24 +49,21 @@ export function useUpdateOneUser() {
     mutation ($input: UpdateOneUserInput!) {
       updateOneUser(input: $input) {
         id
-        name
-        website
-        company
       }
     }
   `
   return useMutation<{ updateOneUser: User }, { input: UpdateOneUserInput }>(mutation)
 }
 
-export function useChangePassword() {
+export function useVerifyEmail() {
   const mutation = gql`
-    mutation ($newPassword: String!, $oldPassword: String!) {
-      changePassword(newPassword: $newPassword, oldPassword: $oldPassword) {
-        id
+    mutation verifyEmail($address: String!, $code: String!) {
+      verifyEmail(address: $address, code: $code) {
+        error
       }
     }
   `
-  return useMutation<{ changePassword: User }, { newPassword: string; oldPassword: string }>(mutation)
+  return useMutation(mutation)
 }
 
 export function useLogout() {

@@ -7,6 +7,7 @@ import {
   ProfileOutlined,
   ProjectOutlined,
   QuestionCircleOutlined,
+  SettingOutlined,
   WalletOutlined,
 } from '@ant-design/icons'
 import { Button, Divider, Dropdown, Layout, Menu } from 'antd'
@@ -104,7 +105,7 @@ export default function PageLayout({ children }: Props) {
       const menu = (
         <Menu
           items={[
-            // { key: 'settings', label: 'Settings', icon: <SettingOutlined />, onClick: handleSettingsClick },
+            { key: 'settings', label: 'Settings', icon: <SettingOutlined />, onClick: handleSettingsClick },
             { key: 'logout', label: 'Logout', icon: <LogoutOutlined />, onClick: handleLogoutClick },
           ]}
         />
