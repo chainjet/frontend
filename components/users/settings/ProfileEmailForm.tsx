@@ -8,9 +8,11 @@ import { useUpdateOneUser } from '../../../src/services/UserHooks'
 
 interface Props {
   user: User
+  subscriptionsDefaultEnabled?: boolean
+  onUserUpdate?: () => any
 }
 
-export function ProfileEmailForm({ user }: Props) {
+export function ProfileEmailForm({ user, subscriptionsDefaultEnabled, onUserUpdate }: Props) {
   const [updateUser] = useUpdateOneUser()
   const [updateLoading, setUpdateLoading] = useState(false)
   const [valuesUpdated, setValuesUpdated] = useState(false)
@@ -34,6 +36,7 @@ export function ProfileEmailForm({ user }: Props) {
         setEmailUpdated(true)
       }
       setValuesUpdated(true)
+      onUserUpdate?.()
     } catch (e: any) {
       setError(e?.message)
     } finally {
@@ -43,6 +46,7 @@ export function ProfileEmailForm({ user }: Props) {
 
   const handleSubmitFail = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
+    setError(errorInfo?.errorFields?.[0].errors?.[0])
   }
 
   return (
@@ -61,7 +65,11 @@ export function ProfileEmailForm({ user }: Props) {
 
       <Form
         name="profile-email"
-        initialValues={user}
+        initialValues={{
+          ...user,
+          subscribedToNotifications: subscriptionsDefaultEnabled ?? user.subscribedToNotifications,
+          subscribedToNewsletter: subscriptionsDefaultEnabled ?? user.subscribedToNewsletter,
+        }}
         layout="vertical"
         onFinish={handleSubmit}
         onFinishFailed={handleSubmitFail}
@@ -71,13 +79,11 @@ export function ProfileEmailForm({ user }: Props) {
         </Form.Item>
 
         <Form.Item name="subscribedToNotifications" valuePropName="checked">
-          <Checkbox defaultChecked={user.subscribedToNotifications}>
-            Subscribe to important notifications about your workflows.
-          </Checkbox>
+          <Checkbox>Subscribe to important notifications about your workflows.</Checkbox>
         </Form.Item>
 
         <Form.Item name="subscribedToNewsletter" valuePropName="checked">
-          <Checkbox defaultChecked={user.subscribedToNewsletter}>Subscribe to our monthly Newsletter.</Checkbox>
+          <Checkbox>Subscribe to our monthly Newsletter.</Checkbox>
         </Form.Item>
 
         <Form.Item style={{ marginTop: 32 }}>

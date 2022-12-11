@@ -102,7 +102,7 @@ function NewSchedulePage() {
 
   useEffect(() => {
     if (workflow && workflowActions) {
-      router.push(`/workflows/${workflow.id}`)
+      router.push(`/workflows/${workflow.id}?success=true`)
     }
   }, [router, workflow, workflowActions])
 

@@ -62,7 +62,7 @@ export function EventNotificationStep() {
 
   useEffect(() => {
     if (workflow?.id && workflowActions?.length) {
-      router.push(`/workflows/${workflow.id}`)
+      router.push(`/workflows/${workflow.id}?success=true`)
     }
   }, [router, workflow, workflowActions])
 

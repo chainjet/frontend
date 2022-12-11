@@ -8,15 +8,16 @@ import {
   UnlockOutlined,
 } from '@ant-design/icons'
 import { gql } from '@apollo/client'
-import { Button, Tooltip } from 'antd'
+import { Alert, Button, Tooltip } from 'antd'
 import { NextPageContext } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useAccount } from 'wagmi'
 import { PageWrapper } from '../../../components/common/PageLayout/PageWrapper'
 import { Loading } from '../../../components/common/RequestStates/Loading'
 import { RequestError } from '../../../components/common/RequestStates/RequestError'
+import { EmailSettingsModal } from '../../../components/users/settings/EmailSettingsModal'
 import { Address } from '../../../components/wallet/Address'
 import { WorkflowDiagramFragments } from '../../../components/workflow-nodes/workflow-diagram/WorkflowDiagramFragments'
 import { WorkflowDiagramContainer } from '../../../components/workflow-nodes/WorkflowDiagramContainer'
@@ -27,6 +28,7 @@ import { EnableWorkflowSwitch } from '../../../components/workflows/EnableWorkfl
 import { ForkWorkflowModal } from '../../../components/workflows/ForkWorkflowModal'
 import { RenameWorkflowModal } from '../../../components/workflows/RenameWorkflowModal'
 import { withApollo } from '../../../src/apollo'
+import { useGetViewer, useSigner } from '../../../src/services/UserHooks'
 import { useGetWorkflowById } from '../../../src/services/WorkflowHooks'
 import { getLoginUrl } from '../../../src/utils/account.utils'
 import { isServer } from '../../../src/utils/environment'
@@ -66,6 +68,14 @@ const workflowFragment = gql`
   ${WorkflowRunsTable.fragments.Workflow}
 `
 
+const userFragment = gql`
+  fragment SettingsPage on User {
+    id
+    ...ProfileEmailForm_User
+  }
+  ${EmailSettingsModal.fragments.User}
+`
+
 function WorkflowPage({ workflowId }: Props) {
   const router = useRouter()
   const { data, loading, error, refetch } = useGetWorkflowById(workflowFragment, {
@@ -77,7 +87,19 @@ function WorkflowPage({ workflowId }: Props) {
   const [deployWorkflowModalOpen, setDeployWorkflowModalOpen] = useState(false)
   const [forkWorkflowModalOpen, setForkWorkflowModalOpen] = useState(false)
   const [renameWorkflowModalOpen, setRenameWorkflowModalOpen] = useState(false)
+  const [emailSettingsModalOpen, setEmailSettingsModalOpen] = useState(false)
+  const [showSuccessMessage, setShowSuccessMessage] = useState(router.query.success === 'true')
   const { address } = useAccount()
+  const { signer } = useSigner()
+  const { data: viewerData } = useGetViewer(userFragment, {
+    variables: {
+      id: signer ?? '',
+    },
+  })
+
+  useEffect(() => {
+    setShowSuccessMessage(router.query.success === 'true')
+  }, [router.query.success])
 
   const handleWorkflowChange = useCallback(async () => {
     await refetch()
@@ -91,7 +113,7 @@ function WorkflowPage({ workflowId }: Props) {
   const handleForkWorkflow = useCallback(
     (forkId: string) => {
       if (forkId) {
-        router.push(`/workflows/${forkId}`)
+        router.push(`/workflows/${forkId}?success=true`)
         setForkWorkflowModalOpen(false)
       }
     },
@@ -228,6 +250,32 @@ function WorkflowPage({ workflowId }: Props) {
         onBack={handleGoBack}
         className="workflow-diagram-container"
       >
+        {showSuccessMessage && (
+          <div className="px-2 md:px-8">
+            <Alert
+              message="Your workflow is ready!"
+              description={
+                <>
+                  Congrats! Your workflow will be automated.
+                  {viewerData?.viewer && !viewerData.viewer.subscribedToNotifications && (
+                    <>
+                      We recommend{' '}
+                      <a className="text-blue-500" onClick={() => setEmailSettingsModalOpen(true)}>
+                        enabling email notifications
+                      </a>{' '}
+                      to get notified if something goes wrong.
+                    </>
+                  )}
+                </>
+              }
+              type="success"
+              showIcon
+              closable
+              onClose={() => setShowSuccessMessage(false)}
+            />
+          </div>
+        )}
+
         <WorkflowDiagramContainer
           workflow={workflow}
           readonly={!isOwnerByViewer}
@@ -257,6 +305,15 @@ function WorkflowPage({ workflowId }: Props) {
             workflow={workflow}
             onWorkflowFork={handleForkWorkflow}
             onClose={() => setForkWorkflowModalOpen(false)}
+          />
+        )}
+
+        {viewerData?.viewer && emailSettingsModalOpen && (
+          <EmailSettingsModal
+            user={viewerData?.viewer}
+            open={emailSettingsModalOpen}
+            onUserUpdate={() => setEmailSettingsModalOpen(false)}
+            onCancel={() => setEmailSettingsModalOpen(false)}
           />
         )}
       </PageWrapper>
