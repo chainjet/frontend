@@ -29,6 +29,7 @@ const workflowFragment = gql`
       inputs
       integrationTrigger {
         id
+        skipAuth
         integration {
           id
           name
@@ -46,6 +47,7 @@ const workflowFragment = gql`
           inputs
           integrationAction {
             id
+            skipAuth
             integration {
               id
               name
@@ -230,15 +232,16 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
       return []
     }
     let integrations: { integration: Integration; account: IntegrationAccount }[] = []
-    if (data.workflow.trigger?.integrationTrigger?.integration?.integrationAccount) {
+    const trigger = data.workflow.trigger
+    if (trigger?.integrationTrigger?.integration?.integrationAccount?.id && !trigger.integrationTrigger.skipAuth) {
       integrations.push({
-        integration: data.workflow.trigger.integrationTrigger.integration,
-        account: data.workflow.trigger.integrationTrigger.integration.integrationAccount,
+        integration: trigger.integrationTrigger.integration,
+        account: trigger.integrationTrigger.integration.integrationAccount,
       })
     }
     const actions = data.workflow.actions?.edges.map((edge) => edge.node) ?? []
     for (const action of actions) {
-      if (action.integrationAction?.integration?.integrationAccount?.id) {
+      if (action.integrationAction?.integration?.integrationAccount?.id && !action.integrationAction.skipAuth) {
         if (!integrations.some((a) => a.integration.id === action.integrationAction.integration.id)) {
           integrations.push({
             integration: action.integrationAction.integration,
@@ -252,8 +255,8 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
 
   return (
     <Modal
-      title={`Create a copy of "${workflow.name}"`}
-      visible={visible}
+      title={templateSchema ? `Use template "${workflow.name}"` : `Create a copy of "${workflow.name}"`}
+      open={visible}
       onCancel={onClose}
       footer={null}
       width={Math.min(window.innerWidth, 800)}
@@ -269,7 +272,7 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
           onClose={() => setForkError(null)}
         />
       )}
-      {forkLoading && <Loading />}
+      {(loading || forkLoading) && <Loading />}
       {integrationsWithAccounts.map((item, i) => (
         <div className="mb-8 border-l-4 border-indigo-500" key={i}>
           <div className="flex flex-row gap-2 mb-2 ">
