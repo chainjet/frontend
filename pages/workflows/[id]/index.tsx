@@ -89,6 +89,7 @@ function WorkflowPage({ workflowId }: Props) {
   const [renameWorkflowModalOpen, setRenameWorkflowModalOpen] = useState(false)
   const [emailSettingsModalOpen, setEmailSettingsModalOpen] = useState(false)
   const [showSuccessMessage, setShowSuccessMessage] = useState(router.query.success === 'true')
+  const [showSubscribeMessage, setShowSubscribeMessage] = useState(!showSuccessMessage)
   const { address } = useAccount()
   const { signer } = useSigner()
   const { data: viewerData } = useGetViewer(userFragment, {
@@ -263,7 +264,7 @@ function WorkflowPage({ workflowId }: Props) {
                       <a className="text-blue-500" onClick={() => setEmailSettingsModalOpen(true)}>
                         enabling email notifications
                       </a>{' '}
-                      to get notified if something goes wrong.
+                      to get alerted if something goes wrong.
                     </>
                   )}
                 </>
@@ -274,6 +275,25 @@ function WorkflowPage({ workflowId }: Props) {
               onClose={() => setShowSuccessMessage(false)}
             />
           </div>
+        )}
+
+        {showSubscribeMessage && viewerData?.viewer && !viewerData.viewer.subscribedToNotifications && (
+          <Alert
+            style={{ backgroundColor: '#e6f4ff', border: '1px solid #91caff' }}
+            message={
+              <>
+                We recommend{' '}
+                <a className="text-blue-500" onClick={() => setEmailSettingsModalOpen(true)}>
+                  enabling email notifications
+                </a>{' '}
+                to get alerted if something goes wrong.
+              </>
+            }
+            type="info"
+            showIcon
+            closable
+            onClose={() => setShowSubscribeMessage(false)}
+          />
         )}
 
         <WorkflowDiagramContainer
