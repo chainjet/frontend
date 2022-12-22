@@ -156,6 +156,7 @@ SelectWorkflowNode.fragments = {
   IntegrationTrigger: gql`
     fragment SelectWorkflowNode_IntegrationTrigger on IntegrationTrigger {
       id
+      key
       name
       description
       skipAuth

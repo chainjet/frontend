@@ -49,7 +49,7 @@ export const CreateWorkflowTriggerDrawer = ({ workflowId, visible, onCreateWorkf
     setIntegrationTrigger(integrationTrigger)
     if (res.data?.createOneWorkflowTrigger) {
       setWorkflowTrigger(res.data?.createOneWorkflowTrigger)
-      if (res.data.createOneWorkflowTrigger.hookId) {
+      if (res.data.createOneWorkflowTrigger.hookId && integrationTrigger.key === 'receiveWebhook') {
         setHookStep(true)
       } else {
         onCreateWorkflowTrigger(res.data.createOneWorkflowTrigger)
