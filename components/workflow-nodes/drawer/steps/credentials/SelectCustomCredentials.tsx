@@ -1,6 +1,7 @@
 import { Alert } from 'antd'
 import { AccountCredential, IntegrationAccount } from '../../../../../graphql'
 import { SelectLensCredentials } from './SelectLensCredentials'
+import { SelectXmtpCredentials } from './SelectXmtpCredentials'
 
 interface Props {
   integrationAccount: IntegrationAccount
@@ -13,6 +14,14 @@ export function SelectCustomCredentials({ integrationAccount, reconnectAccount, 
     case 'lens':
       return (
         <SelectLensCredentials
+          integrationAccount={integrationAccount}
+          onCredentialsSelected={onCredentialsSelected}
+          reconnectAccount={reconnectAccount}
+        />
+      )
+    case 'xmtp':
+      return (
+        <SelectXmtpCredentials
           integrationAccount={integrationAccount}
           onCredentialsSelected={onCredentialsSelected}
           reconnectAccount={reconnectAccount}
