@@ -277,7 +277,7 @@ function WorkflowPage({ workflowId }: Props) {
           </div>
         )}
 
-        {showSubscribeMessage && viewerData?.viewer && !viewerData.viewer.subscribedToNotifications && (
+        {!showSubscribeMessage && viewerData?.viewer && !viewerData.viewer.subscribedToNotifications && (
           <Alert
             style={{ backgroundColor: '#e6f4ff', border: '1px solid #91caff' }}
             message={
