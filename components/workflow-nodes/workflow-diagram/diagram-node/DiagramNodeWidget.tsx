@@ -1,10 +1,14 @@
 import { DeleteTwoTone, EditTwoTone, PlayCircleTwoTone, PlusOutlined, UnorderedListOutlined } from '@ant-design/icons'
 import { DiagramEngine, PortWidget } from '@projectstorm/react-diagrams-core'
-import { Button, Card, Row, Tooltip } from 'antd'
+import { Button, Card, Dropdown, Menu, Row, Tooltip } from 'antd'
 import Meta from 'antd/es/card/Meta'
 import { useState } from 'react'
 import { IntegrationTrigger } from '../../../../graphql'
-import { useCheckWorkflowTrigger } from '../../../../src/services/WorkflowTriggerHooks'
+import {
+  useCheckWorkflowTrigger,
+  useRunWorkflowTriggerHistory,
+  useRunWorkflowTriggerLastEvent,
+} from '../../../../src/services/WorkflowTriggerHooks'
 import {
   getIntegrationFromWorkflowNode,
   getIntegrationNodeFromWorkflowNode,
@@ -22,7 +26,9 @@ interface DiagramNodeWidgetProps {
 
 export const DiagramNodeWidget = ({ node, engine }: DiagramNodeWidgetProps) => {
   const [checkWorkflowTrigger] = useCheckWorkflowTrigger()
-  const [isCheckingWorkflowTrigger, setIsCheckingWorkflowTrigger] = useState(false)
+  const [runWorkflowTriggerLastEvent] = useRunWorkflowTriggerLastEvent()
+  const [runWorkflowTriggerHistory] = useRunWorkflowTriggerHistory()
+  const [isRunningTrigger, setIsRunningTrigger] = useState(false)
 
   const portIn = node.getPort('in')
   const portOut = node.getPort('out')
@@ -37,13 +43,33 @@ export const DiagramNodeWidget = ({ node, engine }: DiagramNodeWidgetProps) => {
   const canRunNode = !readonly && nodeIsTrigger && !isInstantTrigger && workflow.actions?.edges?.length
 
   const handleCheckTriggerClick = async () => {
-    setIsCheckingWorkflowTrigger(true)
+    setIsRunningTrigger(true)
     await checkWorkflowTrigger({
       variables: {
         id: workflowNode.id,
       },
     })
-    setIsCheckingWorkflowTrigger(false)
+    setIsRunningTrigger(false)
+  }
+
+  const handleRunWorkflowTriggerLastEvent = async () => {
+    setIsRunningTrigger(true)
+    await runWorkflowTriggerLastEvent({
+      variables: {
+        id: workflowNode.id,
+      },
+    })
+    setIsRunningTrigger(false)
+  }
+
+  const handleRunTriggerHistoryClick = async () => {
+    setIsRunningTrigger(true)
+    await runWorkflowTriggerHistory({
+      variables: {
+        id: workflowNode.id,
+      },
+    })
+    setIsRunningTrigger(false)
   }
 
   if (readonly) {
@@ -64,16 +90,30 @@ export const DiagramNodeWidget = ({ node, engine }: DiagramNodeWidgetProps) => {
   } else {
     if (canRunNode) {
       actions.push(
-        <Tooltip title="Run trigger check" placement="bottom">
-          <Button
-            type="link"
-            key="run-trigger-check"
-            title="Run trigger check"
-            icon={<PlayCircleTwoTone />}
-            onClick={handleCheckTriggerClick}
-            loading={isCheckingWorkflowTrigger}
-          />
-        </Tooltip>,
+        <Dropdown
+          trigger={['click']}
+          overlay={
+            <Menu
+              items={[
+                {
+                  key: '1',
+                  label: <a onClick={handleCheckTriggerClick}>Check trigger event now</a>,
+                },
+                {
+                  key: '2',
+                  label: <a onClick={handleRunWorkflowTriggerLastEvent}>Run workflow with the latest event</a>,
+                },
+                {
+                  key: '3',
+                  label: <a onClick={handleRunTriggerHistoryClick}>Run workflow with historical events</a>,
+                },
+              ]}
+            />
+          }
+          placement="bottomLeft"
+        >
+          <Button type="link" key="run-trigger-check" icon={<PlayCircleTwoTone />} loading={isRunningTrigger} />
+        </Dropdown>,
       )
     }
     actions.push(

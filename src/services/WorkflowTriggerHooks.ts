@@ -117,3 +117,25 @@ export function useTestWorkflowTrigger() {
   `
   return useMutation<{ testWorkflowTrigger: WorkflowTrigger }, { id: string }>(mutation)
 }
+
+export function useRunWorkflowTriggerLastEvent() {
+  const mutation = gql`
+    mutation ($id: String!) {
+      runWorkflowTriggerLastEvent(id: $id) {
+        id
+      }
+    }
+  `
+  return useMutation<{ testWorkflowTrigger: WorkflowTrigger }, { id: string }>(mutation)
+}
+
+export function useRunWorkflowTriggerHistory() {
+  const mutation = gql`
+    mutation ($id: String!) {
+      runWorkflowTriggerHistory(id: $id) {
+        id
+      }
+    }
+  `
+  return useMutation<{ testWorkflowTrigger: WorkflowTrigger }, { id: string }>(mutation)
+}
