@@ -89,6 +89,13 @@ export function SelectXmtpCredentials({ integrationAccount, reconnectAccount, on
       <Button type="primary" onClick={() => handleLensSignIn()} loading={loading}>
         Connect to XMTP
       </Button>
+      <div className="mt-4">
+        <p className="text-gray-400">
+          Signing this message will allow ChainJet to read and send XMTP messages on your behalf. The signature will be
+          securely stored and will only be accessed to execute your workflows. You can remove the connection at any time
+          in the credentials section.
+        </p>
+      </div>
       {error && (
         <div className="mb-8">
           <Alert message={error} type="error" showIcon />
