@@ -8,7 +8,6 @@ import { GoogleAnalyticsService } from '../../../src/services/GoogleAnalyticsSer
 import { ActionInputsForm } from './steps/ActionInputsForm'
 import { SelectCredentials } from './steps/credentials/SelectCredentials'
 import { SelectIntegration } from './steps/SelectIntegration'
-import { SelectTrigger } from './steps/SelectTrigger'
 import { SelectWorkflowAction } from './steps/SelectWorkflowAction'
 import { SelectWorkflowTrigger } from './steps/SelectWorkflowTrigger'
 import { TriggerInputsForm } from './steps/TriggerInputsForm'
@@ -110,16 +109,6 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
     switch (stepIndex) {
       // Select Integration
       case 0:
-        if (props.nodeType === 'trigger') {
-          return (
-            <SelectTrigger
-              onIntegrationSelect={onIntegrationSelected}
-              onTriggerSelected={(trigger) => onWorkflowStepSelected(trigger as T)}
-              onCredentialsSelected={onCredentialsSelected}
-              onSubmitTriggerInputs={onSubmitInputs as any}
-            />
-          )
-        }
         const initialCategory = integrationCategories.find((category) => category.id === 'popular')
         return (
           <SelectIntegration
