@@ -277,24 +277,27 @@ function WorkflowPage({ workflowId }: Props) {
           </div>
         )}
 
-        {!showSubscribeMessage && viewerData?.viewer && !viewerData.viewer.subscribedToNotifications && (
-          <Alert
-            style={{ backgroundColor: '#e6f4ff', border: '1px solid #91caff' }}
-            message={
-              <>
-                We recommend{' '}
-                <a className="text-blue-500" onClick={() => setEmailSettingsModalOpen(true)}>
-                  enabling email notifications
-                </a>{' '}
-                to get alerted if something goes wrong.
-              </>
-            }
-            type="info"
-            showIcon
-            closable
-            onClose={() => setShowSubscribeMessage(false)}
-          />
-        )}
+        {!showSuccessMessage &&
+          showSubscribeMessage &&
+          viewerData?.viewer &&
+          !viewerData.viewer.subscribedToNotifications && (
+            <Alert
+              style={{ backgroundColor: '#e6f4ff', border: '1px solid #91caff' }}
+              message={
+                <>
+                  We recommend{' '}
+                  <a className="text-blue-500" onClick={() => setEmailSettingsModalOpen(true)}>
+                    enabling email notifications
+                  </a>{' '}
+                  to get alerted if something goes wrong.
+                </>
+              }
+              type="info"
+              showIcon
+              closable
+              onClose={() => setShowSubscribeMessage(false)}
+            />
+          )}
 
         <WorkflowDiagramContainer
           workflow={workflow}
