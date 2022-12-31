@@ -22,16 +22,19 @@ export const CreateWorkflowTriggerDrawer = ({ workflowId, visible, onCreateWorkf
     integrationTrigger: IntegrationTrigger,
     credentialsID?: string,
   ) => {
+    // directly modifying inputs causes the component to re-render and display old values for a moment before saving
+    const newInputs = { ...inputs }
+
     let schedule
-    if (inputs.chainjet_poll_interval) {
+    if (newInputs.chainjet_poll_interval) {
       schedule = {
         frequency: 'interval',
-        interval: inputs.chainjet_poll_interval,
+        interval: newInputs.chainjet_poll_interval,
       }
-      delete inputs.chainjet_poll_interval
+      delete newInputs.chainjet_poll_interval
     } else {
-      schedule = inputs.chainjet_schedule
-      delete inputs.chainjet_schedule
+      schedule = newInputs.chainjet_schedule
+      delete newInputs.chainjet_schedule
     }
     const res = await createWorkflowTrigger({
       variables: {
@@ -39,7 +42,7 @@ export const CreateWorkflowTriggerDrawer = ({ workflowId, visible, onCreateWorkf
           workflowTrigger: {
             workflow: workflowId,
             integrationTrigger: integrationTrigger.id,
-            inputs,
+            inputs: newInputs,
             credentials: credentialsID,
             schedule,
           },
