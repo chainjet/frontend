@@ -92,8 +92,9 @@ export const UpdateWorkflowTriggerDrawer = ({
 
   const initialInputs = {
     ...(workflowTrigger.inputs ?? {}),
-    chainjet_schedule: workflowTrigger.schedule,
-    chainjet_poll_interval: workflowTrigger.schedule?.interval,
+    ...(data.workflowTrigger.integrationTrigger.key === 'schedule'
+      ? { chainjet_schedule: workflowTrigger.schedule }
+      : { chainjet_poll_interval: workflowTrigger.schedule?.interval }),
     chainjet_operation_name: workflowTrigger.name,
   }
 
