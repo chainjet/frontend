@@ -64,6 +64,10 @@ export const TextareaWidget = (props: WidgetProps) => {
   return <BaseWidget {...props} widgetType="textarea" />
 }
 
+export const SelectWidget = (props: WidgetProps) => {
+  return <BaseWidget {...props} widgetType="select" />
+}
+
 export const SchemaForm = ({
   schema,
   initialInputs,
@@ -129,6 +133,7 @@ export const SchemaForm = ({
           URLWidget,
           EmailWidget,
           TextareaWidget,
+          SelectWidget,
         }}
         templates={{ DescriptionFieldTemplate }}
         fields={{

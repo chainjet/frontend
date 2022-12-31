@@ -1,45 +1,54 @@
 import { DownOutlined } from '@ant-design/icons'
 import { WidgetProps } from '@rjsf/utils'
-import { Dropdown } from 'antd'
-import { InputProps } from 'antd/es/input'
-import Input from 'antd/lib/input'
+import { Dropdown, Select, Tag } from 'antd'
+import Input, { InputProps } from 'antd/lib/input'
 import React, { useEffect, useRef, useState } from 'react'
 import { assertNever } from '../../../../src/utils/typescript.utils'
 import { NodeOutputsTree } from './NodeOutputsTree'
-
-// Based on:
-//   https://github.com/rjsf-team/react-jsonschema-form/blob/master/packages/antd/src/widgets/TextWidget/index.js
-//   https://github.com/rjsf-team/react-jsonschema-form/blob/master/packages/antd/src/widgets/TextareaWidget/index.js
+import { SelectOutputsDropdown } from './SelectOutputsDropdown'
 
 const INPUT_STYLE = {
   width: '100%',
   borderRadius: '2px 0 0 2px',
 }
 
-type WidgetType = 'text' | 'password' | 'url' | 'email' | 'textarea'
+type WidgetType = 'text' | 'password' | 'url' | 'email' | 'textarea' | 'select'
 
 export const BaseWidget = ({
   // autofocus,
   disabled,
   formContext,
   id,
-  // label,
+  label,
   onBlur,
   onChange,
   onFocus,
   options,
   placeholder,
   readonly,
-  // required,
+  required,
   schema,
   value,
   widgetType,
+  multiple,
 }: WidgetProps & { widgetType: WidgetType }) => {
   const [inputValue, setInputValue] = useState(value)
   const [outputSelectorOpen, setOutputSelectorOpen] = useState(false)
+
+  // if a select input is using one of the options (not interpolation or custom)
+  const [displaySelectLabel, setDisplaySelectLabel] = useState(
+    widgetType === 'select' && options.enumOptions?.some((option) => option.value === value),
+  )
+
   const { outputs, readonlyAsDisabled = true } = formContext
   const wrapperRef = useRef<any>(null)
   const treeRef = useRef<any>(null)
+
+  // update state when input value changes in parent component
+  useEffect(() => {
+    setInputValue(value)
+    setDisplaySelectLabel(widgetType === 'select' && options.enumOptions?.some((option) => option.value === value))
+  }, [value, widgetType, options.enumOptions])
 
   // close output selector on clicks outside this component
   useEffect(() => {
@@ -63,8 +72,9 @@ export const BaseWidget = ({
 
   const parseValue = (value: string | number | boolean | null) => (isNumberInput ? Number(value) || null : value)
 
-  const handleTextChange = ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const newValue = target.value === '' ? options.emptyValue : parseValue(target.value)
+  const handleTextChange = (elem: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | string[]) => {
+    const value = Array.isArray(elem) ? elem.join('') : elem.target.value
+    const newValue = value === '' ? options.emptyValue : parseValue(value)
     onChange(newValue)
     setInputValue(newValue)
   }
@@ -78,8 +88,18 @@ export const BaseWidget = ({
     setOutputSelectorOpen(true)
   }
 
-  const handleOutputSelect = (output: string) => {
-    const newValue = (inputValue || '') + `{{${output}}}`
+  const handleOutputSelect = (output: string, isExactOption: boolean = false) => {
+    let newValue: string
+    if (isExactOption) {
+      // a select option was selected
+      newValue = output
+    } else if (displaySelectLabel) {
+      // a custom value was entered after a select option
+      newValue = `{{${output}}}`
+    } else {
+      newValue = (inputValue || '') + `{{${output}}}`
+    }
+    setDisplaySelectLabel(isExactOption)
     onChange(newValue)
     setInputValue(newValue)
     setOutputSelectorOpen(false)
@@ -102,15 +122,49 @@ export const BaseWidget = ({
     case 'textarea':
       inputType = 'textarea'
       break
+    case 'select':
+      inputType = 'select'
+      break
     default:
       assertNever(widgetType)
       inputType = ''
   }
 
+  const showInterpolationDropdown: boolean = outputs.length && !(schema as any)['x-noInterpolation']
+
   placeholder = placeholder || (outputs.length ? 'Enter text and/or select a dynamic value' : '')
 
   const inputElement =
-    inputType === 'textarea' ? (
+    inputType === 'select' && displaySelectLabel ? (
+      <Select
+        id={id}
+        disabled={disabled || (readonlyAsDisabled && readonly)}
+        onChange={!readonly ? handleTextChange : undefined}
+        onBlur={!readonly ? handleBlur : undefined}
+        onFocus={!readonly ? handleFocus : undefined}
+        placeholder="Select and option or use a custom value"
+        style={INPUT_STYLE}
+        className="caret-transparent"
+        mode="tags"
+        allowClear
+        value={inputValue}
+        defaultValue={[inputValue] as any}
+        open={false}
+        labelInValue
+        removeIcon={required ? <></> : undefined}
+        showArrow
+        tagRender={(tag) => {
+          const option = options.enumOptions?.find((opt) => opt.value === tag.value)
+          const label = option?.label || tag.value
+          return (
+            <Tag closable={!required} onClose={tag.onClose}>
+              <strong className="text-sm">{label}</strong>
+              {label !== tag.value && <span className="ml-2 text-gray-400">{tag.value}</span>}
+            </Tag>
+          )
+        }}
+      />
+    ) : inputType === 'textarea' ? (
       <Input.TextArea
         autoComplete={autoComplete}
         disabled={disabled || (readonlyAsDisabled && readonly)}
@@ -144,6 +198,39 @@ export const BaseWidget = ({
       />
     )
 
+  if (inputType === 'select') {
+    const { enumOptions, enumDisabled } = options
+    const selectNodeOutputsTree = (
+      <div className="h-0">
+        <div className="px-2 mt-2 bg-white shadow-2xl" ref={treeRef}>
+          <SelectOutputsDropdown
+            label={label}
+            value={inputValue}
+            enumOptions={enumOptions ?? []}
+            enumDisabled={enumDisabled ?? []}
+            multiple={multiple}
+            outputs={outputs}
+            showCustom={showInterpolationDropdown}
+            onSelectOutput={handleOutputSelect}
+          />
+        </div>
+      </div>
+    )
+
+    return (
+      <div ref={wrapperRef}>
+        <Dropdown
+          overlay={selectNodeOutputsTree}
+          open={outputSelectorOpen}
+          placement="bottom"
+          getPopupContainer={wrapperRef ? () => wrapperRef.current : undefined}
+        >
+          <a onClick={(e) => e.preventDefault()}>{inputElement}</a>
+        </Dropdown>
+      </div>
+    )
+  }
+
   const nodeOutputsTree = (
     <div className="h-0">
       <div className={`p-2 bg-white shadow-2xl ${inputType !== 'textarea' ? 'mt-2' : ''}`} ref={treeRef}>
@@ -154,7 +241,7 @@ export const BaseWidget = ({
 
   return (
     <div ref={wrapperRef}>
-      {outputs.length && !(schema as any)['x-noInterpolation'] ? (
+      {showInterpolationDropdown ? (
         <>
           <Dropdown
             overlay={nodeOutputsTree}
