@@ -217,7 +217,7 @@ export function ActionInputsForm({
       },
     }
     parentOutputs.push({
-      nodeId: trigger.id,
+      nodeId: 'trigger',
       nodeName: trigger.name,
       nodeLogo: trigger.integrationTrigger.integration.logo,
       schema,
