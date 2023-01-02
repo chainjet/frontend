@@ -148,6 +148,7 @@ export function useCreateWorkflowWithOperations() {
               credentials: trigger.credentialsId,
               schedule: trigger.schedule,
               name: trigger.name,
+              enabled: true,
             },
           },
         },
