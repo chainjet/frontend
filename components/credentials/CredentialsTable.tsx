@@ -1,7 +1,8 @@
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { gql } from '@apollo/client'
-import { Button, Dropdown, Table } from 'antd'
+import { Button, Dropdown, Table, Tooltip } from 'antd'
 import { useState } from 'react'
+import { IoMdWarning } from 'react-icons/io'
 import { AccountCredential } from '../../graphql'
 import { DeleteCredentialModal } from './DeleteCredentialModal'
 import { UpdateCredentialModal } from './UpdateCredentialModal'
@@ -17,7 +18,22 @@ export function CredentialsTable({ accountCredentials, onChange }: Props) {
 
   const dataSource = accountCredentials.map((credential) => ({
     key: credential.id,
-    name: credential.name,
+    name: (
+      <>
+        <div className="flex gap-1">
+          <div>{credential.name}</div>
+          {credential.authExpired && (
+            <div>
+              <Tooltip title="Connection expired">
+                <span className="text-lg text-orange-500">
+                  <IoMdWarning />
+                </span>
+              </Tooltip>
+            </div>
+          )}
+        </div>
+      </>
+    ),
     integration: credential.integrationAccount.name,
     actions: (
       <>
@@ -105,6 +121,7 @@ CredentialsTable.fragments = {
     fragment CredentialsTable_AccountCredential on AccountCredential {
       id
       name
+      authExpired
       integrationAccount {
         id
         name
