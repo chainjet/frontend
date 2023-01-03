@@ -1,6 +1,6 @@
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { gql } from '@apollo/client'
-import { Button, Table } from 'antd'
+import { Button, Dropdown, Table } from 'antd'
 import { useState } from 'react'
 import { AccountCredential } from '../../graphql'
 import { DeleteCredentialModal } from './DeleteCredentialModal'
@@ -21,13 +21,26 @@ export function CredentialsTable({ accountCredentials, onChange }: Props) {
     integration: credential.integrationAccount.name,
     actions: (
       <>
-        <Button
-          className="mr-4"
-          type="primary"
-          icon={<EditOutlined />}
-          onClick={() => setUpdatingCredential(credential)}
-        />
-        <Button danger type="primary" icon={<DeleteOutlined />} onClick={() => setDeletingCredential(credential)} />
+        <div className="hidden sm:block">
+          <Button
+            className="mr-4"
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={() => setUpdatingCredential(credential)}
+          />
+          <Button danger type="primary" icon={<DeleteOutlined />} onClick={() => setDeletingCredential(credential)} />
+        </div>
+        <div className="block sm:hidden">
+          <Dropdown.Button
+            menu={{
+              items: [
+                { label: 'Update', key: 'update', onClick: () => setUpdatingCredential(credential) },
+                { label: 'Delete', key: 'delete', onClick: () => setDeletingCredential(credential) },
+              ],
+              onClick: () => {},
+            }}
+          />
+        </div>
       </>
     ),
   }))
