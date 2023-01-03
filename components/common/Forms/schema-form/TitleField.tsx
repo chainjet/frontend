@@ -1,29 +1,17 @@
-import React from 'react'
-import classNames from 'classnames'
+import { TitleFieldProps } from '@rjsf/utils'
 import { withConfigConsumer } from 'antd/lib/config-provider/context'
+import classNames from 'classnames'
 import { capitalize } from '../../../../src/utils/strings'
 
-// Based on https://github.com/rjsf-team/react-jsonschema-form/blob/master/packages/antd/src/fields/TitleField/index.js
+// Add in the `prefixCls` element needed by the `withConfigConsumer` HOC
+export type AntdTitleFieldProps = TitleFieldProps & {
+  prefixCls: string
+  formContext: object
+}
 
-const TitleField = ({
-  // autofocus,
-  // disabled,
-  // errorSchema,
-  formContext,
-  // formData,
-  id,
-  // idSchema,
-  // name,
-  // onChange,
-  prefixCls,
-  // readonly,
-  // registry,
-  required,
-  // schema,
-  title,
-}: // uiSchema,
-any) => {
-  const { colon = true } = formContext
+const TitleField = ({ id, prefixCls, required, registry, formContext: formContext1, title }: any) => {
+  const { formContext } = registry
+  const { colon = true } = { ...formContext1, ...formContext }
 
   let labelChildren = title
   if (colon && typeof title === 'string' && title.trim() !== '') {
@@ -60,4 +48,4 @@ TitleField.defaultProps = {
   formContext: {},
 }
 
-export default withConfigConsumer({ prefixCls: 'form' })(TitleField)
+export default withConfigConsumer<any>({ prefixCls: 'form' })(TitleField)
