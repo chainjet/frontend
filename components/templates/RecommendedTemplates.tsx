@@ -24,7 +24,7 @@ export const RecommendedTemplates = ({ integrationKey, onTemplatesLoaded }: Prop
         ...(integrationKey ? { integrationKey: { eq: integrationKey } } : {}),
       },
       paging: {
-        first: 12,
+        first: 120,
       },
     },
   })
