@@ -295,7 +295,7 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
           initialInputs={templateInputs ?? {}}
           hideSubmit
           onChange={handleTemplateInputsChange}
-          onSubmit={handleFork}
+          onSubmit={() => {}}
         />
       )}
       {!forkLoading && (
