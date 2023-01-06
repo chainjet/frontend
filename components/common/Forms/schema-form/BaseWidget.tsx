@@ -132,7 +132,13 @@ export const BaseWidget = ({
 
   const showInterpolationDropdown: boolean = outputs.length && !(schema as any)['x-noInterpolation']
 
-  placeholder = placeholder || (outputs.length ? 'Enter text and/or select a dynamic value' : '')
+  placeholder =
+    placeholder ||
+    (outputs.length
+      ? `Enter text and/or select a dynamic value${schema.examples ? `. Example: ${schema.examples}` : ''}`
+      : schema.examples
+      ? schema.examples.toString()
+      : '')
 
   const inputElement =
     inputType === 'select' && displaySelectLabel ? (
