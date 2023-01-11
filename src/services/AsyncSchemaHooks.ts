@@ -24,7 +24,16 @@ const GET_ASYNC_SCHEMAS = gql`
   }
 `
 
-type QueryRequest = {
+const GET_MANY_ASYNC_SCHEMAS = gql`
+  query ManyAsyncSchemas($asyncSchemaInputs: [JSONObject!]!) {
+    manyAsyncSchemas(asyncSchemaInputs: $asyncSchemaInputs) {
+      schemas
+      schemaExtension
+    }
+  }
+`
+
+type QueryRequestAsyncSchemas = {
   integrationId: string
   accountCredentialId: string
   names: string[]
@@ -33,13 +42,30 @@ type QueryRequest = {
   integrationActionId?: string
 }
 
-type QueryResponse = {
+type QueryResponseAsyncSchemas = {
   asyncSchemas: {
     schemas: { [key: string]: JSONSchema7 }
     schemaExtension: JSONSchema7
   }
 }
 
-export function useGetAsyncSchemas(options: QueryHookOptions<QueryResponse, QueryRequest>) {
-  return useQuery<QueryResponse, QueryRequest>(GET_ASYNC_SCHEMAS, options)
+export function useGetAsyncSchemas(options: QueryHookOptions<QueryResponseAsyncSchemas, QueryRequestAsyncSchemas>) {
+  return useQuery<QueryResponseAsyncSchemas, QueryRequestAsyncSchemas>(GET_ASYNC_SCHEMAS, options)
+}
+
+type QueryRequestManyAsyncSchemas = {
+  asyncSchemaInputs: QueryRequestAsyncSchemas[]
+}
+
+type QueryResponseManyAsyncSchemas = {
+  manyAsyncSchemas: {
+    schemas: { [key: string]: JSONSchema7 }
+    schemaExtension: JSONSchema7
+  }
+}
+
+export function useGetManyAsyncSchemas(
+  options: QueryHookOptions<QueryResponseManyAsyncSchemas, QueryRequestManyAsyncSchemas>,
+) {
+  return useQuery<QueryResponseManyAsyncSchemas, QueryRequestManyAsyncSchemas>(GET_MANY_ASYNC_SCHEMAS, options)
 }

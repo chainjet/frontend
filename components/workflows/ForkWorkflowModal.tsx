@@ -4,7 +4,7 @@ import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
 import { useCallback, useMemo, useState } from 'react'
 import { Integration, IntegrationAccount, Workflow } from '../../graphql'
-import { useGetAsyncSchemas } from '../../src/services/AsyncSchemaHooks'
+import { useGetManyAsyncSchemas } from '../../src/services/AsyncSchemaHooks'
 import { useGetIntegrationActions } from '../../src/services/IntegrationActionHooks'
 import { useGetIntegrationTriggers } from '../../src/services/IntegrationTriggerHooks'
 import { useForkWorkflow, useGetWorkflowById } from '../../src/services/WorkflowHooks'
@@ -166,25 +166,28 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
   // support async schemas for templates
   const asyncSchemas: AsyncSchema[] = templateSchema?.['x-asyncSchemas']
   const asyncSchemaNames = asyncSchemas?.map((prop: { name: string }) => prop.name) ?? []
-  const asyncSchemaRes = useGetAsyncSchemas({
+  const asyncSchemaRes = useGetManyAsyncSchemas({
     skip: !asyncSchemaNames.length,
     variables: {
-      integrationId: asyncSchemas?.[0]?.integrationId ?? '',
-      accountCredentialId: asyncSchemas?.[0]?.accountId ?? '',
-      names: asyncSchemaNames,
-      integrationActionId: asyncSchemas?.[0]?.integrationAction ?? '',
-      integrationTriggerId: asyncSchemas?.[0]?.integrationTrigger ?? '',
-      inputs: templateInputs,
+      asyncSchemaInputs: (asyncSchemas ?? []).map((item) => ({
+        integrationId: item.integrationId,
+        accountCredentialId: item.accountId ?? '',
+        names: [item.name],
+        integrationActionId: item.integrationAction,
+        integrationTriggerId: item.integrationTrigger,
+        inputs: templateInputs,
+      })),
     },
   })
   templateSchema = useMemo(() => {
-    if (!isEmptyObj(asyncSchemaRes?.data?.asyncSchemas.schemas ?? {})) {
-      return mergePropSchema(templateSchema, asyncSchemaRes.data!.asyncSchemas.schemas!)
+    let schema = templateSchema
+    if (!isEmptyObj(asyncSchemaRes?.data?.manyAsyncSchemas.schemas ?? {})) {
+      schema = mergePropSchema(schema, asyncSchemaRes.data!.manyAsyncSchemas.schemas!)
     }
-    if (!isEmptyObj(asyncSchemaRes?.data?.asyncSchemas.schemaExtension ?? {})) {
-      return deepmerge(templateSchema, asyncSchemaRes.data!.asyncSchemas.schemaExtension!)
+    if (!isEmptyObj(asyncSchemaRes?.data?.manyAsyncSchemas.schemaExtension ?? {})) {
+      schema = deepmerge(schema, asyncSchemaRes.data!.manyAsyncSchemas.schemaExtension!)
     }
-    return templateSchema
+    return schema
   }, [asyncSchemaRes.data, templateSchema])
 
   const handleFork = async () => {
