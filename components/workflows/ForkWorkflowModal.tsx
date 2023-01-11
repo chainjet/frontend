@@ -173,6 +173,7 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
       accountCredentialId: asyncSchemas?.[0]?.accountId ?? '',
       names: asyncSchemaNames,
       integrationActionId: asyncSchemas?.[0]?.integrationAction ?? '',
+      integrationTriggerId: asyncSchemas?.[0]?.integrationTrigger ?? '',
       inputs: templateInputs,
     },
   })
