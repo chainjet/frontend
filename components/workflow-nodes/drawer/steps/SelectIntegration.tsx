@@ -90,6 +90,7 @@ export const SelectIntegration = ({
         ? {}
         : { parentKey: { neq: 'aws' } }),
       ...(search ? { name: { iLike: search } } : {}),
+      deprecated: { is: false },
     },
     paging: {
       first: 120,
