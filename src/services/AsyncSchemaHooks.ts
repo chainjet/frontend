@@ -19,6 +19,7 @@ const GET_ASYNC_SCHEMAS = gql`
       integrationActionId: $integrationActionId
     ) {
       schemas
+      schemaExtension
     }
   }
 `
@@ -35,6 +36,7 @@ type QueryRequest = {
 type QueryResponse = {
   asyncSchemas: {
     schemas: { [key: string]: JSONSchema7 }
+    schemaExtension: JSONSchema7
   }
 }
 

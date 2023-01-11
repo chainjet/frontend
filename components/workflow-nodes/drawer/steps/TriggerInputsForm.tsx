@@ -1,12 +1,10 @@
 import { gql } from '@apollo/client'
-import { isAddress } from '@ethersproject/address'
 import { Alert } from 'antd'
 import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
 import { useEffect, useState } from 'react'
 import { useGetAsyncSchemas } from '../../../../src/services/AsyncSchemaHooks'
 import { useGetIntegrationTriggerById } from '../../../../src/services/IntegrationTriggerHooks'
-import { useLazyGetContractSchema } from '../../../../src/services/SmartContractHooks'
 import { retrocycle } from '../../../../src/utils/json.utils'
 import { isEmptyObj } from '../../../../src/utils/object.utils'
 import { getSchemaDefaults, isSelectInput, mergePropSchema } from '../../../../src/utils/schema.utils'
@@ -56,8 +54,6 @@ export function TriggerInputsForm({
       id: triggerId,
     },
   })
-  const [getContractSchema, { data: contractSchemaData, loading: contractSchemaLoading, error: contractSchemaError }] =
-    useLazyGetContractSchema()
   const [inputs, setInputs] = useState(initialInputs)
   const [dependencyInputs, setDependencyInputs] = useState(initialInputs)
 
@@ -93,26 +89,6 @@ export function TriggerInputsForm({
             interval: 300,
           },
         })
-      }
-    }
-
-    if (
-      integrationTrigger?.key === 'newEvent' &&
-      inputs.network &&
-      isAddress(inputs.address) &&
-      (!contractSchemaData ||
-        (contractSchemaData.chainId !== inputs.network && contractSchemaData.address !== inputs.address))
-    ) {
-      try {
-        getContractSchema({
-          variables: {
-            chainId: inputs.network,
-            address: inputs.address,
-            type: 'events',
-          },
-        })
-      } catch (e) {
-        console.log(`ERROR ===>`, e)
       }
     }
   }, [inputs, integrationTrigger])
@@ -163,28 +139,15 @@ export function TriggerInputsForm({
     }
   }
 
+  // merge async schemas
   if (!isEmptyObj(asyncSchemaRes?.data?.asyncSchemas.schemas ?? {})) {
     schema = mergePropSchema(schema, asyncSchemaRes?.data?.asyncSchemas.schemas!)
   }
-
-  if (contractSchemaData?.contractSchema?.schema) {
-    schema = deepmerge(schema, contractSchemaData.contractSchema.schema ?? {})
+  if (!isEmptyObj(asyncSchemaRes?.data?.asyncSchemas.schemaExtension ?? {})) {
+    schema = deepmerge(schema, asyncSchemaRes?.data?.asyncSchemas.schemaExtension!)
   }
 
   const onFormChange = (data: Record<string, any>) => {
-    // TODO hack for Smart Contracts integration
-    //      migrate it to use asyncSchemas
-    if (
-      data.network &&
-      isAddress(data.address) &&
-      (data.network !== inputs.network || data.address !== inputs.address)
-    ) {
-      setInputs({
-        ...inputs,
-        ...data,
-      })
-    }
-
     // x-asyncSchema props with any = true refresh properties on any change
     // for performance we are only doing this for selects
     const hasPropWithAnyEnabled = asyncSchemas?.some((prop) => prop.any)
@@ -238,17 +201,16 @@ export function TriggerInputsForm({
         initialInputs={inputs}
         onChange={onFormChange}
         onSubmit={onFormSubmit}
-        loading={submitLoading}
+        loading={submitLoading || asyncSchemaRes?.loading}
         hideSubmit={hideSubmit}
         readonly={readonly}
       />
-      {contractSchemaLoading && <Loading />}
-      {(submitError ?? contractSchemaError) && (
+      {(submitError ?? asyncSchemaRes?.error) && (
         <div className="mt-8">
           <Alert
             type="error"
-            message="Error executing the trigger:"
-            description={submitError ?? contractSchemaError?.message}
+            message={submitError ? 'Error executing the trigger:' : 'Error fetching schema:'}
+            description={submitError ?? asyncSchemaRes.error?.message}
             showIcon
           />
         </div>

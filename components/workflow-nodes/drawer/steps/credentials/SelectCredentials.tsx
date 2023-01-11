@@ -215,6 +215,7 @@ export const SelectCredentials = ({
   const renderAccountSelector = () => (
     <div style={{ marginBottom: '16px' }}>
       <Select
+        className="w-full"
         defaultValue={credentials.length ? credentials[0].id : ''}
         size="large"
         onChange={handleCredentialSelectChange}
