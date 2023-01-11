@@ -2,6 +2,7 @@ import { UiSchema } from '@rjsf/utils'
 import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
 import { IntegrationAction, IntegrationTrigger } from '../../graphql'
+import { AsyncSchema } from '../typings/AsyncSchema'
 import { isEmptyObj } from './object.utils'
 
 export function removeHiddenProperties(schema: JSONSchema7): JSONSchema7 {
@@ -27,13 +28,15 @@ export function fixArraysWithoutItems(schema: JSONSchema7): JSONSchema7 {
 }
 
 export function replaceInheritFields(
-  schema: JSONSchema7,
+  schema: JSONSchema7 & { ['x-asyncSchemas']: AsyncSchema[] },
   integrationTriggers: IntegrationTrigger[],
   integrationActions: IntegrationAction[],
   credentialIds: Record<string, string>,
 ): JSONSchema7 {
   schema = { ...schema }
   schema.properties = { ...(schema.properties ?? {}) }
+  schema.required = schema.required ?? []
+  schema['x-asyncSchemas'] = schema['x-asyncSchemas'] ?? []
   for (const [key, value] of Object.entries(schema.properties ?? {})) {
     if (typeof value === 'boolean') {
       continue
@@ -45,17 +48,22 @@ export function replaceInheritFields(
         const field = trigger.schemaRequest?.properties?.[inheritField.key]
         if (field) {
           schema.properties![key] = field
-          const asyncSchema = { ...trigger.schemaRequest?.['x-asyncSchemas']?.find((s: any) => s.name === key) }
-          if (!isEmptyObj(asyncSchema)) {
-            ;(schema as any)['x-asyncSchemas'] = [
-              ...((schema as any)['x-asyncSchemas'] ?? []),
-              {
-                name: asyncSchema.name,
-                integrationId: trigger.integration.id,
-                integrationTrigger: trigger.id,
-                accountId: credentialIds[trigger.integration.integrationAccount?.id ?? ''],
-              },
-            ]
+          if (!schema.required.includes(key) && trigger.schemaRequest?.required?.includes(key)) {
+            schema.required.push(key)
+          }
+          const asyncSchema = {
+            ...trigger.schemaRequest?.['x-asyncSchemas']?.find(
+              (s: any) => s.name === key || s.dependencies?.includes(key),
+            ),
+          }
+          if (!isEmptyObj(asyncSchema) && !schema['x-asyncSchemas'].some((item) => item.name === asyncSchema.name)) {
+            schema['x-asyncSchemas'].push({
+              name: asyncSchema.name,
+              integrationId: trigger.integration.id,
+              integrationTrigger: trigger.id,
+              accountId: credentialIds[trigger.integration.integrationAccount?.id ?? ''],
+              dependencies: asyncSchema.dependencies,
+            })
           }
         }
       }
@@ -66,24 +74,29 @@ export function replaceInheritFields(
         const field = action.schemaRequest?.properties?.[inheritField.key]
         if (field) {
           schema.properties![key] = field
-          const asyncSchema = { ...action.schemaRequest?.['x-asyncSchemas']?.find((s: any) => s.name === key) }
-          if (!isEmptyObj(asyncSchema)) {
-            ;(schema as any)['x-asyncSchemas'] = [
-              ...((schema as any)['x-asyncSchemas'] ?? []),
-              {
-                name: asyncSchema.name,
-                integrationId: action.integration.id,
-                integrationAction: action.id,
-                accountId: credentialIds[action.integration.integrationAccount?.id ?? ''],
-              },
-            ]
+          if (!schema.required.includes(key) && action.schemaRequest?.required?.includes(key)) {
+            schema.required.push(key)
+          }
+          const asyncSchema = {
+            ...action.schemaRequest?.['x-asyncSchemas']?.find(
+              (s: any) => s.name === key || s.dependencies?.includes(key),
+            ),
+          }
+          if (!isEmptyObj(asyncSchema) && !schema['x-asyncSchemas'].some((item) => item.name === asyncSchema.name)) {
+            schema['x-asyncSchemas'].push({
+              name: asyncSchema.name,
+              integrationId: action.integration.id,
+              integrationAction: action.id,
+              accountId: credentialIds[action.integration.integrationAccount?.id ?? ''],
+              dependencies: asyncSchema.dependencies,
+            })
           }
         }
       }
     }
   }
 
-  return applySchemaChangeRecursively(schema, replaceInheritFields, integrationTriggers, integrationActions)
+  return applySchemaChangeRecursively(schema, replaceInheritFields as any, integrationTriggers, integrationActions)
 }
 
 export function mergePropSchema(schema: JSONSchema7, propSchemas: { [key: string]: JSONSchema7 }): JSONSchema7 {

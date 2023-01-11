@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client'
 import { Alert, Button, Modal } from 'antd'
+import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
 import { useCallback, useMemo, useState } from 'react'
 import { Integration, IntegrationAccount, Workflow } from '../../graphql'
@@ -7,6 +8,7 @@ import { useGetAsyncSchemas } from '../../src/services/AsyncSchemaHooks'
 import { useGetIntegrationActions } from '../../src/services/IntegrationActionHooks'
 import { useGetIntegrationTriggers } from '../../src/services/IntegrationTriggerHooks'
 import { useForkWorkflow, useGetWorkflowById } from '../../src/services/WorkflowHooks'
+import { AsyncSchema } from '../../src/typings/AsyncSchema'
 import { isEmptyObj } from '../../src/utils/object.utils'
 import { mergePropSchema, replaceInheritFields } from '../../src/utils/schema.utils'
 import { SchemaForm } from '../common/Forms/schema-form/SchemaForm'
@@ -162,25 +164,27 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
   )
 
   // support async schemas for templates
-  const asyncSchemas: Array<{ name: string; integrationId: string; integrationAction?: string; accountId?: string }> =
-    templateSchema?.['x-asyncSchemas']
+  const asyncSchemas: AsyncSchema[] = templateSchema?.['x-asyncSchemas']
   const asyncSchemaNames = asyncSchemas?.map((prop: { name: string }) => prop.name) ?? []
   const asyncSchemaRes = useGetAsyncSchemas({
     skip: !asyncSchemaNames.length,
     variables: {
-      integrationId: asyncSchemas?.[0].integrationId ?? '',
-      accountCredentialId: asyncSchemas?.[0].accountId ?? '',
+      integrationId: asyncSchemas?.[0]?.integrationId ?? '',
+      accountCredentialId: asyncSchemas?.[0]?.accountId ?? '',
       names: asyncSchemaNames,
       integrationActionId: asyncSchemas?.[0]?.integrationAction ?? '',
-      inputs: {},
+      inputs: templateInputs,
     },
   })
   templateSchema = useMemo(() => {
     if (!isEmptyObj(asyncSchemaRes?.data?.asyncSchemas.schemas ?? {})) {
-      return mergePropSchema(templateSchema, asyncSchemaRes?.data?.asyncSchemas.schemas!)
+      return mergePropSchema(templateSchema, asyncSchemaRes.data!.asyncSchemas.schemas!)
+    }
+    if (!isEmptyObj(asyncSchemaRes?.data?.asyncSchemas.schemaExtension ?? {})) {
+      return deepmerge(templateSchema, asyncSchemaRes.data!.asyncSchemas.schemaExtension!)
     }
     return templateSchema
-  }, [asyncSchemaRes?.data?.asyncSchemas.schemas, templateSchema])
+  }, [asyncSchemaRes.data, templateSchema])
 
   const handleFork = async () => {
     setForkLoading(true)
@@ -261,11 +265,11 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
       footer={null}
       width={Math.min(window.innerWidth, 800)}
     >
-      {forkError && (
+      {(forkError ?? asyncSchemaRes?.error) && (
         <Alert
           style={{ marginBottom: 16 }}
           message="Error"
-          description={forkError.message}
+          description={forkError?.message ?? asyncSchemaRes?.error?.message}
           type="error"
           showIcon
           closable
