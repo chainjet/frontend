@@ -1,14 +1,5 @@
 import ReactGA from 'react-ga4'
-
-// Docs: https://developers.google.com/analytics/devguides/collection/gtagjs/events
-type UaEventOptions = {
-  action: string
-  category: string
-  label?: string
-  value?: number
-  nonInteraction?: boolean
-  transport?: 'beacon' | 'xhr' | 'image'
-}
+import { UaEventOptions } from 'react-ga4/types/ga4'
 
 const trackingId = process.env.NEXT_PUBLIC_GA_TRACKING_CODE
 

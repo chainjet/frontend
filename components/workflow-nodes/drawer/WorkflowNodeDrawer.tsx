@@ -4,7 +4,7 @@ import { JSONSchema7 } from 'json-schema'
 import { useState } from 'react'
 import { Integration, IntegrationAction, IntegrationTrigger } from '../../../graphql'
 import { integrationCategories } from '../../../src/constants/integration-categories'
-import { GoogleAnalyticsService } from '../../../src/services/GoogleAnalyticsService'
+import { AnalyticsService } from '../../../src/services/AnalyticsService'
 import { ActionInputsForm } from './steps/ActionInputsForm'
 import { SelectCredentials } from './steps/credentials/SelectCredentials'
 import { SelectIntegration } from './steps/SelectIntegration'
@@ -75,7 +75,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
   const onIntegrationSelected = (integration: Integration) => {
     setSelectedIntegration(integration)
     setCurrentStep(1)
-    GoogleAnalyticsService.sendEvent({
+    AnalyticsService.sendEvent({
       action: props.nodeType === 'trigger' ? 'integration_selected_trigger' : 'integration_selected_action',
       category: 'engagement',
       label: integration.key,
@@ -85,7 +85,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
   const onWorkflowStepSelected = (integrationStep: T) => {
     setSelectedNode(integrationStep)
     setCurrentStep(selectedIntegration?.integrationAccount?.id ? 2 : 3)
-    GoogleAnalyticsService.sendEvent({
+    AnalyticsService.sendEvent({
       action: props.nodeType === 'trigger' ? 'trigger_selected' : 'action_selected',
       category: 'engagement',
       label: selectedIntegration?.key + '_' + integrationStep.name,
@@ -95,7 +95,7 @@ export function WorkflowNodeDrawer<T extends IntegrationTrigger | IntegrationAct
   const onCredentialsSelected = (credentialId: string) => {
     setSelectedCredentialID(credentialId)
     setCurrentStep(3)
-    GoogleAnalyticsService.sendEvent({
+    AnalyticsService.sendEvent({
       action: 'credentials_selected',
       category: 'engagement',
       label: selectedIntegration?.key,

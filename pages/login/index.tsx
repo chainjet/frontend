@@ -6,7 +6,7 @@ import NoSsr from '../../components/common/NoSsr'
 import { SignContainer } from '../../components/users/SignContainer'
 import { ConnectWallet } from '../../components/wallet/ConnectWallet'
 import { withApollo } from '../../src/apollo'
-import { GoogleAnalyticsService } from '../../src/services/GoogleAnalyticsService'
+import { AnalyticsService } from '../../src/services/AnalyticsService'
 import { getHeadMetatags } from '../../src/utils/html.utils'
 
 interface Props {}
@@ -18,7 +18,7 @@ const LoginPage = ({}: Props) => {
   const onSignInSuccess = async ({ address }: { address: string }) => {
     setError(undefined)
 
-    GoogleAnalyticsService.sendEvent({
+    AnalyticsService.sendEvent({
       action: 'login',
       category: 'engagement',
       label: address,

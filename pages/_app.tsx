@@ -11,7 +11,6 @@ import { publicProvider } from 'wagmi/providers/public'
 import CookieConsent from '../components/common/CookieConsent'
 import { DiscordWidget } from '../components/common/DiscordWidget'
 import { FrontendAnalytics } from '../components/common/FrontendAnalytics'
-import GoogleAnalytics from '../components/common/GoogleAnalytics'
 import '../styles/globals.css'
 
 const { chains, provider } = configureChains(defaultChains, [publicProvider()])
