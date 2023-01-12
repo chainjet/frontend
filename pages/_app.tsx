@@ -10,6 +10,7 @@ import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { publicProvider } from 'wagmi/providers/public'
 import CookieConsent from '../components/common/CookieConsent'
 import { DiscordWidget } from '../components/common/DiscordWidget'
+import { FrontendAnalytics } from '../components/common/FrontendAnalytics'
 import GoogleAnalytics from '../components/common/GoogleAnalytics'
 import '../styles/globals.css'
 
@@ -80,7 +81,7 @@ export default function ChainJetApp({
         {process.env.SLACK_APP_ID && <meta name="slack-app-id" content={process.env.SLACK_APP_ID}></meta>}
       </Head>
 
-      <GoogleAnalytics />
+      <FrontendAnalytics />
       <CookieConsent />
       <DiscordWidget />
 

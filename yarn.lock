@@ -2027,6 +2027,11 @@
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-2.0.3.tgz#c893b73721db73699943bfc3653b1deb7faa4a3a"
   integrity sha512-Jus9s4CDbqwocc5pOAnh8ShfrnMcPHuJYzVcSUU7lrh8Ni5HuIqX3oilL86p3dlTrk0LzHRCgA/GQ7uNCw6l2Q==
 
+"@types/mixpanel-browser@2.38.0":
+  version "2.38.0"
+  resolved "https://registry.yarnpkg.com/@types/mixpanel-browser/-/mixpanel-browser-2.38.0.tgz#b3e28e1ba06c10a9f88510b88f1ac9d1b2adfc42"
+  integrity sha512-TR8rvsILnqXA7oiiGOxuMGXwvDeCoQDonXJB5UR+TYvEAFpiK8ReFj5LhZT+Xhm3NpI9aPoju30jB2ssorSUww==
+
 "@types/ms@*":
   version "0.7.31"
   resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.31.tgz#31b7ca6407128a3d2bbc27fe2d21b345397f6197"
@@ -7751,6 +7756,11 @@ mixin-deep@^1.2.0:
   dependencies:
     for-in "^1.0.2"
     is-extendable "^1.0.1"
+
+mixpanel-browser@2.45.0:
+  version "2.45.0"
+  resolved "https://registry.yarnpkg.com/mixpanel-browser/-/mixpanel-browser-2.45.0.tgz#a2973be5b66e6d2799ef95a1e55b8ad8eede57e8"
+  integrity sha512-PQ1DaTk68yyYtLA0iejmzPA9iNDhT4uIZpqZjRTw7HWpYfl123fydHb2laKanaKjm8YDmrGGz3+xZ4Q6joogyg==
 
 mkdirp-classic@^0.5.2, mkdirp-classic@^0.5.3:
   version "0.5.3"
