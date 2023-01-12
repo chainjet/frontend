@@ -17,6 +17,7 @@ import { useRouter } from 'next/router'
 import React, { CSSProperties, useEffect, useState } from 'react'
 import { GoKey } from 'react-icons/go'
 import { useAccount } from 'wagmi'
+import { AnalyticsService } from '../../../src/services/AnalyticsService'
 import { useLogout, useSigner } from '../../../src/services/UserHooks'
 import { useCreateOneWorkflow } from '../../../src/services/WorkflowHooks'
 import { getLoginUrl } from '../../../src/utils/account.utils'
@@ -75,6 +76,7 @@ export default function PageLayout({ children }: Props) {
       })
       const workflowId = workflowRes.data?.createOneWorkflow?.id
       if (workflowId) {
+        AnalyticsService.sendEvent({ action: 'new_workflow', label: 'sidemenu', category: 'engagement' })
         await router.push(`/workflows/${workflowId}`)
       } else {
         setWorkflowError('Unexpected error, please try again')

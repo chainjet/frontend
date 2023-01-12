@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { PageWrapper } from '../components/common/PageLayout/PageWrapper'
 import { RecommendedTemplates } from '../components/templates/RecommendedTemplates'
 import { withApollo } from '../src/apollo'
+import { AnalyticsService } from '../src/services/AnalyticsService'
 import { useRedirectGuests } from '../src/services/UserHooks'
 import { useCreateOneWorkflow } from '../src/services/WorkflowHooks'
 
@@ -35,6 +36,7 @@ function DashboardPage() {
       })
       const workflowId = workflowRes.data?.createOneWorkflow?.id
       if (workflowId) {
+        AnalyticsService.sendEvent({ action: 'new_workflow', label: 'dashboard', category: 'engagement' })
         await router.push(`/workflows/${workflowId}`)
       } else {
         setError('Unexpected error, please try again')

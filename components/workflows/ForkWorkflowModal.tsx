@@ -204,6 +204,7 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
       const forkId = res?.data?.forkWorkflow?.id
       if (forkId) {
         onWorkflowFork(forkId)
+        AnalyticsService.sendEvent({ action: 'new_workflow', label: 'fork', category: 'engagement' })
         AnalyticsService.sendEvent({ action: 'fork', label: workflow.id, category: 'engagement' })
       } else {
         setForkError(new Error('Failed to fork workflow'))

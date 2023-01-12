@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client'
 import { useCallback, useEffect, useState } from 'react'
 import { Workflow, WorkflowAction } from '../../graphql'
+import { AnalyticsService } from './AnalyticsService'
 import { useGetIntegrationActions } from './IntegrationActionHooks'
 import { useGetIntegrations } from './IntegrationHooks'
 import { useGetIntegrationTriggers } from './IntegrationTriggerHooks'
@@ -119,6 +120,7 @@ export function useCreateWorkflowWithOperations() {
           },
         },
       })
+      AnalyticsService.sendEvent({ action: 'new_workflow', label: 'wizard', category: 'engagement' })
       setWorkflow(workflowRes.data?.createOneWorkflow)
     },
     [createWorkflow],

@@ -5,8 +5,12 @@ import { Store } from 'rc-field-form/es/interface'
 import { useState } from 'react'
 import { PageWrapper } from '../../components/common/PageLayout/PageWrapper'
 import { withApollo } from '../../src/apollo'
+import { AnalyticsService } from '../../src/services/AnalyticsService'
 import { useCreateOneWorkflow } from '../../src/services/WorkflowHooks'
 
+/**
+ * @deprecated
+ */
 function NewWorkflowPage() {
   const router = useRouter()
   const [form] = Form.useForm()
@@ -26,6 +30,7 @@ function NewWorkflowPage() {
       })
       const workflowId = workflowRes.data?.createOneWorkflow?.id
       if (workflowId) {
+        AnalyticsService.sendEvent({ action: 'new_workflow', label: 'create_workflow', category: 'engagement' })
         await router.push(`/workflows/${workflowId}`)
       } else {
         setFormError('Unexpected error, please try again')

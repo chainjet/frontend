@@ -5,9 +5,13 @@ import { useState } from 'react'
 import { PageWrapper } from '../components/common/PageLayout/PageWrapper'
 import { UserWorkflows } from '../components/workflows/UserWorkflows'
 import { withApollo } from '../src/apollo'
+import { AnalyticsService } from '../src/services/AnalyticsService'
 import { useRedirectGuests } from '../src/services/UserHooks'
 import { useCreateOneWorkflow } from '../src/services/WorkflowHooks'
 
+/**
+ * @deprecated
+ */
 function HomePage() {
   const { signer } = useRedirectGuests()
   const [loading, serLoading] = useState(false)
@@ -33,6 +37,7 @@ function HomePage() {
       })
       const workflowId = workflowRes.data?.createOneWorkflow?.id
       if (workflowId) {
+        AnalyticsService.sendEvent({ action: 'account', label: 'dashboard', category: 'engagement' })
         await router.push(`/workflows/${workflowId}`)
       } else {
         setError('Unexpected error, please try again')
