@@ -4,6 +4,7 @@ import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
 import { useCallback, useMemo, useState } from 'react'
 import { Integration, IntegrationAccount, Workflow } from '../../graphql'
+import { AnalyticsService } from '../../src/services/AnalyticsService'
 import { useGetManyAsyncSchemas } from '../../src/services/AsyncSchemaHooks'
 import { useGetIntegrationActions } from '../../src/services/IntegrationActionHooks'
 import { useGetIntegrationTriggers } from '../../src/services/IntegrationTriggerHooks'
@@ -203,6 +204,7 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
       const forkId = res?.data?.forkWorkflow?.id
       if (forkId) {
         onWorkflowFork(forkId)
+        AnalyticsService.sendEvent({ action: 'fork', label: workflow.id, category: 'engagement' })
       } else {
         setForkError(new Error('Failed to fork workflow'))
       }
