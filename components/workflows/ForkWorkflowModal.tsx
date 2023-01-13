@@ -192,6 +192,13 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
   }, [asyncSchemaRes.data, templateSchema])
 
   const handleFork = async () => {
+    // check if all required credentials are selected
+    const noConnectedAccounts = integrationsWithAccounts.filter((item) => !credentialIds[item.account.id])
+    if (noConnectedAccounts.length) {
+      setForkError(new Error(`Please connect ${noConnectedAccounts.map((item) => item.account.name).join(' and ')}.`))
+      return
+    }
+
     setForkLoading(true)
     try {
       const res = await forkWorkflow({
@@ -221,6 +228,7 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
         ...templateInputs,
         ...inputs,
       })
+      setForkError(null)
     },
     [templateInputs],
   )
@@ -232,6 +240,7 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
           ...credentialIds,
           [account.id]: id,
         })
+        setForkError(null)
       }
     },
     [credentialIds],
