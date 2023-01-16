@@ -77,6 +77,8 @@ export default function ChainJetApp({
           property="twitter:image"
         />
 
+        <script defer data-domain="chainjet.io,lensverse.web" src="https://plausible.io/js/script.js" />
+
         {process.env.SLACK_APP_ID && <meta name="slack-app-id" content={process.env.SLACK_APP_ID}></meta>}
       </Head>
 
