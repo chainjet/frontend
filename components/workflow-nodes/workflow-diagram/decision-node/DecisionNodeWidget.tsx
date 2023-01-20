@@ -10,9 +10,7 @@ interface DiagramNodeWidgetProps {
   engine: DiagramEngine
 }
 
-export const DecisionNodeWidget = (props: DiagramNodeWidgetProps) => {
-  const { node, engine } = props
-
+export const DecisionNodeWidget = ({ node, engine }: DiagramNodeWidgetProps) => {
   const workflowAction = node.nodeOptions.workflowNode as WorkflowAction
 
   const portIn = node.getPort('in')
@@ -37,7 +35,7 @@ export const DecisionNodeWidget = (props: DiagramNodeWidgetProps) => {
       <Row gutter={24}>
         <Col span={2} style={{ marginTop: portFalseHasNodes ? 62 : 44, left: portFalseHasNodes ? 0 : -36 }}>
           {portFalse && (
-            <PortWidget engine={props.engine} port={portFalse}>
+            <PortWidget engine={engine} port={portFalse}>
               <div className="circle-port" />
             </PortWidget>
           )}
@@ -61,7 +59,7 @@ export const DecisionNodeWidget = (props: DiagramNodeWidgetProps) => {
           )}
           <div className="diamond">
             <div className="diamond-inner">
-              <div>Decision</div>
+              <div>{node.nodeOptions.workflowNode.name ?? `Decision`}</div>
               <div>
                 <Button
                   type="link"
@@ -83,7 +81,7 @@ export const DecisionNodeWidget = (props: DiagramNodeWidgetProps) => {
         </Col>
         <Col span={2} style={{ marginTop: portTrueHasNodes ? 62 : 44, left: portTrueHasNodes ? 0 : 4 }}>
           {portTrue && (
-            <PortWidget engine={props.engine} port={portTrue}>
+            <PortWidget engine={engine} port={portTrue}>
               <div className="circle-port" />
             </PortWidget>
           )}
