@@ -19,7 +19,13 @@ interface Props {
 }
 
 export function WorkflowSelector({ selectedWorkflowId, onChange, filterWorkflows }: Props) {
-  const { data, loading, error } = useGetWorkflows(workflowsFragment, {})
+  const { data, loading, error } = useGetWorkflows(workflowsFragment, {
+    variables: {
+      paging: {
+        first: 120,
+      },
+    },
+  })
 
   if (loading) {
     return <Loading />
