@@ -62,7 +62,7 @@ function WorkflowSettingsPage({ workflowId }: Props) {
   const handleWorkflowUpdate = async (update: Partial<Workflow> & Partial<WorkflowTrigger>) => {
     setUpdateLoading(true)
     try {
-      if (update.maxConsecutiveFailures) {
+      if (update.maxConsecutiveFailures !== undefined && update.maxConsecutiveFailures !== null) {
         await updateWorkflowTrigger({
           variables: {
             input: {
