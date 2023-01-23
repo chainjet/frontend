@@ -103,7 +103,7 @@ function WorkflowPage({ workflowId }: Props) {
   }, [router.query.success])
 
   const handleWorkflowChange = useCallback(async () => {
-    await refetch()
+    await refetch?.()
   }, [refetch])
 
   const handleContractDeploy = useCallback(async () => {

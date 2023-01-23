@@ -31,15 +31,12 @@ export const WorkflowRunHistoryModal = ({ open, workflow, onClose }: Props) => {
 
   const { data, error, loading, refetch } = useGetWorkflowRuns(WorkflowRunsTable.fragments.WorkflowRun, {
     skip: !open,
-    pollInterval: 3000,
+    pollInterval: 10000,
     variables: {
       filter: {
         workflow: {
           eq: workflow.id,
         },
-      },
-      paging: {
-        first: 40,
       },
       sorting: [
         {
@@ -49,7 +46,7 @@ export const WorkflowRunHistoryModal = ({ open, workflow, onClose }: Props) => {
       ],
     },
   })
-  const { data: triggerData } = useGetWorkflowTriggerById(workflowTriggerFragment, {
+  const { data: triggerData, refetch: triggerRefetch } = useGetWorkflowTriggerById(workflowTriggerFragment, {
     skip: !open || !workflow.trigger,
     pollInterval: 10000,
     variables: {
@@ -57,9 +54,13 @@ export const WorkflowRunHistoryModal = ({ open, workflow, onClose }: Props) => {
     },
   })
 
+  // refetch on modal open
   useEffect(() => {
-    void (async () => await refetch?.())()
-  }, [refetch])
+    void (async () => {
+      await refetch?.()
+      await triggerRefetch?.()
+    })()
+  }, [open, refetch, triggerRefetch])
 
   let modalContent
   if (loading) {
@@ -70,7 +71,7 @@ export const WorkflowRunHistoryModal = ({ open, workflow, onClose }: Props) => {
     const workflowRuns = data.workflowRuns.edges.map((run) => run.node)
     modalContent = (
       <div>
-        {triggerData?.workflowTrigger?.lastCheck && (
+        {triggerData?.workflowTrigger?.lastCheck && workflow.trigger?.enabled && (
           <div className="flex mb-4">
             <div>
               <RxDotFilled color="lime" size={24} />
