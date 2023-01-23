@@ -307,7 +307,7 @@ function WorkflowPage({ workflowId }: Props) {
 
         {runHistoryModalOpen && (
           <WorkflowRunHistoryModal
-            visible={runHistoryModalOpen}
+            open={runHistoryModalOpen}
             workflow={workflow}
             onClose={() => setRunHistoryModalOpen(false)}
           />

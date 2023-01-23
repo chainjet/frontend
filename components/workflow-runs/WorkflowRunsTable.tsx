@@ -17,7 +17,6 @@ export const WorkflowRunsTable = ({ workflowRuns, workflow }: Props) => {
     key: run.id,
     started: <span title={run.createdAt}>{dayjs(run.createdAt).fromNow()}</span>,
     status: run.status,
-    workflowTriggered: run.triggerRun?.workflowTriggered ? 'Yes' : 'No',
     operationsUsed: run.operationsUsed,
     logs: (
       <Link key={run.id} href={`/workflows/${workflow.id}/run/${run.id}`}>
@@ -36,11 +35,6 @@ export const WorkflowRunsTable = ({ workflowRuns, workflow }: Props) => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-    },
-    {
-      title: 'Workflow Triggered',
-      dataIndex: 'workflowTriggered',
-      key: 'workflowTriggered',
     },
     {
       title: 'Operations Used',
