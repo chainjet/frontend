@@ -38,6 +38,9 @@ export const WorkflowRunHistoryModal = ({ open, workflow, onClose }: Props) => {
           eq: workflow.id,
         },
       },
+      paging: {
+        first: 120,
+      },
       sorting: [
         {
           field: 'createdAt' as WorkflowRunSortFields,
