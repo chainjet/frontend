@@ -42,6 +42,10 @@ const notificationIntegrations = [
     key: 'telegram-bot',
     name: 'Telegram',
   },
+  {
+    key: 'xmtp',
+    name: 'XMTP',
+  },
 ]
 
 export function IntegrationNotificationStep({
@@ -231,6 +235,17 @@ export function IntegrationNotificationStep({
                 },
               },
             }}
+            onChange={onFormInputsChanged}
+            onSubmit={() => {}}
+            initialInputs={extraInputs}
+            hideSubmit
+          />
+        </div>
+      )}
+      {integrationSelected?.key === 'xmtp' && (
+        <div className="mt-8">
+          <SchemaForm
+            schema={{}}
             onChange={onFormInputsChanged}
             onSubmit={() => {}}
             initialInputs={extraInputs}

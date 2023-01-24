@@ -2,6 +2,7 @@ import { gql } from '@apollo/client'
 import { Alert, Button } from 'antd'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { useAccount } from 'wagmi'
 import { Integration } from '../../../graphql'
 import { ChainId, NETWORK } from '../../../src/constants/networks'
 import { useGetIntegrations } from '../../../src/services/IntegrationHooks'
@@ -30,6 +31,7 @@ export function EventNotificationStep() {
   const [credentialsId, setCredentialsId] = useState<string>()
   const [notificationIntegration, setNotificationIntegration] = useState<Integration>()
   const [error, setError] = useState<string | null>(null)
+  const { address } = useAccount()
   const {
     createWorflowWithOperations,
     workflow,
@@ -99,6 +101,17 @@ export function EventNotificationStep() {
           inputs: {
             chatId: inputs.chatId,
             text:
+              `New {{trigger.eventName}}:\n` +
+              `${NETWORK[inputs.network as ChainId]?.explorerUrl}/tx/{{trigger.transactionHash}}`,
+          },
+          credentialsId,
+        }
+      case 'xmtp':
+        return {
+          key: 'sendMessageWallet',
+          inputs: {
+            address,
+            message:
               `New {{trigger.eventName}}:\n` +
               `${NETWORK[inputs.network as ChainId]?.explorerUrl}/tx/{{trigger.transactionHash}}`,
           },

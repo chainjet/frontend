@@ -2,6 +2,7 @@ import { Alert, Button } from 'antd'
 import { JSONSchema7 } from 'json-schema'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { useAccount } from 'wagmi'
 import { Integration } from '../../../graphql'
 import { useCreateWorkflowWithOperations } from '../../../src/services/WizardHooks'
 import { getEtherscanNetworkSchema, getExplorerUrlForIntegration } from '../../../src/utils/blockchain.utils'
@@ -13,6 +14,7 @@ export function TokenNotificationStep() {
   const [credentialsId, setCredentialsId] = useState<string>()
   const [notificationIntegration, setNotificationIntegration] = useState<Integration>()
   const [error, setError] = useState<string | null>(null)
+  const { address } = useAccount()
   const {
     createWorflowWithOperations,
     workflow,
@@ -90,6 +92,15 @@ export function TokenNotificationStep() {
           inputs: {
             chatId: inputs.chatId,
             text: `New token transfer:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
+          },
+          credentialsId,
+        }
+      case 'xmtp':
+        return {
+          key: 'sendMessageWallet',
+          inputs: {
+            address,
+            message: `New token transfer:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
           },
           credentialsId,
         }
