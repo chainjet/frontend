@@ -106,6 +106,21 @@ const WorkflowDiagram = ({
     return []
   }
 
+  const getNextAction = (node: WorkflowNode | boolean | undefined, workflowActions: WorkflowAction[]) => {
+    const parentActionIds = getParentActionIds(node, true)
+
+    // action was added to the root of the workflow
+    if (!parentActionIds.length && workflowActions.length) {
+      return workflowActions.find((action) => action.isRootAction)?.id
+    }
+
+    if (!node || typeof node === 'boolean') {
+      return
+    }
+
+    return (creatingAction.node as WorkflowAction).nextActions?.[0]?.action?.id
+  }
+
   useEffect(() => {
     let engine = diagramEngine
 
@@ -202,6 +217,7 @@ const WorkflowDiagram = ({
           workflowTriggerId={workflowTrigger?.id}
           parentActionIds={getParentActionIds(creatingAction.node, true)}
           previousActionCondition={creatingAction.condition}
+          nextAction={getNextAction(creatingAction.node, workflowActions)}
           visible={true}
           onCreateWorkflowAction={handleCreateAction}
           onActionTestError={handleTestActionError}
