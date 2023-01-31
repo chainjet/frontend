@@ -118,7 +118,13 @@ const WorkflowDiagram = ({
       return
     }
 
-    return (creatingAction.node as WorkflowAction).nextActions?.[0]?.action?.id
+    const nextActions = (creatingAction.node as WorkflowAction).nextActions
+    if (!nextActions?.length) {
+      return
+    }
+
+    const nextAction = nextActions.find((action) => !action.condition || action.condition === creatingAction.condition)
+    return nextAction?.action?.id
   }
 
   useEffect(() => {
