@@ -108,11 +108,6 @@ export const SchemaForm = ({
 
   const uiSchema: UiSchema = extractUISchema(formSchema) ?? {}
 
-  // Sort required properties first
-  if (!uiSchema['ui:order'] && formSchema.required) {
-    uiSchema['ui:order'] = [...formSchema.required, '*']
-  }
-
   const outputs = parentOutputs || []
   let formData: Record<string, any> = initialInputs || {}
 
