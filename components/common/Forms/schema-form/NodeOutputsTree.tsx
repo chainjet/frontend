@@ -69,14 +69,21 @@ export function createOutputsTree(schema: JSONSchema7, parentKey: string, lastIt
         }
       }
 
+      const outputValue =
+        lastItem?.[key] !== undefined
+          ? lastItem[key]
+          : Array.isArray(property.examples)
+          ? property.examples[0]
+          : property.examples
+
       const dataNode: DataNode = {
         key: `${parentKey}.${key}`,
         title:
           lastItem &&
-          lastItem?.[key] !== undefined &&
-          (!lastItem[key] || !['', '[object Object]'].includes(lastItem[key].toString().trim())) ? (
+          outputValue !== undefined &&
+          (!outputValue || !['', '[object Object]'].includes(outputValue.toString().trim())) ? (
             <>
-              <strong>{key}</strong>: <TypeColor value={lastItem[key]} />
+              <strong>{key}</strong>: <TypeColor value={outputValue} />
             </>
           ) : (
             <strong>{key}</strong>
