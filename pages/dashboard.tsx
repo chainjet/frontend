@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { PageWrapper } from '../components/common/PageLayout/PageWrapper'
 import { RecommendedTemplates } from '../components/templates/RecommendedTemplates'
+import { OperationsUsed } from '../components/users/OperationsUsed'
 import { withApollo } from '../src/apollo'
 import { AnalyticsService } from '../src/services/AnalyticsService'
 import { useRedirectGuests } from '../src/services/UserHooks'
@@ -53,7 +54,7 @@ function DashboardPage() {
       <Head>
         <title>ChainJet Dashboard</title>
       </Head>
-      <PageWrapper title="Dashboard">
+      <PageWrapper title="Dashboard" extra={<OperationsUsed />}>
         <div style={{ marginBottom: 16 }}>
           {error && <Alert message="Error" description={error} type="error" showIcon closable />}
         </div>

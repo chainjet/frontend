@@ -137,7 +137,7 @@ function WorkflowPage({ workflowId }: Props) {
   }
 
   const { workflow } = data
-  const isOwnerByViewer = workflow.ownerAddress === address
+  const isOwnerByViewer = router.query.impersonate || workflow.ownerAddress === address
 
   const handleGoBack = async () => {
     await router.push('/dashboard')
