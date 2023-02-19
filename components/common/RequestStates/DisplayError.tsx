@@ -5,6 +5,9 @@ interface Props {
   error?: ApolloError
 }
 
-export const DisplayError = (props: Props) => {
-  return <span color="red">{props.error?.message ?? 'Unexpected error, please try again.'}</span>
+export const DisplayError = ({ error }: Props) => {
+  if (error?.message === 'Failed to fetch') {
+    return <span>Failed to fetch. Please check your internet connection and try again.</span>
+  }
+  return <span>{error?.message ?? 'Unexpected error, please try again.'}</span>
 }
