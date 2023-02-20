@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>Icon 3</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="100%" y1="50%" x2="-2.22044605e-14%" y2="50%" id="linearGradient-1">
+            <stop stop-color="#393939" offset="0%"></stop>
+            <stop stop-color="#303030" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="100%" y1="50%" x2="-2.22044605e-14%" y2="50%" id="linearGradient-2">
+            <stop stop-color="#565656" offset="0%"></stop>
+            <stop stop-color="#7A7A7A" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="-2.22044605e-14%" y1="50%" x2="100%" y2="50%" id="linearGradient-3">
+            <stop stop-color="#DCDCDC" offset="0%"></stop>
+            <stop stop-color="#E3E0E0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Illustrations-Dark-V2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon-3">
+            <rect id="Shape" fill="#000000" x="0" y="0" width="100" height="100" rx="10"></rect>
+            <g id="Shape" transform="translate(20.000000, 30.000000)">
+                <path d="M18.2903571,41 L58.7102996,41 C59.4097631,41 59.9767904,40.4329728 59.9767904,39.7335092 C59.9767904,39.4925516 59.9080522,39.2565941 59.7786449,39.0533349 L39.7425373,7.58275607 C39.3668873,6.99272526 38.5840484,6.81893522 37.9940176,7.19458516 C37.840623,7.29224558 37.7100578,7.42179339 37.6112003,7.57441926 L17.2273655,39.044998 C16.8471113,39.6320721 17.0147719,40.4162466 17.601846,40.7965009 C17.8069158,40.9293268 18.0460287,41 18.2903571,41 Z" fill="url(#linearGradient-1)"></path>
+                <path d="M1.2813835,41 L29.719092,41 C30.4185556,41 30.9855828,40.4329728 30.9855828,39.7335092 C30.9855828,39.4954108 30.9184651,39.2621346 30.7919295,39.0604427 L16.69873,16.5965236 C16.3270056,16.0040118 15.5453377,15.8250282 14.952826,16.1967526 C14.7940406,16.2963699 14.6593475,16.4299915 14.5584651,16.5879761 L0.213956113,39.0518952 C-0.162488903,39.6414191 0.0102456327,40.4244916 0.599769497,40.8009366 C0.803343561,40.9309304 1.03984512,41 1.2813835,41 Z" fill="url(#linearGradient-2)"></path>
+                <circle fill="url(#linearGradient-3)" opacity="0.200000003" cx="24.5" cy="5.5" r="5.5"></circle>
+            </g>
+        </g>
+    </g>
+</svg>

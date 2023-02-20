@@ -6,7 +6,7 @@ export function LandingFooter() {
     <footer className="flex w-full p-8" style={{ backgroundColor: '#5503bb' }}>
       <div className="container mx-auto max-w-7xl">
         <Link href="/">
-          <img src="/images/Logo_horizontal_background-less.png" loading="lazy" width={216} alt="ChainJet Logo" />
+          <img src="/img/logo.png" loading="lazy" width={216} alt="ChainJet Logo" />
         </Link>
         <div className="grid w-full grid-cols-1 gap-4 mt-8 text-lg text-white md:grid-cols-4">
           <div className="w-full">
@@ -65,7 +65,7 @@ export function LandingFooter() {
           </div>
           <div className="w-full">
             <div className="mb-4 font-black">
-              <img src="/images/20Artboard-1.png" alt="Open Source" className="mr-2" />
+              <img src="/img/magnifying-glass.png" alt="Open Source" className="mr-2" />
               Open Source
             </div>
             <div>
@@ -92,7 +92,7 @@ export function LandingFooter() {
                   className="link-block-2 w-inline-block"
                   rel="noreferrer"
                 >
-                  <img src="/images/twitter.png" loading="lazy" width="30" height="Auto" alt="Twitter logo" />
+                  <img src="/img/twitter.png" loading="lazy" width="30" height="Auto" alt="Twitter logo" />
                 </a>
               </div>
               <div>
@@ -102,7 +102,7 @@ export function LandingFooter() {
                   className="link-block-2 w-inline-block"
                   rel="noreferrer"
                 >
-                  <img src="/images/dc.png" loading="lazy" width="30" height="Auto" alt="Discord logo" />
+                  <img src="/img/discord.png" loading="lazy" width="30" height="Auto" alt="Discord logo" />
                 </a>
               </div>
               <div>
@@ -112,7 +112,7 @@ export function LandingFooter() {
                   className="link-block-2 w-inline-block"
                   rel="noreferrer"
                 >
-                  <img src="/images/reddit.png" loading="lazy" width="30" height="Auto" alt="Reddit logo" />
+                  <img src="/img/reddit.png" loading="lazy" width="30" height="Auto" alt="Reddit logo" />
                 </a>
               </div>
               <div>
@@ -122,7 +122,7 @@ export function LandingFooter() {
                   className="link-block-2 w-inline-block"
                   rel="noreferrer"
                 >
-                  <img src="/images/yt.png" loading="lazy" width="30" height="Auto" alt="YouTube logo" />
+                  <img src="/img/youtube.png" loading="lazy" width="30" height="Auto" alt="YouTube logo" />
                 </a>
               </div>
               <div>
@@ -132,17 +132,17 @@ export function LandingFooter() {
                   className="link-block-2 w-inline-block"
                   rel="noreferrer"
                 >
-                  <img src="/images/github.png" loading="lazy" width="30" height="Auto" alt="GitHub logo" />
+                  <img src="/img/github.png" loading="lazy" width="30" height="Auto" alt="GitHub logo" />
                 </a>
               </div>
               <div>
                 <a
-                  href="https://lenster.xyz/u/chainjet.lens"
+                  href="https://lenster.xyz/u/chainjet"
                   target="_blank"
                   className="link-block-2 w-inline-block"
                   rel="noreferrer"
                 >
-                  <img src="/images/lenster.png" loading="lazy" width="30" height="Auto" alt="Lenster logo" />
+                  <img src="/img/lenster.png" loading="lazy" width="30" height="Auto" alt="Lenster logo" />
                 </a>
               </div>
             </div>

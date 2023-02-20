@@ -725,6 +725,16 @@ export interface WorkflowTriggerDeleteFilter {
     workflow?: Nullable<IDFilterComparison>;
 }
 
+export interface User {
+    id: string;
+    createdAt: DateTime;
+    email?: Nullable<string>;
+    operationsUsedMonth: number;
+    name?: Nullable<string>;
+    subscribedToNotifications: boolean;
+    subscribedToNewsletter: boolean;
+}
+
 export interface IntegrationAccount {
     id: string;
     createdAt: DateTime;
@@ -770,6 +780,7 @@ export interface IntegrationTrigger {
     deprecated: boolean;
     category?: Nullable<string>;
     skipAuth: boolean;
+    pinned: boolean;
     schemaRequest: JSONObject;
     schemaResponse?: Nullable<JSONObject>;
     instant: boolean;
@@ -815,6 +826,7 @@ export interface IntegrationAction {
     category?: Nullable<string>;
     type: OperationType;
     skipAuth: boolean;
+    pinned: boolean;
     schemaRequest: JSONObject;
     schemaResponse?: Nullable<JSONObject>;
 }
@@ -863,16 +875,6 @@ export interface IntegrationActionsConnection {
 export interface IntegrationTriggersConnection {
     pageInfo: PageInfo;
     edges: IntegrationTriggerEdge[];
-}
-
-export interface User {
-    id: string;
-    createdAt: DateTime;
-    email?: Nullable<string>;
-    operationsUsedMonth: number;
-    name?: Nullable<string>;
-    subscribedToNotifications: boolean;
-    subscribedToNewsletter: boolean;
 }
 
 export interface AccountCredential {
@@ -1029,6 +1031,7 @@ export interface WorkflowRunAction {
     workflowAction: WorkflowAction;
     integrationName: string;
     operationName: string;
+    itemId: string;
     status: WorkflowRunStatus;
     finishedAt?: Nullable<DateTime>;
     transactions?: Nullable<BlockchainTransaction[]>;

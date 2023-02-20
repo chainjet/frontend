@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>Icon 2</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="100%" y1="50%" x2="-2.22044605e-14%" y2="50%" id="linearGradient-1">
+            <stop stop-color="#393939" offset="0%"></stop>
+            <stop stop-color="#303030" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="100%" y1="50%" x2="-2.22044605e-14%" y2="50%" id="linearGradient-2">
+            <stop stop-color="#565656" offset="0%"></stop>
+            <stop stop-color="#7A7A7A" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Illustrations-Dark-V2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon-2">
+            <rect id="Shape" fill="#000000" x="0" y="0" width="100" height="100" rx="10"></rect>
+            <g id="Shape" transform="translate(24.000000, 24.000000)">
+                <rect fill="url(#linearGradient-1)" x="0" y="0" width="34" height="34" rx="4"></rect>
+                <circle fill="url(#linearGradient-2)" cx="33.5" cy="33.5" r="18.5"></circle>
+            </g>
+        </g>
+    </g>
+</svg>

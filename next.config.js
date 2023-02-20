@@ -27,11 +27,7 @@ module.exports = withHtml(
         ? [
             {
               source: '/',
-              destination: '/dist/index.html',
-            },
-            {
-              source: '/waiting-list',
-              destination: '/dist/waiting-list.html',
+              destination: '/index.html',
             },
           ]
         : [

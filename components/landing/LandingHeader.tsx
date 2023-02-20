@@ -11,7 +11,7 @@ export function LandingHeader() {
         <div>
           <Link href="/">
             <a className="cursor-pointer">
-              <img src="/images/Logo_horizontal_background-less.png" alt="ChainJet Logo" className="w-40 md:w-72" />
+              <img src="/img/logo.png" alt="ChainJet Logo" className="w-40 md:w-72" />
             </a>
           </Link>
         </div>
