@@ -20,8 +20,10 @@ const workflowTriggerFragment = gql`
     name
     inputs
     schedule
+    hookId
     integrationTrigger {
       id
+      key
       name
       integration {
         name
@@ -101,6 +103,15 @@ export const UpdateWorkflowTriggerDrawer = ({
     chainjet_operation_name: workflowTrigger.name,
   }
 
+  // if the trigger is a webhook, display the hook ID in the form
+  const hookUrl =
+    workflowTrigger.hookId &&
+    data.workflowTrigger.integrationTrigger.key === 'receiveWebhook' &&
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/hooks/${workflowTrigger.hookId}`
+  if (hookUrl) {
+    initialInputs.chainjet_operation_hook_id = hookUrl
+  }
+
   return (
     <WorkflowNodeDrawer
       nodeType="trigger"
@@ -112,6 +123,15 @@ export const UpdateWorkflowTriggerDrawer = ({
       extraSchemaProps={{
         required: ['chainjet_operation_name'],
         properties: {
+          ...(workflowTrigger.hookId && data.workflowTrigger.integrationTrigger.key === 'receiveWebhook'
+            ? {
+                chainjet_operation_hook_id: {
+                  title: 'Hook ID',
+                  const: hookUrl,
+                  readOnly: true,
+                },
+              }
+            : {}),
           chainjet_operation_name: {
             title: 'Display name',
             type: 'string',
