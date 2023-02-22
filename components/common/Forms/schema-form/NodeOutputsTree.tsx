@@ -76,12 +76,20 @@ export function createOutputsTree(schema: JSONSchema7, parentKey: string, lastIt
           ? property.examples[0]
           : property.examples
 
+      // .toString() can fail in objects containing the key "toString"
+      let outputValueString: string
+      try {
+        outputValueString = outputValue.toString().trim()
+      } catch {
+        outputValueString = ''
+      }
+
       const dataNode: DataNode = {
         key: `${parentKey}.${key}`,
         title:
           lastItem &&
           outputValue !== undefined &&
-          (!outputValue || !['', '[object Object]'].includes(outputValue.toString().trim())) ? (
+          (!outputValue || !['', '[object Object]'].includes(outputValueString)) ? (
             <>
               <strong>{key}</strong>: <TypeColor value={outputValue} />
             </>
