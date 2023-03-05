@@ -1632,25 +1632,26 @@
     classnames "^2.3.2"
     rc-util "^5.24.4"
 
-"@rjsf/antd@5.0.0-beta.11":
-  version "5.0.0-beta.11"
-  resolved "https://registry.yarnpkg.com/@rjsf/antd/-/antd-5.0.0-beta.11.tgz#5c92d88b1ac64032d493ec2e67ddcf47f37548d2"
-  integrity sha512-y0XvTY4il/q65+61rzs1UfjGYUM1DaBf33zm9DzfKYCDy9rfwX+OaQ9imVOtaDus7CFrh/1292XpxEszDH5KRw==
+"@rjsf/antd@5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@rjsf/antd/-/antd-5.2.0.tgz#1d7514ed4c8c7f450bcdf74f6df66f19061696ef"
+  integrity sha512-mYxS2jbYxHOkz0/BuWKo8Eh+9lurTLqlEHmSLvbQI7q1eZEpbP4XvsBSsYmd2kttiv3L/Yvugoh1ut34gnCu+A==
 
-"@rjsf/core@5.0.0-beta.11":
-  version "5.0.0-beta.11"
-  resolved "https://registry.yarnpkg.com/@rjsf/core/-/core-5.0.0-beta.11.tgz#cebdbb7bc22bdbf5029cee253b56cc8d6d21577c"
-  integrity sha512-PEXoojuXz0GvQnFPhZ9G/YmabzYQ6Ywtx/PChDsBQkk0kJKeP9OLpe0Nxmw8cnQQ6V3IfaOVdsPHCXQrKE/PMg==
+"@rjsf/core@5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@rjsf/core/-/core-5.2.0.tgz#5adaa8a9c666c76a94b39065797bf23ce8bf0e2f"
+  integrity sha512-Kj9NBD3Fu5hk1czB7ZreORHvmbOwFH2+3xnfJWERW/+MupV2RsMIyiah2Aa7UQsxymLmvLPaUIWpgx5IAW+dsQ==
   dependencies:
     lodash "^4.17.15"
     lodash-es "^4.17.15"
+    markdown-to-jsx "^7.1.9"
     nanoid "^3.3.4"
     prop-types "^15.7.2"
 
-"@rjsf/utils@5.0.0-beta.11":
-  version "5.0.0-beta.11"
-  resolved "https://registry.yarnpkg.com/@rjsf/utils/-/utils-5.0.0-beta.11.tgz#bb8cce23fb3085e1484c63bb2373a9be5cdc60cf"
-  integrity sha512-PTzh+cj2PzGdpZERd00zWlAaYqYi9dL8apoUKHcBBBBBGd6yEd417NXUh5DOSzC7zXaY1i22MTrOIogdqiYukg==
+"@rjsf/utils@5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@rjsf/utils/-/utils-5.2.0.tgz#91e4e7d24fba41a9bcd13c418fbe560813c4403a"
+  integrity sha512-oCMukaBTdo/f9NaiOrGa4PN9ZAcM2zZcxYmWnfbRSZz3KEOAML9qYgR0QtV5HpMPJkzm026LTNa8NK9QG7HFEw==
   dependencies:
     json-schema-merge-allof "^0.8.1"
     jsonpointer "^5.0.1"
@@ -1658,10 +1659,10 @@
     lodash-es "^4.17.15"
     react-is "^18.2.0"
 
-"@rjsf/validator-ajv6@5.0.0-beta.11":
-  version "5.0.0-beta.11"
-  resolved "https://registry.yarnpkg.com/@rjsf/validator-ajv6/-/validator-ajv6-5.0.0-beta.11.tgz#6ed02da1586dad9594434f131a7d84f4887428d3"
-  integrity sha512-LLKHGy5k8pwy7FnhmpbNJtnApyZe070sKpYqqm9o4fG8l9r8Me1AZ4yYXYeDEVOKDVrW9dnxAzYqc2J43Q5uog==
+"@rjsf/validator-ajv6@5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@rjsf/validator-ajv6/-/validator-ajv6-5.2.0.tgz#d37ed0c51b0bf9cf2853ae19b48cf321ffa585b9"
+  integrity sha512-RC8ORDPqFCcmuhkfniDQL3cNPUFaclfWp5W2+eXqkRyi0FqVHeYgKbh7gH8UKjFW+z18HZ4D3UlLPxlx/GIETQ==
   dependencies:
     ajv "^6.7.0"
     lodash "^4.17.15"
@@ -7358,6 +7359,11 @@ map-visit@^1.0.0:
   integrity sha1-7Nyo8TFE5mDxtb1B8S80edmN+48=
   dependencies:
     object-visit "^1.0.0"
+
+markdown-to-jsx@^7.1.9:
+  version "7.1.9"
+  resolved "https://registry.yarnpkg.com/markdown-to-jsx/-/markdown-to-jsx-7.1.9.tgz#1ffae0cda07c189163d273bd57a5b8f8f8745586"
+  integrity sha512-x4STVIKIJR0mGgZIZ5RyAeQD7FEZd5tS8m/htbcVGlex32J+hlSLj+ExrHCxP6nRKF1EKbcO7i6WhC1GtOpBlA==
 
 matches-selector@0.0.1:
   version "0.0.1"

@@ -16,7 +16,7 @@ import { hasInterpolation } from '../../../../src/utils/strings'
 import { Loading } from '../../RequestStates/Loading'
 import { BaseWidget } from './BaseWidget'
 import { DescriptionFieldTemplate } from './DescriptionFieldTemplate'
-import TitleField from './TitleField'
+import FieldTemplate from './FieldTemplate'
 require('./SchemaForm.less')
 
 const { Theme } = require('@rjsf/antd')
@@ -130,10 +130,7 @@ export const SchemaForm = ({
           TextareaWidget,
           SelectWidget,
         }}
-        templates={{ DescriptionFieldTemplate }}
-        fields={{
-          TitleField,
-        }}
+        templates={{ DescriptionFieldTemplate, FieldTemplate }}
         readonly={readonly}
         autoComplete="disabled"
         onSubmit={(args: any) => onSubmit(args.formData)}

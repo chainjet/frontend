@@ -32,6 +32,7 @@ export function replaceInheritFields(
   integrationTriggers: IntegrationTrigger[],
   integrationActions: IntegrationAction[],
   credentialIds: Record<string, string>,
+  includeIntegrationLogos: boolean,
 ): JSONSchema7 {
   schema = { ...schema }
   schema.properties = { ...(schema.properties ?? {}) }
@@ -47,7 +48,10 @@ export function replaceInheritFields(
       if (trigger) {
         const field = trigger.schemaRequest?.properties?.[inheritField.key]
         if (field) {
-          schema.properties![key] = field
+          schema.properties![key] = {
+            ...field,
+            ...(includeIntegrationLogos ? { 'x-icon': trigger.integration.logo } : {}),
+          }
           if (!schema.required.includes(key) && trigger.schemaRequest?.required?.includes(key)) {
             schema.required.push(key)
           }
@@ -73,7 +77,10 @@ export function replaceInheritFields(
       if (action) {
         const field = action.schemaRequest?.properties?.[inheritField.key]
         if (field) {
-          schema.properties![key] = field
+          schema.properties![key] = {
+            ...field,
+            ...(includeIntegrationLogos ? { 'x-icon': action.integration.logo } : {}),
+          }
           if (!schema.required.includes(key) && action.schemaRequest?.required?.includes(key)) {
             schema.required.push(key)
           }

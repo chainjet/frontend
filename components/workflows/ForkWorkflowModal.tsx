@@ -73,6 +73,7 @@ const integrationTriggerFragment = gql`
     schemaRequest
     integration {
       id
+      logo
       integrationAccount {
         id
       }
@@ -86,6 +87,7 @@ const integrationActionFragment = gql`
     schemaRequest
     integration {
       id
+      logo
       integrationAccount {
         id
       }
@@ -131,7 +133,7 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
       data?.workflow?.templateSchema ? getInheritedFieldIds(data.workflow.templateSchema, 'integrationAction') : [],
     [data],
   )
-  const { data: integrationTriggers } = useGetIntegrationTriggers(integrationTriggerFragment, {
+  const { data: integrationTriggersData } = useGetIntegrationTriggers(integrationTriggerFragment, {
     skip: !fetchIntegrationTriggers.length,
     variables: {
       filter: {
@@ -141,7 +143,7 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
       },
     },
   })
-  const { data: integrationActions } = useGetIntegrationActions(integrationActionFragment, {
+  const { data: integrationActionsData } = useGetIntegrationActions(integrationActionFragment, {
     skip: !fetchIntegrationActions.length,
     variables: {
       filter: {
@@ -152,17 +154,14 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
     },
   })
 
-  let templateSchema = useMemo(
-    () =>
+  let templateSchema = useMemo(() => {
+    const integrationTriggers = integrationTriggersData?.integrationTriggers?.edges.map((trigger) => trigger.node) ?? []
+    const integrationActions = integrationActionsData?.integrationActions?.edges.map((action) => action.node) ?? []
+    return (
       data?.workflow?.templateSchema &&
-      replaceInheritFields(
-        data.workflow.templateSchema,
-        integrationTriggers?.integrationTriggers?.edges.map((trigger) => trigger.node) ?? [],
-        integrationActions?.integrationActions?.edges.map((action) => action.node) ?? [],
-        credentialIds,
-      ),
-    [data?.workflow, integrationActions, integrationTriggers, credentialIds],
-  )
+      replaceInheritFields(data.workflow.templateSchema, integrationTriggers, integrationActions, credentialIds, true)
+    )
+  }, [data?.workflow, integrationActionsData, integrationTriggersData, credentialIds])
 
   // support async schemas for templates
   const asyncSchemas: AsyncSchema[] = templateSchema?.['x-asyncSchemas']
