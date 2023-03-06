@@ -66,8 +66,8 @@ export const WorkflowForm = (props: Props) => {
             label="Max consecutive failures"
             initialValue={workflow.trigger?.maxConsecutiveFailures}
             rules={[{ required: true }]}
-            help="Stop the workflow after this number of consecutive failures. Set to zero to disable."
-            style={{ marginBottom: 32 }}
+            help="Stop the workflow after this number of consecutive failures. Set to zero to disable. Up to 1 failure is counted every 3 hours."
+            style={{ marginBottom: 46 }}
           >
             <Input type="number" allowClear />
           </Form.Item>
