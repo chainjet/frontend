@@ -135,7 +135,9 @@ export const BaseWidget = ({
   placeholder =
     placeholder ||
     (outputs.length
-      ? `Enter text and/or select a dynamic value${schema.examples ? `. Example: ${schema.examples}` : ''}`
+      ? `Enter a text or click to see available values${
+          schema.examples ? `.${inputType === 'textarea' ? '\n' : ' '}Example: ${schema.examples}` : ''
+        }`
       : schema.examples
       ? schema.examples.toString()
       : '')
