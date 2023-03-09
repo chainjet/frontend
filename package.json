@@ -31,7 +31,7 @@
     "@rjsf/core": "5.2.0",
     "@rjsf/utils": "5.2.0",
     "@rjsf/validator-ajv6": "5.2.0",
-    "@xmtp/xmtp-js": "7.7.1",
+    "@xmtp/xmtp-js": "7.13.1",
     "antd": "4.24.7",
     "autoprefixer": "^10.4.8",
     "babel-plugin-import": "^1.13.0",
