@@ -274,7 +274,7 @@ function NewSchedulePage() {
                   workflowTriggerId={undefined}
                   parentActionIds={[]}
                   accountCredentialId={action?.credentialsID}
-                  initialInputs={{}}
+                  initialInputs={action?.inputs ?? {}}
                   hideSubmit
                   onSubmitActionInputs={async () => {}}
                   onChange={handleInputsChange}

@@ -166,6 +166,11 @@ export function ActionInputsForm({
     setDependencyInputs(deepmerge(getSchemaDefaults(integrationAction?.schemaRequest ?? {}), initialInputs))
   }, [initialInputs, integrationAction?.schemaRequest])
 
+  // update inputs if initial inputs changes
+  useEffect(() => {
+    setInputs(initialInputs)
+  }, [initialInputs])
+
   if (triggerRes.loading || actionRes.loading) {
     return <Loading />
   }
