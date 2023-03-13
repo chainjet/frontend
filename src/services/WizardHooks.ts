@@ -140,39 +140,47 @@ export function useCreateWorkflowWithOperations() {
       setRunStarted(true)
       runStartedInternal = true
 
-      const workflowTriggerRes = await createWorkflowTrigger({
-        variables: {
-          input: {
-            workflowTrigger: {
-              workflow: workflow.id,
-              integrationTrigger: integrationTrigger.id,
-              inputs: trigger.inputs,
-              credentials: trigger.credentialsId,
-              schedule: trigger.schedule,
-              name: trigger.name,
-              enabled: true,
-            },
-          },
-        },
-      })
-
-      // TODO support multiple actions
-      if (integrationActions?.length) {
-        const workflowActionRes = await createWorkflowAction({
+      try {
+        const workflowTriggerRes = await createWorkflowTrigger({
           variables: {
             input: {
-              workflowAction: {
+              workflowTrigger: {
                 workflow: workflow.id,
-                integrationAction: integrationActions[0].id,
-                inputs: actions[0].inputs,
-                credentials: actions[0].credentialsId,
-                name: actions[0].name,
+                integrationTrigger: integrationTrigger.id,
+                inputs: trigger.inputs,
+                credentials: trigger.credentialsId,
+                schedule: trigger.schedule,
+                name: trigger.name,
+                enabled: true,
               },
             },
           },
         })
-        if (workflowActionRes.data?.createOneWorkflowAction) {
-          setWorkflowActions([workflowActionRes.data.createOneWorkflowAction])
+      } catch (e) {
+        setError((e as Error)?.message)
+      }
+
+      // TODO support multiple actions
+      if (integrationActions?.length) {
+        try {
+          const workflowActionRes = await createWorkflowAction({
+            variables: {
+              input: {
+                workflowAction: {
+                  workflow: workflow.id,
+                  integrationAction: integrationActions[0].id,
+                  inputs: actions[0].inputs,
+                  credentials: actions[0].credentialsId,
+                  name: actions[0].name,
+                },
+              },
+            },
+          })
+          if (workflowActionRes.data?.createOneWorkflowAction) {
+            setWorkflowActions([workflowActionRes.data.createOneWorkflowAction])
+          }
+        } catch (e) {
+          setError((e as Error)?.message)
         }
       }
 
