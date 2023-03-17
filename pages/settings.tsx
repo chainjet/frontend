@@ -19,9 +19,7 @@ const userFragment = gql`
 function SettingsPage() {
   const { signer } = useSigner()
   const { data, loading, error } = useGetViewer(userFragment, {
-    variables: {
-      id: signer ?? '',
-    },
+    skip: !signer,
   })
 
   if (loading) {

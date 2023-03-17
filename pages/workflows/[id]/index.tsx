@@ -93,9 +93,7 @@ function WorkflowPage({ workflowId }: Props) {
   const { address } = useAccount()
   const { signer } = useSigner()
   const { data: viewerData } = useGetViewer(userFragment, {
-    variables: {
-      id: signer ?? '',
-    },
+    skip: !signer,
   })
 
   useEffect(() => {
