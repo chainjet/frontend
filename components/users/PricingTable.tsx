@@ -1,10 +1,17 @@
 import { gql } from '@apollo/client'
 import { Alert } from 'antd'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { plansConfig } from '../../src/constants/plans.config'
-import { useStripeSubscription } from '../../src/services/SubscriptionHooks'
+import {
+  useChangeSubscriptionPlan,
+  useResumeSubscription,
+  useStripeSubscription,
+} from '../../src/services/SubscriptionHooks'
 import { useGetViewer, useSigner } from '../../src/services/UserHooks'
+import { CancelSubscriptionModal } from './Modals/CancelSubscriptionModal'
 
 type Frequency = 'monthly' | 'annually'
 
@@ -21,6 +28,8 @@ const viewerFragment = gql`
   fragment PricingTable_viewer on User {
     id
     plan
+    nextPlan
+    planPeriodEnd
   }
 `
 
@@ -32,28 +41,62 @@ const tiers = Object.entries(plansConfig)
   .filter((t) => !!t.price)
 
 export function PricingTable() {
+  dayjs.extend(relativeTime)
+
   const { signer } = useSigner()
-  const { subscribe, error } = useStripeSubscription()
+  const { subscribe, error: subscribeError } = useStripeSubscription()
+  const { resumeSubscription } = useResumeSubscription()
+  const { changeSubscriptionPlan } = useChangeSubscriptionPlan()
   const [loading, setLoading] = useState<Record<string, boolean>>({})
+  const [error, setError] = useState<string | null>(null)
   const [frequency, setFrequency] = useState(frequencies[0])
+  const [cancelModalOpen, setCancelModalOpen] = useState(false)
   const router = useRouter()
-  const { data: viewerData, loading: viewerLoading } = useGetViewer(viewerFragment, {
+  const {
+    data: viewerData,
+    loading: viewerLoading,
+    refetch,
+  } = useGetViewer(viewerFragment, {
     skip: !signer,
   })
 
   const currentPlan = signer && !viewerLoading ? viewerData?.viewer?.plan ?? 'free' : ''
+  const nextPlan = viewerData?.viewer?.nextPlan
+  const planPeriodEnd = viewerData?.viewer?.planPeriodEnd
 
   const handleSubscribeClick = async (planId: string) => {
     if (currentPlan === planId) {
+      if (nextPlan) {
+        setLoading({ [planId]: true })
+        try {
+          await resumeSubscription()
+        } catch (err) {
+          setError((err as Error).message)
+        }
+        await refetch()
+        setLoading({})
+      }
       return
     }
     setLoading({ [planId]: true })
     const priceId = plansConfig[planId].priceId
     if (signer) {
-      if (priceId) {
+      if (priceId && !plansConfig[currentPlan].price?.monthly) {
         await subscribe(priceId)
+      } else if (priceId) {
+        try {
+          await changeSubscriptionPlan({
+            variables: {
+              priceId,
+            },
+          })
+        } catch (err) {
+          setError((err as Error).message)
+        }
+        await refetch()
+        setLoading({})
       } else {
-        // TODO handle downgrade to free plan
+        setCancelModalOpen(true)
       }
     } else if (priceId) {
       router.push(`/login?go=/complete-subscription?p=${priceId}`)
@@ -62,23 +105,28 @@ export function PricingTable() {
     }
   }
 
+  const handleCredentialDelete = async () => {
+    await refetch()
+    setCancelModalOpen(false)
+  }
+
   // stop loading on error
   useEffect(() => {
-    if (error) {
+    if (subscribeError) {
       setLoading({})
     }
-  }, [error])
+  }, [subscribeError])
 
   const getTierButtonText = (planId: string) => {
     const tier = tiers.find((t) => t.id === planId)!
-    if (loading[tier.name]) {
+    if (loading[tier.id]) {
       return 'Loading...'
     }
     if (!signer) {
       return 'Get started'
     }
     if (currentPlan === planId) {
-      return 'Current plan'
+      return nextPlan ? 'Resume' : 'Current Plan'
     }
     const currentPlanTier = tiers.find((t) => t.id === currentPlan)
     if (tier.price![frequency.value as Frequency] > (currentPlanTier?.price?.[frequency.value as Frequency] ?? 0)) {
@@ -97,7 +145,15 @@ export function PricingTable() {
         <p className="max-w-2xl mx-auto mt-6 text-lg leading-8 text-center text-gray-600">
           Choose a plan that is right for you, and scale as you grow.
         </p>
-        {error && <Alert style={{ marginBottom: 16 }} message="Error" description={error} type="error" showIcon />}
+        {(subscribeError || error) && (
+          <Alert
+            style={{ marginBottom: 16 }}
+            message="Error"
+            description={subscribeError ?? error}
+            type="error"
+            showIcon
+          />
+        )}
         {/* <div className="flex justify-center mt-16">
           <RadioGroup
             value={frequency}
@@ -146,9 +202,11 @@ export function PricingTable() {
                 </span>
                 <span className="text-sm font-semibold leading-6 text-gray-600">{frequency.priceSuffix}</span>
               </p>
-              {currentPlan === tier.id ? (
+              {(tier.id === currentPlan && !nextPlan) || (tier.id === nextPlan && planPeriodEnd) ? (
                 <div className="mt-6 text-center text-secondary">
-                  <strong>Current Plan</strong>
+                  <strong>
+                    {nextPlan ? `Plan after ${dayjs(planPeriodEnd).format('YYYY-MM-DD')}` : 'Current Plan'}
+                  </strong>
                 </div>
               ) : (
                 <a
@@ -164,6 +222,11 @@ export function PricingTable() {
                   {getTierButtonText(tier.id)}
                 </a>
               )}
+              {currentPlan !== 'free' && currentPlan === tier.id && nextPlan && (
+                <div className="mt-2 text-center">
+                  <span className="text-red-500">Expires {dayjs(planPeriodEnd).fromNow()}</span>
+                </div>
+              )}
               <ul role="list" className="pl-0 mt-8 space-y-3 text-sm leading-6 text-gray-600 ">
                 {tier.features!.map((feature) => (
                   <li key={feature} className="flex gap-x-3">
@@ -176,6 +239,17 @@ export function PricingTable() {
           ))}
         </div>
       </div>
+
+      <CancelSubscriptionModal
+        open={cancelModalOpen}
+        currentPlan={currentPlan}
+        planPeriodEnd={planPeriodEnd}
+        onSubscriptionCancel={() => handleCredentialDelete()}
+        onCancel={() => {
+          setCancelModalOpen(false)
+          setLoading({ free: false })
+        }}
+      />
     </div>
   )
 }

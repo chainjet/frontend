@@ -1,13 +1,14 @@
 import { gql, useMutation } from '@apollo/client'
 import { loadStripe } from '@stripe/stripe-js'
+import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export function useCreateCheckoutSession() {
   const mutation = gql`
-    mutation createCheckoutSession($planId: String!) {
-      createCheckoutSession(planId: $planId) {
+    mutation createCheckoutSession($priceId: String!) {
+      createCheckoutSession(priceId: $priceId) {
         sessionId
       }
     }
@@ -19,9 +20,10 @@ export const useStripeSubscription = () => {
   const [createCheckoutSession] = useCreateCheckoutSession()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
 
   const subscribe = useCallback(
-    async (planId: string) => {
+    async (priceId: string) => {
       setLoading(true)
       setError(null)
 
@@ -32,12 +34,13 @@ export const useStripeSubscription = () => {
         }
         const res = await createCheckoutSession({
           variables: {
-            planId,
+            priceId,
           },
         })
         const sessionId = res.data?.createCheckoutSession?.sessionId
         if (!sessionId) {
-          throw new Error('Unexpected error')
+          await router.push('/pricing')
+          return
         }
 
         const { error } = await stripe.redirectToCheckout({ sessionId })
@@ -51,8 +54,34 @@ export const useStripeSubscription = () => {
         setLoading(false)
       }
     },
-    [createCheckoutSession],
+    [createCheckoutSession, router],
   )
 
   return { subscribe, loading, error }
+}
+
+const resumeSubscriptionMutation = gql`
+  mutation resumeSubscription {
+    resumeSubscription {
+      success
+    }
+  }
+`
+
+export const useResumeSubscription = () => {
+  const [resumeSubscription] = useMutation(resumeSubscriptionMutation)
+  return { resumeSubscription }
+}
+
+const cancelSubscriptionMutation = gql`
+  mutation changeSubscriptionPlan($priceId: String!) {
+    changeSubscriptionPlan(priceId: $priceId) {
+      success
+    }
+  }
+`
+
+export const useChangeSubscriptionPlan = () => {
+  const [changeSubscriptionPlan] = useMutation(cancelSubscriptionMutation)
+  return { changeSubscriptionPlan }
 }

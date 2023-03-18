@@ -16,7 +16,7 @@ export function OperationsUsed() {
     skip: !signer,
   })
 
-  if (!userData?.viewer.operationsUsedMonth) {
+  if (!userData || !Number.isFinite(userData.viewer.operationsUsedMonth)) {
     return <></>
   }
 
