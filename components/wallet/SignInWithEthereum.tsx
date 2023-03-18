@@ -89,7 +89,7 @@ export function SignInWithEthereum({
         credentials: 'include',
       })
       if (!loginRes.ok) {
-        throw new Error('Error verifying message')
+        throw new Error(`Error verifying message: ${(await loginRes.text()) ?? loginRes.statusText}`)
       }
 
       const options = {
