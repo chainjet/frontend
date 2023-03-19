@@ -11,7 +11,7 @@ export interface PlanConfig {
   features?: string[]
 }
 
-export const defaultPlan = 'early' // TODO make free plan the default
+export const defaultPlan = 'free'
 
 export const plansConfig: Record<string, PlanConfig> = {
   free: {
@@ -21,11 +21,11 @@ export const plansConfig: Record<string, PlanConfig> = {
     price: { monthly: 0, annually: 0 },
     features: ['10,000 operations per month', '3 active workflows', '15 minutes polling interval'],
   },
-  prod_NXQOvZowLlwuaH: {
+  prod_NYG90VSEfU0TfQ: {
     key: 'starter',
     name: 'Starter',
     maxOperations: 1e5,
-    priceId: 'price_1MmLXfFrRlOZNZ9xynfzzKnP',
+    priceId: 'price_1Mn9dEFrRlOZNZ9xzskkpkvH',
     price: { monthly: 29, annually: 29 * 12 },
     features: [
       '100,000 operations per month',
@@ -34,11 +34,11 @@ export const plansConfig: Record<string, PlanConfig> = {
       'Execute workflows on error',
     ],
   },
-  stripe_plan_id_2: {
+  prod_NYGB1kY91pq5g6: {
     key: 'pro',
     name: 'Pro',
     maxOperations: 3e5,
-    priceId: 'price_1MmLXfFrRlOZNZ9xynfzzKnP',
+    priceId: 'price_1Mn9efFrRlOZNZ9x4TRtYO9a',
     price: { monthly: 79, annually: 79 * 12 },
     mostPopular: true,
     features: [
@@ -48,11 +48,11 @@ export const plansConfig: Record<string, PlanConfig> = {
       'Execute workflows on error',
     ],
   },
-  business: {
+  prod_NYGCd7KzrCjd7Y: {
     key: 'buiness',
     name: 'Business',
     maxOperations: 750000,
-    priceId: 'price_1MmLXfFrRlOZNZ9xynfzzKnP',
+    priceId: 'price_1Mn9g3FrRlOZNZ9xm51JiAMP',
     price: { monthly: 199, annually: 199 * 12 },
     features: [
       '750,000 operations per month',
@@ -71,4 +71,20 @@ export const plansConfig: Record<string, PlanConfig> = {
     name: 'Early (Deprecated)',
     maxOperations: Infinity,
   },
+}
+
+// Plans on Stripe test mode
+if (process.env.NODE_ENV === 'development') {
+  // starter
+  plansConfig['prod_NXQOvZowLlwuaH'] = plansConfig['prod_NYG90VSEfU0TfQ']
+  plansConfig['prod_NXQOvZowLlwuaH'].priceId = 'price_1MmLXfFrRlOZNZ9xynfzzKnP'
+  delete plansConfig['prod_NYG90VSEfU0TfQ']
+  // pro
+  plansConfig['prod_NXsxne4WGLGVct'] = plansConfig['prod_NYGB1kY91pq5g6']
+  plansConfig['prod_NXsxne4WGLGVct'].priceId = 'price_1MmnBNFrRlOZNZ9xVy2DRZoi'
+  delete plansConfig['prod_NYGB1kY91pq5g6']
+  // business
+  plansConfig['prod_NXsy6KRk62T4yx'] = plansConfig['prod_NYGCd7KzrCjd7Y']
+  plansConfig['prod_NXsy6KRk62T4yx'].priceId = 'price_1MmnCCFrRlOZNZ9xyolAnxpd'
+  delete plansConfig['prod_NYGCd7KzrCjd7Y']
 }
