@@ -61,14 +61,14 @@ export const plansConfig: Record<string, PlanConfig> = {
       'Execute workflows on error',
     ],
   },
-  internal: {
-    key: 'internal',
-    name: 'Internal',
+  unlimited: {
+    key: 'unlimited',
+    name: 'Unlimited',
     maxOperations: Infinity,
   },
   early: {
     key: 'early',
-    name: 'Early (Deprecated)',
+    name: 'Free (Deprecated)',
     maxOperations: Infinity,
   },
 }

@@ -22,9 +22,20 @@ export function OperationsUsed() {
 
   const plan = plansConfig[userData.viewer.plan ?? defaultPlan]
   return (
-    <div>
-      Operations Used: <strong>{userData.viewer.operationsUsedMonth.toLocaleString()}</strong>/
-      {plan.maxOperations === Infinity ? '∞' : plan.maxOperations.toLocaleString()}
+    <div className="flex flex-col items-end">
+      <div className="flex">
+        <span className="mr-2 text-right">Operations Used:</span>
+        <span className="w-32 text-left">
+          <strong>{userData.viewer.operationsUsedMonth.toLocaleString()}</strong>/
+          {plan.maxOperations === Infinity ? '∞' : plan.maxOperations.toLocaleString()}
+        </span>
+      </div>
+      <div className="flex">
+        <span className="mr-2 text-right">Plan:</span>
+        <span className="w-32 text-left">
+          <strong>{plan.name}</strong>
+        </span>
+      </div>
     </div>
   )
 }
