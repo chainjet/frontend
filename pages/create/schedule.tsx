@@ -276,7 +276,6 @@ function NewSchedulePage() {
                   accountCredentialId={action?.credentialsID}
                   initialInputs={action?.inputs ?? {}}
                   hideSubmit
-                  onSubmitActionInputs={async () => {}}
                   onChange={handleInputsChange}
                 />
               </div>

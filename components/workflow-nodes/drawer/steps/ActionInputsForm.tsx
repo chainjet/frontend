@@ -30,7 +30,7 @@ interface Props {
   testError?: Error | undefined
   readonly?: boolean
   hideSubmit?: boolean
-  onSubmitActionInputs: (inputs: ActionInputs, testAction: boolean) => Promise<any>
+  onSubmitActionInputs?: (inputs: ActionInputs, testAction: boolean) => Promise<any>
   onChange?: (inputs: Record<string, any>) => any
 }
 
@@ -166,10 +166,13 @@ export function ActionInputsForm({
     setDependencyInputs(deepmerge(getSchemaDefaults(integrationAction?.schemaRequest ?? {}), initialInputs))
   }, [initialInputs, integrationAction?.schemaRequest])
 
-  // update inputs if initial inputs changes
+  // if no onSubmitActionInputs is set, the parent is responsible for controlling the inputs state
+  // so we need to reset the inputs state when the initialInputs change
   useEffect(() => {
-    setInputs(initialInputs)
-  }, [initialInputs])
+    if (!onSubmitActionInputs) {
+      setInputs(initialInputs)
+    }
+  }, [initialInputs, onSubmitActionInputs])
 
   if (triggerRes.loading || actionRes.loading) {
     return <Loading />
@@ -293,7 +296,7 @@ export function ActionInputsForm({
     setSubmitError(null)
     setInputs(data)
     try {
-      await onSubmitActionInputs(data, testAction)
+      await onSubmitActionInputs?.(data, testAction)
     } catch (e: any) {
       setSubmitError(e.message ?? 'Unknown error')
     } finally {
