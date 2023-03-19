@@ -3,6 +3,7 @@ import {
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  PlusCircleOutlined,
   PlusOutlined,
   ProfileOutlined,
   ProjectOutlined,
@@ -174,6 +175,11 @@ export default function PageLayout({ children }: Props) {
                       </a>
                     ),
                     icon: <QuestionCircleOutlined />,
+                  },
+                  {
+                    key: '/pricing',
+                    label: <Link href="/pricing">Upgrade Plan</Link>,
+                    icon: <PlusCircleOutlined />,
                   },
                 ]
               : [
