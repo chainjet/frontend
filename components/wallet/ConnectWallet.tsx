@@ -9,13 +9,11 @@ export function ConnectWallet({
   onError,
   beforeLogin,
   message,
-  showMigrationLink,
 }: {
   onSuccess: (args: { address: string }) => void
   onError: (args: { error: Error }) => void
   beforeLogin?: (data: string) => Promise<boolean>
   message?: string
-  showMigrationLink?: boolean
 }) {
   const { isConnected } = useAccount()
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
@@ -55,17 +53,12 @@ export function ConnectWallet({
             )}
           </button>
         ))}
-      {showMigrationLink && (
-        <div className="grid mt-8 text-center">
-          <span className="">
-            Do you have a non-wallet account?{' '}
-            <Link href="/migrate">
-              <a className="text-primary">Migrate it here</a>
-            </Link>
-            .
-          </span>
-        </div>
-      )}
+      <div className="grid mt-4 text-center">
+        <span>
+          By connecting your wallet, you agree to ChainJet&apos;s <Link href="/legal/terms">terms of service</Link> and{' '}
+          <Link href="/legal/privacy">privacy policy</Link>.
+        </span>
+      </div>
     </>
   )
 }

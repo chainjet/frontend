@@ -60,7 +60,7 @@ const LoginPage = ({}: Props) => {
         <SignContainer>
           <div>
             {error && <Alert message={error?.message} type="error" showIcon style={{ marginBottom: 24 }} />}
-            <ConnectWallet onSuccess={onSignInSuccess} onError={({ error }) => setError(error)} showMigrationLink />
+            <ConnectWallet onSuccess={onSignInSuccess} onError={({ error }) => setError(error)} />
           </div>
         </SignContainer>
       </NoSsr>
