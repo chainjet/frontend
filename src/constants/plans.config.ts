@@ -19,7 +19,12 @@ export const plansConfig: Record<string, PlanConfig> = {
     name: 'Free',
     maxOperations: 10000,
     price: { monthly: 0, annually: 0 },
-    features: ['10,000 operations per month', '3 active workflows', '15 minutes polling interval'],
+    features: [
+      '10,000 operations per month',
+      '3 active workflows',
+      '3 blockchain listeners',
+      '15 minutes polling interval',
+    ],
   },
   prod_NYG90VSEfU0TfQ: {
     key: 'starter',
@@ -30,6 +35,7 @@ export const plansConfig: Record<string, PlanConfig> = {
     features: [
       '100,000 operations per month',
       'Unlimited active workflows',
+      '30 blockchain listeners',
       '1 minute polling interval',
       'Execute workflows on error',
     ],
@@ -44,6 +50,7 @@ export const plansConfig: Record<string, PlanConfig> = {
     features: [
       '300,000 operations per month',
       'Unlimited active workflows',
+      '100 blockchain listeners',
       '15 seconds polling interval',
       'Execute workflows on error',
     ],
@@ -57,6 +64,7 @@ export const plansConfig: Record<string, PlanConfig> = {
     features: [
       '750,000 operations per month',
       'Unlimited active workflows',
+      '250 blockchain listeners',
       '15 seconds polling interval',
       'Execute workflows on error',
     ],
