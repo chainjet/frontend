@@ -132,6 +132,9 @@ export function PricingTable() {
     if (tier.price![frequency.value as Frequency] > (currentPlanTier?.price?.[frequency.value as Frequency] ?? 0)) {
       return 'Upgrade'
     }
+    if (!currentPlanTier?.price) {
+      return '-'
+    }
     return 'Downgrade'
   }
 
