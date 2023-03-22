@@ -4,7 +4,8 @@ import { useRouter } from 'next/router'
 import { destroyCookie as nookiesDestroyCookie } from 'nookies'
 import { useContext, useEffect } from 'react'
 import { useDisconnect } from 'wagmi'
-import { SignerContext } from '../../components/providers/ViewerContextProvider'
+import { SignerContext } from '../../components/providers/SignerContextProvider'
+import { ViewerContext } from '../../components/providers/ViewerContextProvider'
 import { UpdateOneUserInput, User } from '../../graphql'
 import { refreshApolloClient } from '../apollo'
 import { QueryById } from '../typings/GraphQL'
@@ -13,6 +14,10 @@ import { TOKEN_COOKIE_NAME } from './AuthService'
 
 export function useSigner() {
   return useContext(SignerContext)
+}
+
+export function useViewer() {
+  return useContext(ViewerContext)
 }
 
 export function useRedirectGuests() {

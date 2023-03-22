@@ -3,8 +3,10 @@ import { Alert } from 'antd'
 import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
 import { useEffect, useState } from 'react'
+import { defaultPlan, plansConfig } from '../../../../src/constants/plans.config'
 import { useGetAsyncSchemas } from '../../../../src/services/AsyncSchemaHooks'
 import { useGetIntegrationTriggerById } from '../../../../src/services/IntegrationTriggerHooks'
+import { useViewer } from '../../../../src/services/UserHooks'
 import { retrocycle } from '../../../../src/utils/json.utils'
 import { isEmptyObj } from '../../../../src/utils/object.utils'
 import { getSchemaDefaults, isSelectInput, mergePropSchema } from '../../../../src/utils/schema.utils'
@@ -47,6 +49,7 @@ export function TriggerInputsForm({
   onChange,
   hideSubmit,
 }: Props) {
+  const { viewer, loading: viewerLoading } = useViewer()
   const [submitLoading, setSubmitLoading] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const { data, loading, error } = useGetIntegrationTriggerById(triggerInputsFormFragment, {
@@ -80,20 +83,20 @@ export function TriggerInputsForm({
 
   useEffect(() => {
     // Initialize chainjet_schedule if it's not defined
-    if (integrationTrigger && !integrationTrigger.instant && integrationTrigger.key === 'schedule') {
+    if (integrationTrigger && !integrationTrigger.instant && integrationTrigger.key === 'schedule' && viewer) {
       if (isEmptyObj(inputs?.chainjet_schedule || {})) {
         setInputs({
           ...inputs,
           chainjet_schedule: {
             frequency: 'interval',
-            interval: 300,
+            interval: Math.max(plansConfig[viewer.plan ?? defaultPlan].minPollingInterval, 300),
           },
         })
       }
     }
-  }, [inputs, integrationTrigger])
+  }, [inputs, integrationTrigger, viewer])
 
-  if (loading) {
+  if (loading || viewerLoading) {
     return <Loading />
   }
   if (error || !data?.integrationTrigger?.schemaRequest) {

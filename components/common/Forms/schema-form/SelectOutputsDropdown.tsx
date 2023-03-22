@@ -32,8 +32,8 @@ export function SelectOutputsDropdown({
     <div style={{ maxHeight: 350 }} className="overflow-scroll">
       <Radio.Group value={value} onChange={(e) => onSelectOutput(e.target.value, true)}>
         <Space direction="vertical">
-          {enumOptions.map(({ value: optionValue, label: optionLabel }) => (
-            <Radio key={optionValue} value={optionValue}>
+          {enumOptions.map(({ value: optionValue, label: optionLabel, schema }) => (
+            <Radio key={optionValue} value={optionValue} disabled={schema?.readOnly}>
               <div>
                 <strong>{optionLabel}</strong>
               </div>

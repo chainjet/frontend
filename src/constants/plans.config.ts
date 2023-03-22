@@ -9,6 +9,7 @@ export interface PlanConfig {
   }
   mostPopular?: boolean
   features?: string[]
+  minPollingInterval: number
 }
 
 export const defaultPlan = 'free'
@@ -21,10 +22,11 @@ export const plansConfig: Record<string, PlanConfig> = {
     price: { monthly: 0, annually: 0 },
     features: [
       '10,000 operations per month',
-      '3 active workflows',
+      '10 active workflows',
       '3 blockchain listeners',
       '15 minutes polling interval',
     ],
+    minPollingInterval: 900,
   },
   prod_NYG90VSEfU0TfQ: {
     key: 'starter',
@@ -39,6 +41,7 @@ export const plansConfig: Record<string, PlanConfig> = {
       '1 minute polling interval',
       'Execute workflows on error',
     ],
+    minPollingInterval: 60,
   },
   prod_NYGB1kY91pq5g6: {
     key: 'pro',
@@ -54,6 +57,7 @@ export const plansConfig: Record<string, PlanConfig> = {
       '15 seconds polling interval',
       'Execute workflows on error',
     ],
+    minPollingInterval: 15,
   },
   prod_NYGCd7KzrCjd7Y: {
     key: 'buiness',
@@ -68,16 +72,19 @@ export const plansConfig: Record<string, PlanConfig> = {
       '15 seconds polling interval',
       'Execute workflows on error',
     ],
+    minPollingInterval: 15,
   },
   unlimited: {
     key: 'unlimited',
     name: 'Unlimited',
     maxOperations: Infinity,
+    minPollingInterval: 15,
   },
   early: {
     key: 'early',
     name: 'Free (Deprecated)',
     maxOperations: Infinity,
+    minPollingInterval: 60,
   },
 }
 

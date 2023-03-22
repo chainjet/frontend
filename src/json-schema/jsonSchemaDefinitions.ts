@@ -1,4 +1,6 @@
-export const jsonSchemaDefinitions = {
+import { PlanConfig } from '../constants/plans.config'
+
+export const jsonSchemaDefinitions = (plan: PlanConfig) => ({
   chainjet_day_of_week: {
     title: 'Day of the week',
     type: 'integer',
@@ -15,14 +17,31 @@ export const jsonSchemaDefinitions = {
   },
 
   chainjet_poll_interval: {
-    default: 300,
+    default: Math.max(plan.minPollingInterval, 300),
     title: 'Polling interval',
     description: 'How often ChainJet checks the trigger condition.',
     type: 'integer',
     oneOf: [
-      { title: '1 minute', const: 60 },
-      { title: '5 minutes', const: 300 },
-      { title: '10 minutes', const: 600 },
+      {
+        title: `15 seconds${plan.minPollingInterval > 15 ? ' (Available from Pro Plan)' : ''}`,
+        const: 15,
+        readOnly: plan.minPollingInterval > 15,
+      },
+      {
+        title: `1 minute${plan.minPollingInterval > 60 ? ' (Available from Starter Plan)' : ''}`,
+        const: 60,
+        readOnly: plan.minPollingInterval > 60,
+      },
+      {
+        title: `5 minutes${plan.minPollingInterval > 300 ? ' (Available from Starter Plan)' : ''}`,
+        const: 300,
+        readOnly: plan.minPollingInterval > 300,
+      },
+      {
+        title: `10 minutes${plan.minPollingInterval > 600 ? ' (Available from Starter Plan)' : ''}`,
+        const: 600,
+        readOnly: plan.minPollingInterval > 600,
+      },
       { title: '15 minutes', const: 900 },
       { title: '30 minutes', const: 1800 },
       { title: '1 hour', const: 3600 },
@@ -176,4 +195,4 @@ export const jsonSchemaDefinitions = {
       },
     },
   },
-}
+})

@@ -3,7 +3,8 @@ import fetch from 'isomorphic-unfetch'
 import { NextPageContext } from 'next'
 import { parseCookies } from 'nookies'
 import PageLayout from '../components/common/PageLayout/PageLayout'
-import SignerContextProvider from '../components/providers/ViewerContextProvider'
+import SignerContextProvider from '../components/providers/SignerContextProvider'
+import ViewerContextProvider from '../components/providers/ViewerContextProvider'
 import { AuthService, TOKEN_COOKIE_NAME } from './services/AuthService'
 
 let globalApolloClient: ApolloClient<NormalizedCacheObject> | null = null
@@ -38,7 +39,9 @@ export function withApollo(PageComponent: any, { useLayout = true, ssr = true } 
     return (
       <SignerContextProvider signer={signer}>
         <ApolloProvider client={client}>
-          {useLayout ? <PageLayout>{pageComponent}</PageLayout> : pageComponent}
+          <ViewerContextProvider signer={signer}>
+            {useLayout ? <PageLayout>{pageComponent}</PageLayout> : pageComponent}
+          </ViewerContextProvider>
         </ApolloProvider>
       </SignerContextProvider>
     )

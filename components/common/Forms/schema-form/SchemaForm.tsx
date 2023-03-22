@@ -8,7 +8,9 @@ import localeData from 'dayjs/plugin/localeData'
 import weekday from 'dayjs/plugin/weekday'
 import Head from 'next/head'
 import { useEffect } from 'react'
+import { defaultPlan, plansConfig } from '../../../../src/constants/plans.config'
 import { jsonSchemaDefinitions } from '../../../../src/json-schema/jsonSchemaDefinitions'
+import { useViewer } from '../../../../src/services/UserHooks'
 import { WorkflowOutput } from '../../../../src/typings/Workflow'
 import { isEmptyObj } from '../../../../src/utils/object.utils'
 import { extractUISchema, fixArraysWithoutItems, removeHiddenProperties } from '../../../../src/utils/schema.utils'
@@ -82,12 +84,14 @@ export const SchemaForm = ({
   onSubmit,
   onError,
 }: Props) => {
+  const { viewer } = useViewer()
+
   // Prepare Json Schema
   let formSchema = cloneDeep(schema) ?? {}
 
   formSchema.definitions = {
     ...(formSchema.definitions ?? {}),
-    ...jsonSchemaDefinitions,
+    ...jsonSchemaDefinitions(viewer?.plan ? plansConfig[viewer.plan] : plansConfig[defaultPlan]),
   }
 
   formSchema = removeHiddenProperties(formSchema)
