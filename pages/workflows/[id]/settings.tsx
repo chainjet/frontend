@@ -75,6 +75,9 @@ function WorkflowSettingsPage({ workflowId }: Props) {
         })
         delete update.maxConsecutiveFailures
       }
+      if (update.templateSchema) {
+        update.templateSchema = JSON.parse(update.templateSchema)
+      }
       const res = await updateWorkflow({
         variables: {
           input: {
@@ -83,6 +86,7 @@ function WorkflowSettingsPage({ workflowId }: Props) {
           },
         },
       })
+      await refetch()
       await router.push(`/workflows/${workflowId}`)
     } catch (e: any) {
       setUpdateError(e?.message)

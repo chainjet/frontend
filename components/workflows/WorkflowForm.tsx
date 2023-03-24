@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client'
 import { Alert, Button, Form, Input, Switch } from 'antd'
+import TextArea from 'antd/lib/input/TextArea'
 import { useEffect, useState } from 'react'
 import { Workflow } from '../../graphql'
 import { WorkflowSelector } from './WorkflowSelector'
@@ -13,8 +14,7 @@ interface Props {
   error: string | null
 }
 
-export const WorkflowForm = (props: Props) => {
-  const { workflow, showSubmit, onSubmit, onChange, loading, error } = props
+export const WorkflowForm = ({ workflow, showSubmit, onSubmit, onChange, loading, error }: Props) => {
   const [name, setName] = useState(workflow?.name ?? '')
   const [runWorkflowOnFailureEnabled, setRunWorkflowOnFailureEnabled] = useState(!!workflow.runOnFailure)
   const [runOnFailure, setRunOnFailure] = useState<string | null>(workflow.runOnFailure ?? null)
@@ -78,6 +78,21 @@ export const WorkflowForm = (props: Props) => {
           <span style={{ marginLeft: 8 }}>Run a workflow on failure</span>
         </div>
 
+        {workflow.isTemplate && (
+          <div className="mb-8">
+            <Form.Item
+              name="templateSchema"
+              label="Template Schema (Advanced)"
+              initialValue={JSON.stringify(workflow.templateSchema, null, 2)}
+              rules={[{ required: true }]}
+              help="Define the JSON Schema for the use template modal. Only for advanced users."
+              style={{ marginBottom: 46 }}
+            >
+              <TextArea rows={4} />
+            </Form.Item>
+          </div>
+        )}
+
         {runWorkflowOnFailureEnabled && (
           <div style={{ marginBottom: 32 }}>
             <WorkflowSelector
@@ -106,6 +121,8 @@ WorkflowForm.fragments = {
       id
       name
       runOnFailure
+      templateSchema
+      isTemplate
     }
   `,
 
