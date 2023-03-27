@@ -33,7 +33,7 @@
     "@rjsf/utils": "5.2.0",
     "@rjsf/validator-ajv6": "5.2.0",
     "@stripe/react-stripe-js": "2.0.0",
-    "@stripe/stripe-js": "1.49.0",
+    "@stripe/stripe-js": "1.52.0",
     "@xmtp/xmtp-js": "7.13.1",
     "antd": "4.24.7",
     "autoprefixer": "^10.4.8",
