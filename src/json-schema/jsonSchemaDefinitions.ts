@@ -28,7 +28,7 @@ export const jsonSchemaDefinitions = (plan: PlanConfig) => ({
         readOnly: plan.minPollingInterval > 15,
       },
       {
-        title: `1 minute${plan.minPollingInterval > 60 ? ' (Available from Starter Plan)' : ''}`,
+        title: `1 minute${plan.minPollingInterval > 60 ? ' (Available from Core Plan)' : ''}`,
         const: 60,
         readOnly: plan.minPollingInterval > 60,
       },

@@ -22,15 +22,30 @@ export const plansConfig: Record<string, PlanConfig> = {
     price: { monthly: 0, annually: 0 },
     features: [
       '10,000 operations per month',
-      '10 active workflows',
+      '5 active workflows',
       '3 blockchain listeners',
       '15 minutes polling interval',
     ],
     minPollingInterval: 900,
   },
-  prod_NYG90VSEfU0TfQ: {
+  prod_NbsBYZA9BxFF7r: {
     key: 'starter',
     name: 'Starter',
+    maxOperations: 30000,
+    priceId: 'price_1MqeRZFrRlOZNZ9xl2OQmgP2',
+    price: { monthly: 9, annually: 9 * 12 },
+    features: [
+      '30,000 operations per month',
+      '25 active workflows',
+      '10 blockchain listeners',
+      '5 minutes polling interval',
+      'Execute workflows on error',
+    ],
+    minPollingInterval: 300,
+  },
+  prod_NYG90VSEfU0TfQ: {
+    key: 'core',
+    name: 'Core',
     maxOperations: 1e5,
     priceId: 'price_1Mn9dEFrRlOZNZ9xzskkpkvH',
     price: { monthly: 29, annually: 29 * 12 },
@@ -91,6 +106,10 @@ export const plansConfig: Record<string, PlanConfig> = {
 // Plans on Stripe test mode
 if (process.env.NODE_ENV === 'development') {
   // starter
+  plansConfig['prod_NbsFKhWJ6PMBpx'] = plansConfig['prod_NbsBYZA9BxFF7r']
+  plansConfig['prod_NbsFKhWJ6PMBpx'].priceId = 'price_1MqeVIFrRlOZNZ9x9wEp6W2G'
+  delete plansConfig['prod_NbsBYZA9BxFF7r']
+  // core
   plansConfig['prod_NXQOvZowLlwuaH'] = plansConfig['prod_NYG90VSEfU0TfQ']
   plansConfig['prod_NXQOvZowLlwuaH'].priceId = 'price_1MmLXfFrRlOZNZ9xynfzzKnP'
   delete plansConfig['prod_NYG90VSEfU0TfQ']

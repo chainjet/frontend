@@ -180,7 +180,7 @@ export function PricingTable() {
             ))}
           </RadioGroup>
         </div> */}
-        <div className="grid max-w-md grid-cols-1 gap-8 mx-auto mt-10 isolate md:max-w-2xl md:grid-cols-2 lg:max-w-4xl xl:mx-0 xl:max-w-none xl:grid-cols-4">
+        <div className="grid max-w-md grid-cols-1 gap-2 mx-auto mt-10 isolate md:max-w-2xl md:grid-cols-2 lg:max-w-4xl xl:mx-0 xl:max-w-none xl:grid-cols-5">
           {tiers.map((tier) => (
             <div
               key={tier.id}
