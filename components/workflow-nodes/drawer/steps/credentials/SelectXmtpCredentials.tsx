@@ -23,7 +23,7 @@ export function SelectXmtpCredentials({ integrationAccount, reconnectAccount, on
 
   const { data: signer } = useSigner()
 
-  const handleLensSignIn = useCallback(async () => {
+  const handleXmtpSignIn = useCallback(async () => {
     if (!address || !signer) {
       return
     }
@@ -33,7 +33,15 @@ export function SelectXmtpCredentials({ integrationAccount, reconnectAccount, on
     }
     setLoading(true)
 
-    const keys = await Client.getKeys(signer, { env: 'production' })
+    let keys: Uint8Array
+    try {
+      keys = await Client.getKeys(signer, { env: 'production' })
+    } catch (err) {
+      setLoading(false)
+      setError(`Failed to sign message: ${(err as Error).message}`)
+      return
+    }
+
     if (reconnectAccount) {
       const createCredentialRes = await updateCredential({
         variables: {
@@ -86,7 +94,7 @@ export function SelectXmtpCredentials({ integrationAccount, reconnectAccount, on
 
   return (
     <div>
-      <Button type="primary" onClick={() => handleLensSignIn()} loading={loading}>
+      <Button type="primary" onClick={() => handleXmtpSignIn()} loading={loading}>
         Connect to XMTP
       </Button>
       <div className="mt-4">
