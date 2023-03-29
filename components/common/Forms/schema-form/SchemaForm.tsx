@@ -6,6 +6,7 @@ import { Button } from 'antd'
 import dayjs from 'dayjs'
 import localeData from 'dayjs/plugin/localeData'
 import weekday from 'dayjs/plugin/weekday'
+import _ from 'lodash'
 import Head from 'next/head'
 import { useEffect } from 'react'
 import { defaultPlan, plansConfig } from '../../../../src/constants/plans.config'
@@ -151,12 +152,13 @@ export const SchemaForm = ({
           formData = data.formData
         }}
         transformErrors={(errors) => {
+          console.log('errors: ', errors)
           return (
             errors
               // filter out errors on fields that have interpolation (foo is not a valid email but {{trigger.email}} might be)
               .filter((error) => {
                 if (error.property) {
-                  const value = formData[error.property.slice(1)] ?? ''
+                  const value = _.get(formData, error.property.slice(1)) ?? ''
                   return !hasInterpolation(value)
                 }
                 return true
@@ -164,7 +166,7 @@ export const SchemaForm = ({
               // filter out errors for stringified numbers
               .filter((error) => {
                 if (error.property && ['should be number', 'should be integer'].includes(error.message ?? '')) {
-                  const value = formData[error.property.slice(1)]
+                  const value = _.get(formData, error.property.slice(1)) ?? ''
                   return !Number.isFinite(Number(value))
                 }
                 return true
