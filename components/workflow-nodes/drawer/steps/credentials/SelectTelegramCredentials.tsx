@@ -1,4 +1,4 @@
-import { Alert, Button } from 'antd'
+import { Alert, Button, Divider } from 'antd'
 import { AccountCredential, IntegrationAccount } from '../../../../../graphql'
 import { useAccountCreationData } from '../../../../../src/services/AccountCredentialHooks'
 
@@ -14,17 +14,18 @@ export function SelectTelegramCredentials({}: Props) {
   const connectTelegramData = data?.accountCreationData?.data?.key
 
   return (
-    <div>
-      <div className="mb-4">
+    <div style={{ width: 220 }}>
+      <div className="mt-4">
         <a href={`https://t.me/ChainJetBot?startgroup=${connectTelegramData}`} target="_blank" rel="noreferrer">
-          <Button type="primary" loading={loading}>
-            Connect to group or channel
+          <Button type="primary" loading={loading} style={{ width: 220 }}>
+            Connect to group
           </Button>
         </a>
       </div>
+      <Divider>or</Divider>
       <div>
         <a href={`https://t.me/ChainJetBot?start=${connectTelegramData}`} target="_blank" rel="noreferrer">
-          <Button type="primary" loading={loading}>
+          <Button type="primary" loading={loading} style={{ width: 220 }}>
             Connect to private chat
           </Button>
         </a>
