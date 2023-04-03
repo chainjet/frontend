@@ -90,3 +90,20 @@ export function useDeleteOneAccountCredential() {
     },
   )
 }
+
+const accountCreationDataQuery = gql`
+  query accountCreationData($key: String!) {
+    accountCreationData(key: $key) {
+      data
+    }
+  }
+`
+
+export const useAccountCreationData = (key: string, skip: boolean = false) => {
+  return useQuery(accountCreationDataQuery, {
+    variables: {
+      key,
+    },
+    skip,
+  })
+}

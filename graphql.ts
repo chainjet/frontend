@@ -23,6 +23,7 @@ export enum IntegrationTriggerSortFields {
     integration = "integration",
     key = "key",
     name = "name",
+    unlisted = "unlisted",
     deprecated = "deprecated",
     category = "category",
     skipAuth = "skipAuth"
@@ -49,6 +50,7 @@ export enum IntegrationActionSortFields {
     integration = "integration",
     key = "key",
     name = "name",
+    unlisted = "unlisted",
     deprecated = "deprecated",
     category = "category",
     type = "type",
@@ -157,6 +159,7 @@ export interface IntegrationTriggerFilter {
     integration?: Nullable<IDFilterComparison>;
     key?: Nullable<StringFieldComparison>;
     name?: Nullable<StringFieldComparison>;
+    unlisted?: Nullable<BooleanFieldComparison>;
     deprecated?: Nullable<BooleanFieldComparison>;
     category?: Nullable<StringFieldComparison>;
     skipAuth?: Nullable<BooleanFieldComparison>;
@@ -235,6 +238,7 @@ export interface IntegrationActionFilter {
     integration?: Nullable<IDFilterComparison>;
     key?: Nullable<StringFieldComparison>;
     name?: Nullable<StringFieldComparison>;
+    unlisted?: Nullable<BooleanFieldComparison>;
     deprecated?: Nullable<BooleanFieldComparison>;
     category?: Nullable<StringFieldComparison>;
     type?: Nullable<OperationTypeFilterComparison>;
@@ -555,6 +559,7 @@ export interface CreateWorkflowInput {
     name: string;
     runOnFailure?: Nullable<string>;
     isPublic?: Nullable<boolean>;
+    templateSchema?: Nullable<JSONObject>;
 }
 
 export interface CreateManyWorkflowsInput {
@@ -570,6 +575,7 @@ export interface UpdateWorkflowInput {
     name?: Nullable<string>;
     runOnFailure?: Nullable<string>;
     isPublic?: Nullable<boolean>;
+    templateSchema?: Nullable<JSONObject>;
 }
 
 export interface UpdateManyWorkflowsInput {
@@ -729,8 +735,9 @@ export interface User {
     id: string;
     createdAt: DateTime;
     email?: Nullable<string>;
+    externalApps?: Nullable<JSONObject>;
     operationsUsedMonth: number;
-    plan?: Nullable<string>;
+    plan: string;
     nextPlan?: Nullable<string>;
     planPeriodEnd?: Nullable<DateTime>;
     name?: Nullable<string>;
@@ -780,6 +787,7 @@ export interface IntegrationTrigger {
     key: string;
     name: string;
     description?: Nullable<string>;
+    unlisted: boolean;
     deprecated: boolean;
     category?: Nullable<string>;
     skipAuth: boolean;
@@ -825,6 +833,7 @@ export interface IntegrationAction {
     key: string;
     name: string;
     description?: Nullable<string>;
+    unlisted: boolean;
     deprecated: boolean;
     category?: Nullable<string>;
     type: OperationType;
@@ -1161,6 +1170,10 @@ export interface WorkflowNextActionConnection {
     edges: WorkflowNextActionEdge[];
 }
 
+export interface ConnectAccountDataPayload {
+    data: JSONObject;
+}
+
 export interface AccountCredentialDeleteResponse {
     id?: Nullable<string>;
     createdAt?: Nullable<DateTime>;
@@ -1198,6 +1211,7 @@ export interface IQuery {
     viewer(): User | Promise<User>;
     accountCredential(id: string): AccountCredential | Promise<AccountCredential>;
     accountCredentials(paging?: Nullable<CursorPaging>, filter?: Nullable<AccountCredentialFilter>, sorting?: Nullable<AccountCredentialSort[]>): AccountCredentialConnection | Promise<AccountCredentialConnection>;
+    accountCreationData(key: string): ConnectAccountDataPayload | Promise<ConnectAccountDataPayload>;
     integration(id: string): Integration | Promise<Integration>;
     integrations(search?: Nullable<string>, paging?: Nullable<CursorPaging>, filter?: Nullable<IntegrationFilter>, sorting?: Nullable<IntegrationSort[]>): IntegrationConnection | Promise<IntegrationConnection>;
     integrationCategories(): IntegrationCategory[] | Promise<IntegrationCategory[]>;
