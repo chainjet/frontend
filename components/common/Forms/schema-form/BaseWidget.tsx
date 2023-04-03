@@ -139,7 +139,7 @@ export const BaseWidget = ({
           schema.examples ? `.${inputType === 'textarea' ? '\n' : ' '}Example: ${schema.examples}` : ''
         }`
       : schema.examples
-      ? schema.examples.toString()
+      ? `Example: ${schema.examples}`
       : '')
 
   const inputElement =
