@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client'
-import { Alert, Button, Modal } from 'antd'
+import { Alert, Modal } from 'antd'
 import deepmerge from 'deepmerge'
 import { JSONSchema7 } from 'json-schema'
 import { useCallback, useMemo, useState } from 'react'
@@ -312,17 +312,11 @@ export const ForkWorkflowModal = ({ workflow, visible, onWorkflowFork, onClose }
         <SchemaForm
           schema={templateSchema}
           initialInputs={templateInputs ?? {}}
-          hideSubmit
           onChange={handleTemplateInputsChange}
-          onSubmit={() => {}}
+          onSubmit={handleFork}
+          loading={forkLoading}
+          submitButtonText={workflow.isTemplate ? 'Use Template' : 'Fork'}
         />
-      )}
-      {!forkLoading && (
-        <>
-          <Button type="primary" key="deploy" onClick={() => handleFork()} loading={forkLoading}>
-            {workflow.isTemplate ? 'Use Template' : 'Fork'}
-          </Button>
-        </>
       )}
     </Modal>
   )

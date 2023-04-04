@@ -152,7 +152,6 @@ export const SchemaForm = ({
           formData = data.formData
         }}
         transformErrors={(errors) => {
-          console.log('errors: ', errors)
           return (
             errors
               // filter out errors on fields that have interpolation (foo is not a valid email but {{trigger.email}} might be)
