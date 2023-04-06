@@ -25,8 +25,8 @@ export const SelectWorkflowTrigger = (props: Props) => {
       integration: {
         eq: integration.id,
       },
-      deprecated: {
-        is: false,
+      unlisted: {
+        isNot: true,
       },
       ...(search ? { name: { iLike: search } } : {}),
     },

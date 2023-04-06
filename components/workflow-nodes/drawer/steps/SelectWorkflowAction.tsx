@@ -27,8 +27,8 @@ export const SelectWorkflowAction = ({ integration, onOperationSelected }: Props
       integration: {
         eq: integration.id,
       },
-      deprecated: {
-        is: false,
+      unlisted: {
+        isNot: true,
       },
       ...(search ? { name: { iLike: search } } : {}),
     },
