@@ -2,7 +2,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
 import { gql } from '@apollo/client'
 import { Input, List, Tag, Typography } from 'antd'
 import { useState } from 'react'
-import { IntegrationAction, IntegrationTrigger, OperationCategory, OperationType } from '../../../../graphql'
+import { IntegrationAction, IntegrationTrigger, OperationCategory } from '../../../../graphql'
 import { capitalize } from '../../../../src/utils/strings'
 
 interface Props<T extends IntegrationTrigger | IntegrationAction> {
@@ -105,9 +105,9 @@ export function SelectWorkflowNode<T extends IntegrationTrigger | IntegrationAct
                   ) : nodeType === 'action' ? (
                     <>
                       {capitalize(node.name)}{' '}
-                      <Tag color="gold" style={{ marginLeft: 8 }}>
+                      {/* <Tag color="gold" style={{ marginLeft: 8 }}>
                         {(node as IntegrationAction).type === OperationType.OffChain ? 'Off-Chain' : 'On-Chain'}
-                      </Tag>
+                      </Tag> */}
                     </>
                   ) : (
                     capitalize(node.name)
