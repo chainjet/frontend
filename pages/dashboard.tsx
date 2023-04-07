@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { PageWrapper } from '../components/common/PageLayout/PageWrapper'
 import { RecommendedTemplates } from '../components/templates/RecommendedTemplates'
 import { OperationsUsed } from '../components/users/OperationsUsed'
+import { PlanMigrationAlert } from '../components/users/PlanMigrationAlert'
 import { withApollo } from '../src/apollo'
 import { AnalyticsService } from '../src/services/AnalyticsService'
 import { useRedirectGuests } from '../src/services/UserHooks'
@@ -55,6 +56,7 @@ function DashboardPage() {
         <title>ChainJet Dashboard</title>
       </Head>
       <PageWrapper title="Dashboard" extra={<OperationsUsed />}>
+        <PlanMigrationAlert />
         <div style={{ marginBottom: 16 }}>
           {error && <Alert message="Error" description={error} type="error" showIcon closable />}
         </div>

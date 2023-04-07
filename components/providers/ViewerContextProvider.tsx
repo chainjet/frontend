@@ -15,10 +15,12 @@ interface Props {
   children: JSX.Element[] | JSX.Element
 }
 
+// TODO operationsReset is needed here only notify deprecation of early plans
 const userFragment = gql`
   fragment ViewerContext_User on User {
     id
     plan
+    operationsReset
   }
 `
 

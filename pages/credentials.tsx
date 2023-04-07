@@ -5,6 +5,7 @@ import { PageWrapper } from '../components/common/PageLayout/PageWrapper'
 import { Loading } from '../components/common/RequestStates/Loading'
 import { RequestError } from '../components/common/RequestStates/RequestError'
 import { CredentialsTable } from '../components/credentials/CredentialsTable'
+import { PlanMigrationAlert } from '../components/users/PlanMigrationAlert'
 import { withApollo } from '../src/apollo'
 import { useGetAccountCredentials } from '../src/services/AccountCredentialHooks'
 
@@ -44,6 +45,7 @@ export function CredentialsPage() {
         <title>Credentials - ChainJet</title>
       </Head>
       <PageWrapper title="Credentials" onBack={handleGoBack}>
+        <PlanMigrationAlert />
         <CredentialsTable accountCredentials={accountCredentials} onChange={refetch} />
       </PageWrapper>
     </>
