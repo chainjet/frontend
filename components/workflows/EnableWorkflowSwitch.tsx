@@ -1,4 +1,4 @@
-import { Switch } from 'antd'
+import { notification, Switch } from 'antd'
 import { useCallback, useState } from 'react'
 import { Workflow } from '../../graphql'
 import { useUpdateOneWorkflowTrigger } from '../../src/services/WorkflowTriggerHooks'
@@ -12,7 +12,6 @@ interface Props {
 export function EnableWorkflowSwitch({ workflow, onWorkflowEnableChange }: Props) {
   const [changingWorkflowTriggerEnable, setChangingWorkflowTriggerEnable] = useState(false)
   const [enableOnChainWorkflowModalOpen, setEnableOnChainWorkflowModalOpen] = useState(false)
-  const [enablingError, setEnablingError] = useState<Error | null>(null)
   const [updateWorkflowTrigger] = useUpdateOneWorkflowTrigger()
 
   const setWorkflowEnable = useCallback(
@@ -33,8 +32,12 @@ export function EnableWorkflowSwitch({ workflow, onWorkflowEnableChange }: Props
           },
         })
         onWorkflowEnableChange?.(enabled)
-      } catch (e) {
-        setEnablingError(e as Error)
+      } catch (err) {
+        notification.error({
+          message: 'Error',
+          description: (err as Error).message,
+          duration: null,
+        })
       }
       setChangingWorkflowTriggerEnable(false)
     },
