@@ -202,7 +202,7 @@ export const BaseWidget = ({
         style={INPUT_STYLE}
         type={inputType}
         value={inputValue}
-        suffix={outputs.length && <DownOutlined />}
+        suffix={showInterpolationDropdown && <DownOutlined />}
       />
     )
 
