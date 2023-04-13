@@ -27,6 +27,8 @@ interface Props {
   accountCredentialId: string | undefined
   initialInputs: ActionInputs
   extraSchemaProps?: JSONSchema7
+  overwriteSchemaRequest?: JSONSchema7
+  overwriteParentOutputs?: WorkflowOutput[]
   testError?: Error | undefined
   readonly?: boolean
   hideSubmit?: boolean
@@ -102,6 +104,8 @@ export function ActionInputsForm({
   accountCredentialId,
   initialInputs,
   extraSchemaProps,
+  overwriteSchemaRequest,
+  overwriteParentOutputs,
   testError,
   readonly,
   hideSubmit,
@@ -185,8 +189,8 @@ export function ActionInputsForm({
   const parentWorkflowActions = actionRes.data?.workflowActions.edges?.map((action) => action.node) || []
   const accountCredential = credentialsRes.data?.accountCredential
 
-  const parentOutputs: WorkflowOutput[] = []
-  if (trigger) {
+  const parentOutputs: WorkflowOutput[] = overwriteParentOutputs ?? []
+  if (trigger && !overwriteParentOutputs) {
     let schema: JSONSchema7
     if (trigger.schemaResponse) {
       schema = deepmerge(trigger.schemaResponse, trigger.integrationTrigger.schemaResponse ?? {})
@@ -229,7 +233,7 @@ export function ActionInputsForm({
     })
   })
 
-  let schema = retrocycle(integrationAction.schemaRequest) as JSONSchema7
+  let schema = retrocycle(overwriteSchemaRequest ?? integrationAction.schemaRequest) as JSONSchema7
   if (extraSchemaProps?.properties) {
     schema = {
       ...schema,
