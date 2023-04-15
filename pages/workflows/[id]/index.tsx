@@ -14,6 +14,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import { useAccount } from 'wagmi'
+import { BulkActionRunModal } from '../../../components/bulkactions/BulkActionRunModal'
 import { PageWrapper } from '../../../components/common/PageLayout/PageWrapper'
 import { Loading } from '../../../components/common/RequestStates/Loading'
 import { RequestError } from '../../../components/common/RequestStates/RequestError'
@@ -88,6 +89,7 @@ function WorkflowPage({ workflowId }: Props) {
   const [forkWorkflowModalOpen, setForkWorkflowModalOpen] = useState(false)
   const [renameWorkflowModalOpen, setRenameWorkflowModalOpen] = useState(false)
   const [emailSettingsModalOpen, setEmailSettingsModalOpen] = useState(false)
+  const [bulkActionRunModalOpen, setBulkActionRunModalOpen] = useState(false)
   const [showSuccessMessage, setShowSuccessMessage] = useState(router.query.success === 'true')
   const [showSubscribeMessage, setShowSubscribeMessage] = useState(!showSuccessMessage)
   const { address } = useAccount()
@@ -99,6 +101,12 @@ function WorkflowPage({ workflowId }: Props) {
   useEffect(() => {
     setShowSuccessMessage(router.query.success === 'true')
   }, [router.query.success])
+
+  useEffect(() => {
+    if (router.query.bulkAction) {
+      setBulkActionRunModalOpen(true)
+    }
+  }, [router.query.bulkAction])
 
   const handleWorkflowChange = useCallback(async () => {
     await refetch?.()
@@ -336,6 +344,10 @@ function WorkflowPage({ workflowId }: Props) {
             onUserUpdate={() => setEmailSettingsModalOpen(false)}
             onCancel={() => setEmailSettingsModalOpen(false)}
           />
+        )}
+
+        {bulkActionRunModalOpen && (
+          <BulkActionRunModal workflow={workflow} onCancel={() => setBulkActionRunModalOpen(false)} />
         )}
       </PageWrapper>
     </>

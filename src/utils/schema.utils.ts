@@ -183,6 +183,20 @@ export function extractUISchema(schema: JSONSchema7): UiSchema {
   return uiSchema
 }
 
+export function addPropToAllFields(schema: JSONSchema7, propKey: string, propValue: any) {
+  schema = { ...schema }
+  schema.properties = { ...(schema.properties ?? {}) }
+  for (let [key, value] of Object.entries(schema.properties ?? {})) {
+    if (typeof value === 'object') {
+      schema.properties[key] = {
+        ...value,
+        [propKey]: propValue,
+      }
+    }
+  }
+  return applySchemaChangeRecursively(schema, addPropToAllFields as any, propKey, propValue)
+}
+
 /**
  * Helper for applying a schema modification recursively to schema properties and items
  * This method also exists on backend jsonSchemaUtils

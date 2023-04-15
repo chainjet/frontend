@@ -137,5 +137,5 @@ export function useRunWorkflowTriggerHistory() {
       }
     }
   `
-  return useMutation<{ testWorkflowTrigger: WorkflowTrigger }, { id: string }>(mutation)
+  return useMutation<{ runWorkflowTriggerHistory: WorkflowTrigger }, { id: string }>(mutation)
 }

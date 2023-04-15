@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 import { useCallback, useEffect, useState } from 'react'
-import { Workflow, WorkflowAction } from '../../graphql'
+import { Workflow, WorkflowAction, WorkflowTrigger } from '../../graphql'
 import { AnalyticsService } from './AnalyticsService'
 import { useGetIntegrationActions } from './IntegrationActionHooks'
 import { useGetIntegrations } from './IntegrationHooks'
@@ -58,6 +58,7 @@ export function useCreateWorkflowWithOperations() {
   const [runStarted, setRunStarted] = useState(false)
   const [integrationQuery, setIntegrationQuery] = useState<{ id?: string; key: string; version?: string }>()
   const [workflow, setWorkflow] = useState<Workflow>()
+  const [workflowTrigger, setWorkflowTrigger] = useState<WorkflowTrigger>()
   const [workflowActions, setWorkflowActions] = useState<WorkflowAction[]>()
   const [createWorkflow] = useCreateOneWorkflow()
   const [createWorkflowTrigger] = useCreateOneWorkflowTrigger()
@@ -156,6 +157,9 @@ export function useCreateWorkflowWithOperations() {
             },
           },
         })
+        if (workflowTriggerRes.data?.createOneWorkflowTrigger) {
+          setWorkflowTrigger(workflowTriggerRes.data.createOneWorkflowTrigger)
+        }
       } catch (e) {
         setError((e as Error)?.message)
       }
@@ -204,6 +208,7 @@ export function useCreateWorkflowWithOperations() {
   return {
     createWorflowWithOperations,
     workflow,
+    workflowTrigger,
     workflowActions,
     loading,
     error,
