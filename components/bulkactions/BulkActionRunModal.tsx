@@ -8,7 +8,6 @@ import { Loading } from '../common/RequestStates/Loading'
 interface Props {
   open?: boolean
   workflow: Workflow
-  onContinue?: () => any
   onCancel: () => any
 }
 
@@ -26,7 +25,7 @@ const workflowRunFragment = gql`
   }
 `
 
-export const BulkActionRunModal = ({ open = true, workflow, onContinue, onCancel }: Props) => {
+export const BulkActionRunModal = ({ open = true, workflow, onCancel }: Props) => {
   const { data, loading, error, refetch } = useGetWorkflowRuns(workflowRunFragment, {
     skip: !open,
     pollInterval: 5000,

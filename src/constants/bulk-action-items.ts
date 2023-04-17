@@ -99,6 +99,7 @@ export const bulkActions: Action[] = [
     },
     imports: {
       handle: 'handle',
+      address: 'handle',
     },
   },
   {
