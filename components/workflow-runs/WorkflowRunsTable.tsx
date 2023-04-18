@@ -16,7 +16,12 @@ export const WorkflowRunsTable = ({ workflowRuns, workflow }: Props) => {
   const dataSource = workflowRuns.map((run) => ({
     key: run.id,
     started: <span title={run.createdAt}>{dayjs(run.createdAt).fromNow()}</span>,
-    status: run.status,
+    status:
+      ['completed', 'failed'].includes(run.status) && run.itemsProcessed && run.itemsProcessed > 1
+        ? run.status === 'failed' && run.itemsProcessed && run.itemsFailed && run.itemsProcessed > run.itemsFailed
+          ? `${run.itemsProcessed - run.itemsFailed} items completed / ${run.itemsFailed} items failed.`
+          : `${run.itemsProcessed} items ${run.status}.`
+        : run.status,
     operationsUsed: run.operationsUsed,
     logs: (
       <Link key={run.id} href={`/workflows/${workflow.id}/run/${run.id}`}>
@@ -61,6 +66,8 @@ WorkflowRunsTable.fragments = {
         workflowTriggered
       }
       operationsUsed
+      itemsProcessed
+      itemsFailed
     }
   `,
   Workflow: gql`
