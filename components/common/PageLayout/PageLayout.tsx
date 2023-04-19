@@ -1,5 +1,6 @@
 import {
   FileOutlined,
+  GroupOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -156,6 +157,11 @@ export default function PageLayout({ children }: Props) {
               ? [
                   { key: '/dashboard', label: <Link href="/dashboard">Dashboard</Link>, icon: <ProjectOutlined /> },
                   { key: '/workflows', label: <Link href="/workflows">Workflows</Link>, icon: <ProfileOutlined /> },
+                  {
+                    key: '/bulkactions',
+                    label: <Link href="/bulkactions">Bulk Actions</Link>,
+                    icon: <GroupOutlined />,
+                  },
                   { key: '/credentials', label: <Link href="/credentials">Credentials</Link>, icon: <GoKey /> },
                   { key: 'divider1', label: <Divider style={{ backgroundColor: '#ff9c00' }} /> },
                   {
