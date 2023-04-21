@@ -93,7 +93,7 @@
     "eslint": "^8.37.0",
     "eslint-config-next": "^12.2.3",
     "express": "^4.17.1",
-    "http-proxy-middleware": "^1.0.5",
+    "http-proxy-middleware": "^2.0.6",
     "jest": "^26.4.2",
     "prettier": "^2.8.6",
     "sharp": "0.30.7",
