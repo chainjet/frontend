@@ -20,8 +20,8 @@ import { Loading } from '../../../components/common/RequestStates/Loading'
 import { RequestError } from '../../../components/common/RequestStates/RequestError'
 import { EmailSettingsModal } from '../../../components/users/settings/EmailSettingsModal'
 import { Address } from '../../../components/wallet/Address'
-import { WorkflowDiagramFragments } from '../../../components/workflow-nodes/workflow-diagram/WorkflowDiagramFragments'
 import { WorkflowDiagramContainer } from '../../../components/workflow-nodes/WorkflowDiagramContainer'
+import { WorkflowDiagramFragments } from '../../../components/workflow-nodes/workflow-diagram/WorkflowDiagramFragments'
 import { WorkflowRunHistoryModal } from '../../../components/workflow-runs/WorkflowRunHistoryModal'
 import { WorkflowRunsTable } from '../../../components/workflow-runs/WorkflowRunsTable'
 import { DeployWorkflowModal } from '../../../components/workflows/DeployWorkflowModal'
@@ -154,9 +154,13 @@ function WorkflowPage({ workflowId }: Props) {
   }
 
   const renderHeaderExtra = () => [
-    isOwnerByViewer && !workflow.isTemplate && workflow.trigger && (!workflow.network || workflow.address) && (
-      <EnableWorkflowSwitch workflow={workflow} onWorkflowEnableChange={handleWorkflowChange} />
-    ),
+    isOwnerByViewer &&
+      !workflow.isTemplate &&
+      workflow.trigger &&
+      !!workflow.actions?.edges?.length &&
+      (!workflow.network || workflow.address) && (
+        <EnableWorkflowSwitch workflow={workflow} onWorkflowEnableChange={handleWorkflowChange} />
+      ),
 
     isOwnerByViewer && !workflow.isTemplate && workflow.network && !workflow.address && (
       <Button type="primary" key="deploy" onClick={() => setDeployWorkflowModalOpen(true)}>
