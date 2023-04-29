@@ -39,14 +39,14 @@ export const WorkflowsTable = ({ workflows }: Props) => {
       ),
     },
     {
-      title: 'Enabled?',
+      title: 'Is Active?',
       dataIndex: 'enabled',
       key: 'enabled',
       render: (_: any, workflow: Workflow) => (
         <>
           {workflow.isTemplate ? (
             '-'
-          ) : workflow.trigger?.enabled ? (
+          ) : workflow.trigger?.enabled && workflow.actions?.edges.length ? (
             <span className="text-green-600">
               <CheckOutlined />
             </span>
