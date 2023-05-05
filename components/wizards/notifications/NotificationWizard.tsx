@@ -1,9 +1,7 @@
 import { Card, List, Typography } from 'antd'
-import { useMemo, useState } from 'react'
-import { EventNotificationStep } from './EventNotificationStep'
-import { NftNotificationStep } from './NftNotificationStep'
-import { TokenNotificationStep } from './TokenNotificationStep'
-import { TransactionNotificationStep } from './TransactionNotificationStep'
+import { useState } from 'react'
+import { NotificationTrigger, notificationTriggers } from '../../../src/constants/notification-triggers'
+import { NotificationStep } from './NotificationStep'
 
 interface TriggerOption {
   id: string
@@ -13,40 +11,10 @@ interface TriggerOption {
 }
 
 export function NotificationWizard() {
-  const [triggerOption, setTriggerOption] = useState<TriggerOption | null>(null)
+  const [notificationTrigger, setNotificationTrigger] = useState<NotificationTrigger | null>(null)
 
-  const triggerTypeOptions: TriggerOption[] = useMemo(
-    () => [
-      {
-        id: 'token-transfer',
-        name: 'Token received on an address',
-        description: 'A notification is sent every time a token is received on a given address.',
-        component: <TokenNotificationStep />,
-      },
-      {
-        id: 'nft-transfer',
-        name: 'NFT received on an address',
-        description: 'A notification is sent every time a NFT is received on a given address.',
-        component: <NftNotificationStep />,
-      },
-      {
-        id: 'transaction',
-        name: 'Transaction made on an address',
-        description: 'A notification is sent every time a transaction is made on a given address.',
-        component: <TransactionNotificationStep />,
-      },
-      {
-        id: 'event',
-        name: 'Event emitted by a smart contract',
-        description: 'A notification is sent every time a given smart contract emits an event.',
-        component: <EventNotificationStep />,
-      },
-    ],
-    [],
-  )
-
-  const onTriggerOptionSelected = (option: TriggerOption) => {
-    setTriggerOption(option)
+  const onNotificationTriggerSelected = (notificationTrigger: NotificationTrigger) => {
+    setNotificationTrigger(notificationTrigger)
   }
 
   return (
@@ -57,12 +25,12 @@ export function NotificationWizard() {
           itemLayout="horizontal"
           size="small"
           bordered
-          dataSource={triggerTypeOptions}
+          dataSource={notificationTriggers}
           renderItem={(option) => (
             <List.Item
-              onClick={() => onTriggerOptionSelected(option)}
+              onClick={() => onNotificationTriggerSelected(option)}
               className={`cursor-pointer hover:bg-blue-50 hover:shadow-sm ${
-                triggerOption?.id === option.id ? 'bg-blue-50' : ''
+                notificationTrigger?.id === option.id ? 'bg-blue-50' : ''
               }`}
             >
               <List.Item.Meta
@@ -73,7 +41,11 @@ export function NotificationWizard() {
           )}
         />
       </div>
-      <div>{triggerOption && triggerOption.component}</div>
+      <div>
+        {notificationTrigger && (
+          <NotificationStep key={notificationTrigger.id} notificationTrigger={notificationTrigger} />
+        )}
+      </div>
     </Card>
   )
 }
