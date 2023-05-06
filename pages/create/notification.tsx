@@ -2,20 +2,19 @@ import Head from 'next/head'
 import { PageWrapper } from '../../components/common/PageLayout/PageWrapper'
 import { NotificationWizard } from '../../components/wizards/notifications/NotificationWizard'
 import { withApollo } from '../../src/apollo'
-import { useRedirectGuests } from '../../src/services/UserHooks'
+import { getHeadMetatags } from '../../src/utils/html.utils'
 
 function CreateNotificationPage() {
-  const { signer } = useRedirectGuests()
-  if (!signer) {
-    return <></>
-  }
-
   return (
     <>
       <Head>
-        <title>Create a smart contract notification</title>
+        {getHeadMetatags({
+          path: '/create/notification',
+          title: 'Receive Web3 Notifications',
+          description: 'Receive Web3 Notifications by by Email, Discord, Telegram, or XMTP.',
+        })}
       </Head>
-      <PageWrapper title="Create a smart contract notification">
+      <PageWrapper title="Web3 Notifications">
         <div className="container max-w-4xl mx-auto">
           <NotificationWizard />
         </div>

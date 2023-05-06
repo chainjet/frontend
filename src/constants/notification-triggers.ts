@@ -6,6 +6,7 @@ export interface NotificationTrigger {
   id: string
   name: string
   description: string
+  image: string
   workflowName: string
   instantTrigger?: boolean
   schema?: JSONSchema7 // if schema is not provided, it will be fetched from the integration trigger
@@ -18,15 +19,7 @@ export interface NotificationTrigger {
       subject: string
       body: string
     }
-    discord: {
-      message: string
-    }
-    telegram: {
-      message: string
-    }
-    xmtp: {
-      message: string
-    }
+    message: string
   }
   validateInputs?: (inputs: Record<string, any>) => void
 }
@@ -35,7 +28,8 @@ export const notificationTriggers: NotificationTrigger[] = [
   {
     id: 'token-transfer',
     name: 'Token received on an address',
-    description: 'A notification is sent every time a token is received on a given address.',
+    description: 'Receive a notification every time a token is received on a given address.',
+    image: 'https://raw.githubusercontent.com/chainjet/assets/master/notifications/token.svg',
     workflowName: 'Send notification when a token is received',
     schema: {
       type: 'object',
@@ -49,7 +43,7 @@ export const notificationTriggers: NotificationTrigger[] = [
         },
         contractaddress: {
           title: 'Token address',
-          description: 'Filter by token contract address',
+          description: 'Filter by token contract address. Leave empty to get notifications for all tokens.',
           type: 'string',
         },
       },
@@ -72,15 +66,7 @@ export const notificationTriggers: NotificationTrigger[] = [
               `There was a transfer on a token you are watching.\n\n` +
               `View it on ${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
           },
-      discord: {
-        message: `New token transfer:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
-      },
-      telegram: {
-        message: `New token transfer:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
-      },
-      xmtp: {
-        message: `New token transfer:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
-      },
+      message: `New token transfer:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
     }),
     validateInputs: (inputs) => {
       if (!inputs.address && !inputs.contractaddress) {
@@ -91,7 +77,8 @@ export const notificationTriggers: NotificationTrigger[] = [
   {
     id: 'nft-transfer',
     name: 'NFT received on an address',
-    description: 'A notification is sent every time a NFT is received on a given address.',
+    description: 'Receive a notification every time a NFT is received on a given address.',
+    image: 'https://raw.githubusercontent.com/chainjet/assets/master/notifications/nft.svg',
     workflowName: 'Send notification when an NFT is received',
     schema: {
       type: 'object',
@@ -111,7 +98,7 @@ export const notificationTriggers: NotificationTrigger[] = [
         },
         contractaddress: {
           title: 'Token address',
-          description: 'Filter by token contract address',
+          description: 'Filter by token contract address. Leave empty to get notifications for all NFTs.',
           type: 'string',
         },
       },
@@ -134,15 +121,7 @@ export const notificationTriggers: NotificationTrigger[] = [
               `There was a transfer on an NFT you are watching.\n\n` +
               `View it on ${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
           },
-      discord: {
-        message: `New NFT transfer:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
-      },
-      telegram: {
-        message: `New NFT transfer:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
-      },
-      xmtp: {
-        message: `New NFT transfer:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
-      },
+      message: `New NFT transfer:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
     }),
     validateInputs: (inputs) => {
       if (!inputs.address && !inputs.contractaddress) {
@@ -153,7 +132,8 @@ export const notificationTriggers: NotificationTrigger[] = [
   {
     id: 'transaction',
     name: 'Transaction made on an address',
-    description: 'A notification is sent every time a transaction is made on a given address.',
+    description: 'Receive a notification every time a transaction is made on a given address.',
+    image: 'https://raw.githubusercontent.com/chainjet/assets/master/notifications/transaction.svg',
     workflowName: 'Send notification when a transaction occurs',
     schema: {
       type: 'object',
@@ -178,21 +158,14 @@ export const notificationTriggers: NotificationTrigger[] = [
           `There was a transaction on an address you are watching.\n\n` +
           `View it on ${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
       },
-      discord: {
-        message: `New transaction:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
-      },
-      telegram: {
-        message: `New transaction:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
-      },
-      xmtp: {
-        message: `New transaction:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
-      },
+      message: `New transaction:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
     }),
   },
   {
     id: 'event',
     name: 'Event emitted by a smart contract',
-    description: 'A notification is sent every time a given smart contract emits an event.',
+    description: 'Receive a notification when a smart contract emits an event.',
+    image: 'https://raw.githubusercontent.com/chainjet/assets/master/notifications/event.svg',
     workflowName: 'Send notification when an event is emitted',
     instantTrigger: true,
     triggerData: () => ({
@@ -206,21 +179,28 @@ export const notificationTriggers: NotificationTrigger[] = [
           `There was a new {{trigger.eventName}} event on an address you are watching.\n\n` +
           `View it on ${NETWORK[inputs.network as ChainId]?.explorerUrl}/tx/{{trigger.transactionHash}}`,
       },
-      discord: {
-        message:
-          `New {{trigger.eventName}}:\n` +
-          `${NETWORK[inputs.network as ChainId]?.explorerUrl}/tx/{{trigger.transactionHash}}`,
+      message:
+        `New {{trigger.eventName}}:\n` +
+        `${NETWORK[inputs.network as ChainId]?.explorerUrl}/tx/{{trigger.transactionHash}}`,
+    }),
+  },
+  {
+    id: 'ens-expiration',
+    name: 'ENS domain is about to expire',
+    description: 'Receive a notification when an ENS domain is about to expire.',
+    image: 'https://raw.githubusercontent.com/chainjet/assets/master/dapps/app.ens.domains.png',
+    workflowName: 'ENS domain is about to expire',
+    instantTrigger: true,
+    triggerData: () => ({
+      integrationKey: 'ens',
+      operationKey: 'domainExpires',
+    }),
+    actionData: () => ({
+      email: {
+        subject: `ENS {{trigger.name}} is about to expire`,
+        body: `The ENS domain {{trigger.name}} will expire on {{trigger.expiryDate}}.`,
       },
-      telegram: {
-        message:
-          `New {{trigger.eventName}}:\n` +
-          `${NETWORK[inputs.network as ChainId]?.explorerUrl}/tx/{{trigger.transactionHash}}`,
-      },
-      xmtp: {
-        message:
-          `New {{trigger.eventName}}:\n` +
-          `${NETWORK[inputs.network as ChainId]?.explorerUrl}/tx/{{trigger.transactionHash}}`,
-      },
+      message: `ENS {{trigger.name}} is about to expire.`,
     }),
   },
 ]

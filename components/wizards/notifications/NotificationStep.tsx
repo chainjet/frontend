@@ -29,9 +29,10 @@ const integrationTriggerFragment = gql`
 
 interface Props {
   notificationTrigger: NotificationTrigger
+  readonly?: boolean
 }
 
-export function NotificationStep({ notificationTrigger }: Props) {
+export function NotificationStep({ notificationTrigger, readonly }: Props) {
   const [inputs, setInputs] = useState<Record<string, any>>({})
   const [credentialsId, setCredentialsId] = useState<string>()
   const [notificationIntegration, setNotificationIntegration] = useState<Integration>()
@@ -95,7 +96,7 @@ export function NotificationStep({ notificationTrigger }: Props) {
           key: 'sendMessage',
           inputs: {
             channelId: inputs.channelId,
-            content: actionData.discord.message,
+            content: actionData.message,
           },
           credentialsId,
         }
@@ -104,7 +105,7 @@ export function NotificationStep({ notificationTrigger }: Props) {
           key: 'telegram_bot_api-send-text-message-or-reply',
           inputs: {
             chatId: inputs.chatId,
-            text: actionData.telegram.message,
+            text: actionData.message,
           },
           credentialsId,
         }
@@ -113,7 +114,7 @@ export function NotificationStep({ notificationTrigger }: Props) {
           key: 'sendMessageWallet',
           inputs: {
             address,
-            message: actionData.xmtp.message,
+            message: actionData.message,
           },
           credentialsId,
         }
@@ -195,6 +196,7 @@ export function NotificationStep({ notificationTrigger }: Props) {
             hideSubmit
             onChange={setChangedInputs}
             onSubmit={onFormSubmit}
+            readonly={readonly}
           />
         </div>
       ) : integrationTrigger ? (
@@ -205,6 +207,7 @@ export function NotificationStep({ notificationTrigger }: Props) {
           onChange={setChangedInputs}
           onSubmitOperationInputs={onFormSubmit}
           hideSubmit
+          readonly={readonly}
         />
       ) : (
         <Loading />
@@ -218,7 +221,7 @@ export function NotificationStep({ notificationTrigger }: Props) {
         </div>
       )}
       <div className="mb-8">
-        <Button type="primary" htmlType="submit" loading={loading} onClick={onFormSubmit}>
+        <Button type="primary" htmlType="submit" loading={loading} onClick={onFormSubmit} disabled={readonly}>
           Submit
         </Button>
       </div>
