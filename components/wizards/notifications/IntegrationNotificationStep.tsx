@@ -39,7 +39,7 @@ const notificationIntegrations = [
     name: 'Discord',
   },
   {
-    key: 'telegram-bot',
+    key: 'telegram',
     name: 'Telegram',
   },
   {
@@ -221,20 +221,10 @@ export function IntegrationNotificationStep({
         ) : (
           <Loading />
         ))}
-      {integrationSelected?.key === 'telegram-bot' && (
+      {integrationSelected?.key === 'telegram' && (
         <div className="mt-8">
           <SchemaForm
-            schema={{
-              type: 'object',
-              required: ['chatId'],
-              properties: {
-                chatId: {
-                  type: 'string',
-                  title: 'Chat ID',
-                  description: `Enter the unique identifier for the target chat (e.g. 1035597319) or username of the target public chat (in the format @channelusername or @supergroupusername). For example, if the group's public link is t.me/mygroup, the username is @mygroup.`,
-                },
-              },
-            }}
+            schema={{}}
             onChange={onFormInputsChanged}
             onSubmit={() => {}}
             initialInputs={extraInputs}

@@ -108,11 +108,10 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
           },
           credentialsId,
         }
-      case 'telegram-bot':
+      case 'telegram':
         return {
-          key: 'telegram_bot_api-send-text-message-or-reply',
+          key: 'sendMessage',
           inputs: {
-            chatId: inputs.chatId,
             text: actionData.message,
           },
           credentialsId,
