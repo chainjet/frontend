@@ -212,6 +212,7 @@ function SetupBulkActionPage() {
         },
         actions: [
           {
+            integrationKey: actionIntegration.key,
             key: action.operationKey,
             inputs: {
               ...inputs, // TODO filter only action?
@@ -280,10 +281,10 @@ function SetupBulkActionPage() {
       </Head>
       <PageWrapper title="Create a Bulk Action" extra={<OperationsUsed />}>
         <div className="container px-0 mx-auto lg:px-24">
-          <Card className="w-full flex justify-center">
-            <div className="w-full md:w-fit gap-4 my-8 mx-0 lg:mx-48">
-              <div className="text-center text-2xl font-bold mb-8">Select Data Source and Action</div>
-              <div className="text-center text-lg mb-12">
+          <Card className="flex justify-center w-full">
+            <div className="w-full gap-4 mx-0 my-8 md:w-fit lg:mx-48">
+              <div className="mb-8 text-2xl font-bold text-center">Select Data Source and Action</div>
+              <div className="mb-12 text-lg text-center">
                 To create a Bulk Action, select a data source and an action. The action will be executed for all items
                 in the data source.
               </div>

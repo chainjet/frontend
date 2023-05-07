@@ -92,6 +92,7 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
           throw new Error(`Email is required`)
         }
         return {
+          integrationKey: key,
           key: 'sendEmailToYourself',
           inputs: {
             email: inputs.email,
@@ -101,6 +102,7 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
         }
       case 'discord':
         return {
+          integrationKey: key,
           key: 'sendMessage',
           inputs: {
             channelId: inputs.channelId,
@@ -110,6 +112,7 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
         }
       case 'telegram':
         return {
+          integrationKey: key,
           key: 'sendMessage',
           inputs: {
             text: actionData.message,
@@ -118,6 +121,7 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
         }
       case 'xmtp':
         return {
+          integrationKey: key,
           key: 'sendMessageWallet',
           inputs: {
             address,

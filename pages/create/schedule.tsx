@@ -8,9 +8,9 @@ import { useCallback, useEffect, useState } from 'react'
 import { SchemaForm } from '../../components/common/Forms/schema-form/SchemaForm'
 import { PageWrapper } from '../../components/common/PageLayout/PageWrapper'
 import { IntegrationAvatar } from '../../components/integrations/IntegrationAvatar'
+import { WorkflowNodeDrawer } from '../../components/workflow-nodes/drawer/WorkflowNodeDrawer'
 import { ActionInputsForm } from '../../components/workflow-nodes/drawer/steps/ActionInputsForm'
 import { SelectCredentials } from '../../components/workflow-nodes/drawer/steps/credentials/SelectCredentials'
-import { WorkflowNodeDrawer } from '../../components/workflow-nodes/drawer/WorkflowNodeDrawer'
 import { IntegrationAction } from '../../graphql'
 import { withApollo } from '../../src/apollo'
 import { useGetIntegrationActionById, useGetIntegrationActions } from '../../src/services/IntegrationActionHooks'
@@ -157,6 +157,7 @@ function NewSchedulePage() {
         },
         actions: [
           {
+            integrationKey: integrationAction.integration.key,
             key: integrationAction.key,
             inputs: action.inputs,
             credentialsId: action.credentialsID,

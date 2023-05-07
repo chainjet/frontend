@@ -18,6 +18,8 @@ type OperationData = {
 
 type TriggerData = OperationData & { schedule?: Record<string, any> }
 
+type ActionData = OperationData & { integrationKey: string }
+
 interface CreateWorkflowWithOperations {
   workflowName: string
   triggerIntegration: {
@@ -26,7 +28,7 @@ interface CreateWorkflowWithOperations {
     version?: string
   }
   trigger: TriggerData
-  actions: Array<OperationData>
+  actions: ActionData[]
 }
 
 const integrationFragment = gql`
@@ -47,6 +49,10 @@ const integrationActionFragment = gql`
   fragment WizardHookIntegrationActionFragment on IntegrationAction {
     id
     key
+    integration {
+      id
+      key
+    }
   }
 `
 
@@ -54,7 +60,7 @@ export function useCreateWorkflowWithOperations() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [trigger, setTrigger] = useState<TriggerData>()
-  const [actions, setActions] = useState<Array<OperationData>>()
+  const [actions, setActions] = useState<Array<ActionData>>()
   const [runStarted, setRunStarted] = useState(false)
   const [integrationQuery, setIntegrationQuery] = useState<{ id?: string; key: string; version?: string }>()
   const [workflow, setWorkflow] = useState<Workflow>()
@@ -164,28 +170,36 @@ export function useCreateWorkflowWithOperations() {
         setError((e as Error)?.message)
       }
 
-      // TODO support multiple actions
-      if (integrationActions?.length) {
-        try {
+      try {
+        const workflowActions: WorkflowAction[] = []
+        for (const action of actions) {
+          const integrationAction = integrationActions?.find(
+            (ia) => ia.key === action.key && ia.integration.key === action.integrationKey,
+          )
+          if (!integrationAction) {
+            setError(`Integration action not found`)
+            return
+          }
           const workflowActionRes = await createWorkflowAction({
             variables: {
               input: {
                 workflowAction: {
                   workflow: workflow.id,
-                  integrationAction: integrationActions[0].id,
-                  inputs: actions[0].inputs,
-                  credentials: actions[0].credentialsId,
-                  name: actions[0].name,
+                  integrationAction: integrationAction.id,
+                  inputs: action.inputs,
+                  credentials: action.credentialsId,
+                  name: action.name,
                 },
               },
             },
           })
           if (workflowActionRes.data?.createOneWorkflowAction) {
-            setWorkflowActions([workflowActionRes.data.createOneWorkflowAction])
+            workflowActions.push(workflowActionRes.data.createOneWorkflowAction)
           }
-        } catch (e) {
-          setError((e as Error)?.message)
         }
+        setWorkflowActions(workflowActions)
+      } catch (e) {
+        setError((e as Error)?.message)
       }
 
       runStartedInternal = false
