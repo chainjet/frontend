@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 import { Alert, Button } from 'antd'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useAccount } from 'wagmi'
 import { Integration } from '../../../graphql'
 import { NotificationTrigger } from '../../../src/constants/notification-triggers'
@@ -10,7 +10,7 @@ import { useGetIntegrationTriggers } from '../../../src/services/IntegrationTrig
 import { useCreateWorkflowWithOperations } from '../../../src/services/WizardHooks'
 import { SchemaForm } from '../../common/Forms/schema-form/SchemaForm'
 import { Loading } from '../../common/RequestStates/Loading'
-import { TriggerInputsForm } from '../../workflow-nodes/drawer/steps/TriggerInputsForm'
+import { TriggerInputsForm, TriggerInputsFormRef } from '../../workflow-nodes/drawer/steps/TriggerInputsForm'
 import { IntegrationNotificationStep } from './IntegrationNotificationStep'
 
 const integrationFragment = gql`
@@ -36,16 +36,17 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
   const [inputs, setInputs] = useState<Record<string, any>>({})
   const [credentialsId, setCredentialsId] = useState<string>()
   const [notificationIntegration, setNotificationIntegration] = useState<Integration>()
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { address } = useAccount()
   const {
     createWorflowWithOperations,
     workflow,
     workflowActions,
-    loading,
     error: createError,
   } = useCreateWorkflowWithOperations()
   const router = useRouter()
+  const triggerInputsFormRef = useRef<TriggerInputsFormRef>(null)
 
   // notification triggers without schema need to fetch from the integration trigger
   const schemaDefined = !!notificationTrigger.schema
@@ -75,6 +76,13 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
       router.push(`/workflows/${workflow.id}?success=true`)
     }
   }, [router, workflow, workflowActions])
+
+  // stop loading on errors
+  useEffect(() => {
+    if (createError) {
+      setLoading(false)
+    }
+  }, [createError])
 
   const getWorkflowActionData = (key: string) => {
     const actionData = notificationTrigger.actionData(inputs)
@@ -141,25 +149,33 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
   }
 
   const onFormSubmit = async () => {
-    if (!inputs) {
+    const childInputs = triggerInputsFormRef?.current?.getInputs()
+    const workflowInputs = childInputs ?? inputs
+
+    if (!workflowInputs) {
       return
     }
 
+    setLoading(true)
+    setError(null)
+
     try {
       // throws exception if inputs are invalid
-      notificationTrigger.validateInputs?.(inputs)
+      notificationTrigger.validateInputs?.(workflowInputs)
     } catch (e) {
+      setLoading(false)
       setError((e as Error).message)
       return
     }
 
     if (!notificationIntegration) {
+      setLoading(false)
       setError('Please select an integration')
       return
     }
-    setError(null)
+
     try {
-      const { integrationKey, operationKey } = notificationTrigger.triggerData(inputs)
+      const { integrationKey, operationKey } = notificationTrigger.triggerData(workflowInputs)
       await createWorflowWithOperations({
         workflowName: notificationTrigger.workflowName,
         triggerIntegration: {
@@ -168,7 +184,7 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
         trigger: {
           key: operationKey,
           inputs: {
-            ...inputs,
+            ...workflowInputs,
           },
           ...(notificationTrigger.instantTrigger
             ? {}
@@ -182,6 +198,7 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
         actions: [getWorkflowActionData(notificationIntegration.key)],
       })
     } catch (e: any) {
+      setLoading(false)
       setError(e.message)
     }
   }
@@ -201,10 +218,10 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
         </div>
       ) : integrationTrigger ? (
         <TriggerInputsForm
+          ref={triggerInputsFormRef}
           triggerId={integrationTrigger.id}
           accountCredentialId={undefined}
           initialInputs={inputs}
-          onChange={setChangedInputs}
           onSubmitOperationInputs={onFormSubmit}
           hideSubmit
           readonly={readonly}
