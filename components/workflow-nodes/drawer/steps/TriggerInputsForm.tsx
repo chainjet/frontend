@@ -29,6 +29,7 @@ interface Props {
   onSubmitOperationInputs: (inputs: TriggerInputs) => Promise<any>
   getInputsCallback?: (inputs: Record<string, any>) => any
   hideSubmit?: boolean
+  hidePolling?: boolean
 }
 
 const triggerInputsFormFragment = gql`
@@ -53,6 +54,7 @@ export const TriggerInputsForm = forwardRef(
       readonly,
       onSubmitOperationInputs,
       hideSubmit,
+      hidePolling,
     }: Props,
     ref: Ref<TriggerInputsFormRef>,
   ) => {
@@ -90,7 +92,13 @@ export const TriggerInputsForm = forwardRef(
 
     useEffect(() => {
       // Initialize chainjet_schedule if it's not defined
-      if (integrationTrigger && !integrationTrigger.instant && integrationTrigger.key === 'schedule' && viewer) {
+      if (
+        integrationTrigger &&
+        !integrationTrigger.instant &&
+        integrationTrigger.key === 'schedule' &&
+        viewer &&
+        !hidePolling
+      ) {
         if (isEmptyObj(inputs?.chainjet_schedule || {})) {
           setInputs({
             ...inputs,
@@ -101,7 +109,7 @@ export const TriggerInputsForm = forwardRef(
           })
         }
       }
-    }, [inputs, integrationTrigger, viewer])
+    }, [inputs, integrationTrigger, viewer, hidePolling])
 
     // support to get inputs from parent without using onChange
     useImperativeHandle(
@@ -121,7 +129,7 @@ export const TriggerInputsForm = forwardRef(
 
     let schema = retrocycle(data.integrationTrigger.schemaRequest) as JSONSchema7
 
-    if (!data.integrationTrigger.instant) {
+    if (!data.integrationTrigger.instant && !hidePolling) {
       if (data.integrationTrigger.key === 'schedule') {
         schema = {
           ...schema,

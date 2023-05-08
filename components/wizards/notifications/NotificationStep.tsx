@@ -227,6 +227,7 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
           initialInputs={inputs}
           onSubmitOperationInputs={onFormSubmit}
           hideSubmit
+          hidePolling
           readonly={readonly}
         />
       ) : (
