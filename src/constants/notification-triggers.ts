@@ -10,11 +10,18 @@ export interface NotificationTrigger {
   workflowName: string
   instantTrigger?: boolean
   schema?: JSONSchema7 // if schema is not provided, it will be fetched from the integration trigger
-  triggerData: (inputs: Record<string, any>) => {
+  triggerData: (
+    inputs: Record<string, any>,
+    signer: string | undefined,
+  ) => {
     integrationKey: string
     operationKey: string
+    inputs?: Record<string, any> // replace trigger inputs
   }
-  actionData: (inputs: Record<string, any>) => {
+  actionData: (
+    inputs: Record<string, any>,
+    signer: string | undefined,
+  ) => {
     email: {
       subject: string
       body: string
@@ -27,8 +34,8 @@ export interface NotificationTrigger {
 export const notificationTriggers: NotificationTrigger[] = [
   {
     id: 'token-transfer',
-    name: 'Token received on an address',
-    description: 'Receive a notification every time a token is received on a given address.',
+    name: 'Track tokens received in your wallet',
+    description: 'Receive a notification every time your wallet recevies a token.',
     image: 'https://raw.githubusercontent.com/chainjet/assets/master/notifications/token.svg',
     workflowName: 'Send notification when a token is received',
     schema: {
@@ -36,11 +43,6 @@ export const notificationTriggers: NotificationTrigger[] = [
       required: ['network'],
       properties: {
         network: getEtherscanNetworkSchema(),
-        address: {
-          title: 'Receiver address',
-          description: 'Filter by receiver address',
-          type: 'string',
-        },
         contractaddress: {
           title: 'Token address',
           description: 'Filter by token contract address. Leave empty to get notifications for all tokens.',
@@ -48,14 +50,18 @@ export const notificationTriggers: NotificationTrigger[] = [
         },
       },
     },
-    triggerData: (inputs) => ({
+    triggerData: (inputs, signer) => ({
       integrationKey: inputs.network,
       operationKey: 'listERC20TokenTransfers',
+      inputs: {
+        ...inputs,
+        address: signer,
+      },
     }),
-    actionData: (inputs) => ({
+    actionData: (inputs, signer) => ({
       email: inputs.address
         ? {
-            subject: `New token received on ${inputs.address}`,
+            subject: `New token received on ${signer}`,
             body:
               `A wallet you are watching just received a token.\n\n` +
               `View it on ${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
@@ -68,16 +74,11 @@ export const notificationTriggers: NotificationTrigger[] = [
           },
       message: `New token transfer:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
     }),
-    validateInputs: (inputs) => {
-      if (!inputs.address && !inputs.contractaddress) {
-        throw new Error('Either receiver address or token address must be provided.')
-      }
-    },
   },
   {
     id: 'nft-transfer',
-    name: 'NFT received on an address',
-    description: 'Receive a notification every time a NFT is received on a given address.',
+    name: 'Track NFTs received in your wallet',
+    description: 'Receive a notification every time your wallet receives an NFT.',
     image: 'https://raw.githubusercontent.com/chainjet/assets/master/notifications/nft.svg',
     workflowName: 'Send notification when an NFT is received',
     schema: {
@@ -91,11 +92,6 @@ export const notificationTriggers: NotificationTrigger[] = [
           default: 'ERC721',
           enum: ['ERC721', 'ERC1155'],
         },
-        address: {
-          title: 'Receiver address',
-          description: 'Filter by receiver address',
-          type: 'string',
-        },
         contractaddress: {
           title: 'Token address',
           description: 'Filter by token contract address. Leave empty to get notifications for all NFTs.',
@@ -103,14 +99,18 @@ export const notificationTriggers: NotificationTrigger[] = [
         },
       },
     },
-    triggerData: (inputs) => ({
+    triggerData: (inputs, signer) => ({
       integrationKey: inputs.network,
       operationKey: inputs.nftType === 'ERC1155' ? 'listERC1155TokenTransfers' : 'listERC721TokenTransfers',
+      inputs: {
+        ...inputs,
+        address: signer,
+      },
     }),
-    actionData: (inputs) => ({
+    actionData: (inputs, signer) => ({
       email: inputs.address
         ? {
-            subject: `New NFT received on ${inputs.address}`,
+            subject: `New NFT received on ${signer}`,
             body:
               `A wallet you are watching just received an NFT.\n\n` +
               `View it on ${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
@@ -123,15 +123,10 @@ export const notificationTriggers: NotificationTrigger[] = [
           },
       message: `New NFT transfer:\n\n` + `${getExplorerUrlForIntegration(inputs.network)}/tx/{{trigger.hash}}`,
     }),
-    validateInputs: (inputs) => {
-      if (!inputs.address && !inputs.contractaddress) {
-        throw new Error('Either receiver address or token address must be provided.')
-      }
-    },
   },
   {
     id: 'transaction',
-    name: 'Transaction made on an address',
+    name: 'Track transactions made on any address',
     description: 'Receive a notification every time a transaction is made on a given address.',
     image: 'https://raw.githubusercontent.com/chainjet/assets/master/notifications/transaction.svg',
     workflowName: 'Send notification when a transaction occurs',
@@ -163,7 +158,7 @@ export const notificationTriggers: NotificationTrigger[] = [
   },
   {
     id: 'event',
-    name: 'Event emitted by a smart contract',
+    name: 'Track smart contract events',
     description: 'Receive a notification when a smart contract emits an event.',
     image: 'https://raw.githubusercontent.com/chainjet/assets/master/notifications/event.svg',
     workflowName: 'Send notification when an event is emitted',
@@ -186,7 +181,7 @@ export const notificationTriggers: NotificationTrigger[] = [
   },
   {
     id: 'ens-expiration',
-    name: 'ENS domain is about to expire',
+    name: 'Track ENS domain expiration',
     description: 'Receive a notification when an ENS domain is about to expire.',
     image: 'https://raw.githubusercontent.com/chainjet/assets/master/dapps/app.ens.domains.png',
     workflowName: 'ENS domain is about to expire',
@@ -203,4 +198,46 @@ export const notificationTriggers: NotificationTrigger[] = [
       message: `ENS {{trigger.name}} is about to expire.`,
     }),
   },
+  // {
+  //   id: 'lens-new-mention',
+  //   name: 'New mention on Lens Protocol',
+  //   description: 'Receive a notification when you get mentioned on Lens Protocol.',
+  //   image: 'https://chainjet.io/img/lens.png',
+  //   workflowName: 'Get a notification when you get mentioned on Lens',
+  //   triggerData: () => ({
+  //     integrationKey: 'lens',
+  //     operationKey: 'newMention',
+  //   }),
+  //   actionData: () => ({
+  //     email: {
+  //       subject: `New XMTP message by {{ trigger.senderAddress }}`,
+  //       body: `You just received a new XMTP message from <b>{{trigger.senderAddress}}</b> on the conversation <b>{{trigger.conversation.link}}</b>.
+
+  //       <b>Message received:</b>
+  //       {{trigger.content}}`,
+  //     },
+  //     message: `New XMTP message by {{ trigger.senderAddress }}: {{trigger.content}}`,
+  //   }),
+  // },
+  // {
+  //   id: 'xmtp-new-message',
+  //   name: 'New XMTP message received',
+  //   description: 'Receive a notification when you get a new message on XMTP.',
+  //   image: 'https://raw.githubusercontent.com/chainjet/assets/master/dapps/xmtp.org.png',
+  //   workflowName: 'Get a notification when you receive a message on XMTP',
+  //   triggerData: () => ({
+  //     integrationKey: 'xmtp',
+  //     operationKey: 'newMessage',
+  //   }),
+  //   actionData: () => ({
+  //     email: {
+  //       subject: `New XMTP message by {{ trigger.senderAddress }}`,
+  //       body: `You just received a new XMTP message from <b>{{trigger.senderAddress}}</b> on the conversation <b>{{trigger.conversation.link}}</b>.
+
+  //       <b>Message received:</b>
+  //       {{trigger.content}}`,
+  //     },
+  //     message: `New XMTP message by {{ trigger.senderAddress }}: {{trigger.content}}`,
+  //   }),
+  // },
 ]

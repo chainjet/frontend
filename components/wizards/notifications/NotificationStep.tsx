@@ -7,6 +7,7 @@ import { Integration } from '../../../graphql'
 import { NotificationTrigger } from '../../../src/constants/notification-triggers'
 import { useGetIntegrations } from '../../../src/services/IntegrationHooks'
 import { useGetIntegrationTriggers } from '../../../src/services/IntegrationTriggerHooks'
+import { useSigner } from '../../../src/services/UserHooks'
 import { useCreateWorkflowWithOperations } from '../../../src/services/WizardHooks'
 import { SchemaForm } from '../../common/Forms/schema-form/SchemaForm'
 import { Loading } from '../../common/RequestStates/Loading'
@@ -33,6 +34,7 @@ interface Props {
 }
 
 export function NotificationStep({ notificationTrigger, readonly }: Props) {
+  const { signer } = useSigner()
   const [inputs, setInputs] = useState<Record<string, any>>({})
   const [credentialsId, setCredentialsId] = useState<string>()
   const [notificationIntegration, setNotificationIntegration] = useState<Integration>()
@@ -50,7 +52,10 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
 
   // notification triggers without schema need to fetch from the integration trigger
   const schemaDefined = !!notificationTrigger.schema
-  const integrationTriggerKeys = useMemo(() => notificationTrigger.triggerData({}), [notificationTrigger])
+  const integrationTriggerKeys = useMemo(
+    () => notificationTrigger.triggerData({}, signer),
+    [notificationTrigger, signer],
+  )
   const { data: integrationData } = useGetIntegrations(integrationFragment, {
     skip: schemaDefined,
     variables: {
@@ -85,7 +90,7 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
   }, [createError])
 
   const getWorkflowActionData = (key: string) => {
-    const actionData = notificationTrigger.actionData(inputs)
+    const actionData = notificationTrigger.actionData(inputs, signer)
     switch (key) {
       case 'email':
         if (!inputs.email) {
@@ -178,7 +183,11 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
     }
 
     try {
-      const { integrationKey, operationKey } = notificationTrigger.triggerData(workflowInputs)
+      const {
+        integrationKey,
+        operationKey,
+        inputs: triggerInputs,
+      } = notificationTrigger.triggerData(workflowInputs, signer)
       await createWorflowWithOperations({
         workflowName: notificationTrigger.workflowName,
         triggerIntegration: {
@@ -187,7 +196,7 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
         trigger: {
           key: operationKey,
           inputs: {
-            ...workflowInputs,
+            ...(triggerInputs ?? workflowInputs),
           },
           ...(notificationTrigger.instantTrigger
             ? {}
