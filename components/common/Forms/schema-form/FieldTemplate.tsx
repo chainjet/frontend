@@ -99,7 +99,7 @@ export default function FieldTemplate<
                   </span>
                 )}
                 {required && <span className="mr-1 text-red-500">*</span>}
-                {label}
+                {label} {!required && <span className="ml-1 text-xs text-gray-400">(Optional)</span>}
               </>
             )
           }
