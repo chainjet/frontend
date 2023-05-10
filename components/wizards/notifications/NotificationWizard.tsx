@@ -14,7 +14,7 @@ export function NotificationWizard() {
             <Link href={`/create/notification/${notification.id}`}>
               <Card hoverable>
                 <Card.Meta
-                  title={notification.name}
+                  title={<div className="whitespace-normal">{notification.name}</div>}
                   description={notification.description}
                   avatar={<IntegrationAvatar integration={{ name: '', logo: notification.image }} size={40} />}
                 />

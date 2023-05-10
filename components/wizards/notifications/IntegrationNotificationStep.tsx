@@ -139,7 +139,7 @@ export function IntegrationNotificationStep({
         itemLayout="horizontal"
         grid={{
           gutter: 16,
-          xs: 2,
+          xs: 1,
           sm: 3,
           md: 4,
           lg: 4,
@@ -151,11 +151,7 @@ export function IntegrationNotificationStep({
           const isSelected = integrationSelected?.id === integration.id
           return (
             <List.Item onClick={() => onIntegrationSelect(integration)}>
-              <Card
-                hoverable
-                bordered={isSelected}
-                bodyStyle={isSelected ? { backgroundColor: 'rgb(239, 246, 255)' } : {}}
-              >
+              <Card hoverable bordered bodyStyle={isSelected ? { backgroundColor: 'rgb(239, 246, 255)' } : {}}>
                 <Card.Meta avatar={<IntegrationAvatar integration={integration} />} title={name} description="" />
               </Card>
             </List.Item>

@@ -1,4 +1,5 @@
 import { Avatar } from 'antd'
+import { AvatarSize } from 'antd/lib/avatar/SizeContext'
 require('./IntegrationAvatar.less')
 
 interface Props {
@@ -6,7 +7,7 @@ interface Props {
     name: string
     logo?: string | null
   }
-  size?: number
+  size?: AvatarSize
   className?: string
 }
 
