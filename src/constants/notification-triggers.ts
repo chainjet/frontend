@@ -1,5 +1,6 @@
 import { JSONSchema7 } from 'json-schema'
 import { getEtherscanNetworkSchema, getExplorerUrlForIntegration } from '../utils/blockchain.utils'
+import { capitalize } from '../utils/strings'
 import { ChainId, NETWORK } from './networks'
 
 export interface NotificationTrigger {
@@ -196,6 +197,58 @@ export const notificationTriggers: NotificationTrigger[] = [
         body: `The ENS domain {{trigger.name}} will expire on {{trigger.expiryDate}}.`,
       },
       message: `ENS {{trigger.name}} is about to expire.`,
+    }),
+  },
+  {
+    id: 'snapshot-proposal',
+    name: 'Track Snapshot proposals',
+    description: 'Receive a notification when a proposal is created, started, ended or canceled.',
+    image: 'https://raw.githubusercontent.com/chainjet/assets/master/dapps/snapshot.org.png',
+    workflowName: (inputs) => `Get a notification when a ${inputs.space} proposal is ${inputs.status}`,
+    schema: {
+      type: 'object',
+      required: ['space', 'status'],
+      properties: {
+        space: {
+          title: 'Space ENS',
+          type: 'string',
+          description: 'The ENS of the space to listen to',
+        },
+        status: {
+          title: 'Proposal Status',
+          type: 'string',
+          description: 'The status of the proposal to get notifications for',
+          oneOf: [
+            {
+              title: 'Created',
+              const: 'created',
+            },
+            {
+              title: 'Started',
+              const: 'started',
+            },
+            {
+              title: 'Ended',
+              const: 'ended',
+            },
+            {
+              title: 'Canceled',
+              const: 'canceled',
+            },
+          ],
+        },
+      },
+    },
+    triggerData: (inputs) => ({
+      integrationKey: 'snapshot',
+      operationKey: `proposal${capitalize(inputs.status ?? '')}`,
+    }),
+    actionData: (inputs) => ({
+      email: {
+        subject: `A proposal on ${inputs.space} just ${inputs.status}`,
+        body: `Hi there! A Snapshot proposal on ${inputs.space} just ${inputs.status}.\n\n{{trigger.link}}`,
+      },
+      message: `New proposal ${inputs.status}: {{trigger.title}}\n{{trigger.link}}`,
     }),
   },
   {
