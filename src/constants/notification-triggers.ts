@@ -7,7 +7,7 @@ export interface NotificationTrigger {
   name: string
   description: string
   image: string
-  workflowName: string
+  workflowName: (inputs: Record<string, any>, signer: string | undefined) => string
   instantTrigger?: boolean
   schema?: JSONSchema7 // if schema is not provided, it will be fetched from the integration trigger
   triggerData: (
@@ -37,7 +37,7 @@ export const notificationTriggers: NotificationTrigger[] = [
     name: 'Track tokens received in your wallet',
     description: 'Receive a notification every time your wallet recevies a token.',
     image: 'https://raw.githubusercontent.com/chainjet/assets/master/notifications/token.svg',
-    workflowName: 'Send notification when a token is received',
+    workflowName: () => 'Get a notification when you receive a token',
     schema: {
       type: 'object',
       required: ['network'],
@@ -80,7 +80,7 @@ export const notificationTriggers: NotificationTrigger[] = [
     name: 'Track NFTs received in your wallet',
     description: 'Receive a notification every time your wallet receives an NFT.',
     image: 'https://raw.githubusercontent.com/chainjet/assets/master/notifications/nft.svg',
-    workflowName: 'Send notification when an NFT is received',
+    workflowName: () => 'Get a notification when you receive an NFT',
     schema: {
       type: 'object',
       required: ['network', 'nftType'],
@@ -129,7 +129,7 @@ export const notificationTriggers: NotificationTrigger[] = [
     name: 'Track transactions made on any address',
     description: 'Receive a notification every time a transaction is made on a given address.',
     image: 'https://raw.githubusercontent.com/chainjet/assets/master/notifications/transaction.svg',
-    workflowName: 'Send notification when a transaction occurs',
+    workflowName: () => 'Get a notification when a transaction occurs',
     schema: {
       type: 'object',
       required: ['network', 'address'],
@@ -161,7 +161,7 @@ export const notificationTriggers: NotificationTrigger[] = [
     name: 'Track smart contract events',
     description: 'Receive a notification when a smart contract emits an event.',
     image: 'https://raw.githubusercontent.com/chainjet/assets/master/notifications/event.svg',
-    workflowName: 'Send notification when an event is emitted',
+    workflowName: () => 'Get a notification when an event is emitted',
     instantTrigger: true,
     triggerData: () => ({
       integrationKey: 'blockchain',
@@ -184,7 +184,7 @@ export const notificationTriggers: NotificationTrigger[] = [
     name: 'Track ENS domain expiration',
     description: 'Receive a notification when an ENS domain is about to expire.',
     image: 'https://raw.githubusercontent.com/chainjet/assets/master/dapps/app.ens.domains.png',
-    workflowName: 'ENS domain is about to expire',
+    workflowName: (inputs) => `Get a notification when ${inputs.name} is about to expire`,
     instantTrigger: true,
     triggerData: () => ({
       integrationKey: 'ens',
@@ -198,6 +198,25 @@ export const notificationTriggers: NotificationTrigger[] = [
       message: `ENS {{trigger.name}} is about to expire.`,
     }),
   },
+  {
+    id: 'mirror-new-post',
+    name: 'Track new Mirror articles',
+    description: 'Receive a notification when an address publishes a new article.',
+    image: 'https://raw.githubusercontent.com/chainjet/assets/master/dapps/mirror.xyz.png',
+    workflowName: (inputs) => `Get a notification on new Mirror articles by ${inputs.address}`,
+    triggerData: () => ({
+      integrationKey: 'mirror',
+      operationKey: 'newPost',
+    }),
+    actionData: (inputs) => ({
+      email: {
+        subject: `${inputs.address} just published "{{trigger.title}}"`,
+        body: `Hi there! ${inputs.address} just published a new article on Mirror "{{trigger.title}}".\n\n{{trigger.url}}`,
+      },
+      message: `New article published: "{{trigger.title}}".\n{{trigger.url}}`,
+    }),
+  },
+
   // {
   //   id: 'lens-new-mention',
   //   name: 'New mention on Lens Protocol',

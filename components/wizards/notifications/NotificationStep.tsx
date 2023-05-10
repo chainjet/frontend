@@ -90,7 +90,9 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
   }, [createError])
 
   const getWorkflowActionData = (key: string) => {
-    const actionData = notificationTrigger.actionData(inputs, signer)
+    const childInputs = triggerInputsFormRef?.current?.getInputs()
+    const workflowInputs = childInputs ?? inputs
+    const actionData = notificationTrigger.actionData(workflowInputs, signer)
     switch (key) {
       case 'email':
         if (!inputs.email) {
@@ -189,7 +191,7 @@ export function NotificationStep({ notificationTrigger, readonly }: Props) {
         inputs: triggerInputs,
       } = notificationTrigger.triggerData(workflowInputs, signer)
       await createWorflowWithOperations({
-        workflowName: notificationTrigger.workflowName,
+        workflowName: notificationTrigger.workflowName(workflowInputs, signer),
         triggerIntegration: {
           key: integrationKey,
         },
