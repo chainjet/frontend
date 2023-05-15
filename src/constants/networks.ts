@@ -17,6 +17,7 @@ export enum ChainId {
   FUSE = 122,
   GNOSIS = 100,
   GOERLI = 5,
+  KAVA = 2222,
   HARMONY = 1666600000,
   HARMONY_TESTNET = 1666700000,
   HECO = 128,
@@ -135,6 +136,10 @@ export const NETWORK: { [key in ChainId]: Network } = {
     name: 'Görli',
     explorerUrl: 'https://goerli.etherscan.io',
     isTestnet: true,
+  },
+  [ChainId.KAVA]: {
+    name: 'Kava',
+    explorerUrl: 'https://explorer.kava.io',
   },
   [ChainId.HARMONY]: {
     name: 'Harmony',
