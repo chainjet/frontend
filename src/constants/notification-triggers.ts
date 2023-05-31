@@ -269,6 +269,24 @@ export const notificationTriggers: NotificationTrigger[] = [
       message: `New article published: "{{trigger.title}}".\n{{trigger.url}}`,
     }),
   },
+  {
+    id: 'poap-new-holder',
+    name: 'Track new POAP claims',
+    description: 'Receive a notification when someone claims your POAP.',
+    image: 'https://raw.githubusercontent.com/chainjet/assets/master/dapps/poap.xyz.png',
+    workflowName: () => 'Get a notification when someone claims your POAP',
+    triggerData: () => ({
+      integrationKey: 'poap',
+      operationKey: 'newPoapHolder',
+    }),
+    actionData: (inputs) => ({
+      email: {
+        subject: `{{trigger.owner}} just claimed your POAP #${inputs.eventId}`,
+        body: `Hi there! {{trigger.owner}} just claimed your POAP #${inputs.eventId}.`,
+      },
+      message: `{{trigger.owner}} just claimed your POAP #${inputs.eventId}`,
+    }),
+  },
 
   // {
   //   id: 'lens-new-mention',
