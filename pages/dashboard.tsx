@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { PageWrapper } from '../components/common/PageLayout/PageWrapper'
 import { RecommendedTemplates } from '../components/templates/RecommendedTemplates'
+import { ChainJetAIAlert } from '../components/users/ChainJetAIAlert'
 import { OperationsUsed } from '../components/users/OperationsUsed'
 import { PlanMigrationAlert } from '../components/users/PlanMigrationAlert'
 import { withApollo } from '../src/apollo'
@@ -56,6 +57,7 @@ function DashboardPage() {
         <title>ChainJet Dashboard</title>
       </Head>
       <PageWrapper title="Dashboard" extra={<OperationsUsed />}>
+        <ChainJetAIAlert />
         <PlanMigrationAlert />
         <div style={{ marginBottom: 16 }}>
           {error && <Alert message="Error" description={error} type="error" showIcon closable />}

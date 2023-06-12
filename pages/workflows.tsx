@@ -5,6 +5,7 @@ import { PlanMigrationAlert } from '../components/users/PlanMigrationAlert'
 import { UserWorkflows } from '../components/workflows/UserWorkflows'
 import { withApollo } from '../src/apollo'
 import { useRedirectGuests } from '../src/services/UserHooks'
+import { ChainJetAIAlert } from '../components/users/ChainJetAIAlert'
 
 function WorkflowsPage() {
   const { signer } = useRedirectGuests()
@@ -19,6 +20,7 @@ function WorkflowsPage() {
         <title>ChainJet Workflows</title>
       </Head>
       <PageWrapper title="Workflows" extra={<OperationsUsed />}>
+        <ChainJetAIAlert />
         <PlanMigrationAlert />
         <UserWorkflows />
       </PageWrapper>

@@ -124,6 +124,17 @@ export function useGenerateApiKey() {
   return useMutation(mutation)
 }
 
+export function useSetAiUseCase() {
+  const mutation = gql`
+    mutation aiUseCase($use: String!) {
+      aiUseCase(use: $use) {
+        success
+      }
+    }
+  `
+  return useMutation(mutation)
+}
+
 function destroyCookie(name: string) {
   nookiesDestroyCookie(null, name)
   document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
