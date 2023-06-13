@@ -118,7 +118,7 @@ export const AiWaitlistModal = ({ open, onClose }: Props) => {
           <iframe
             width="560"
             height="315"
-            src="https://www.youtube.com/embed/vUx-eJA2Dlw?autoplay=1&mute=1&loop=1&playlist=vUx-eJA2Dlw"
+            src="https://www.youtube.com/embed/3wbxaXttKsM?autoplay=1&mute=1&loop=1&playlist=3wbxaXttKsM"
             title="YouTube video player"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
