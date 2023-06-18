@@ -15,66 +15,25 @@ interface Props {
   onClose: () => any
 }
 
-const workflowFragment = gql`
-  fragment ForkWorkflowModal on Workflow {
+const integrationTriggerFragment = gql`
+  fragment CreateWorkflowModal_IntegrationTrigger on IntegrationTrigger {
     id
-    templateSchema
-    trigger {
+    schemaRequest
+    integration {
       id
-      inputs
-      integrationTrigger {
+      logo
+      integrationAccount {
         id
-        skipAuth
-        integration {
-          id
-          name
-          logo
-          integrationAccount {
-            ...SelectCredentials_IntegrationAccount
-          }
-        }
-      }
-    }
-    actions {
-      edges {
-        node {
-          id
-          inputs
-          integrationAction {
-            id
-            skipAuth
-            integration {
-              id
-              name
-              logo
-              integrationAccount {
-                ...SelectCredentials_IntegrationAccount
-              }
-            }
-          }
-        }
+        name
+        ...SelectCredentials_IntegrationAccount
       }
     }
   }
   ${SelectCredentials.fragments.IntegrationAccount}
 `
 
-const integrationTriggerFragment = gql`
-  fragment ForkWorkflowModal_IntegrationTrigger on IntegrationTrigger {
-    id
-    schemaRequest
-    integration {
-      id
-      logo
-      integrationAccount {
-        id
-      }
-    }
-  }
-`
-
 const integrationActionFragment = gql`
-  fragment ForkWorkflowModal_IntegrationAction on IntegrationAction {
+  fragment CreateWorkflowModal_IntegrationAction on IntegrationAction {
     id
     schemaRequest
     integration {
@@ -82,9 +41,12 @@ const integrationActionFragment = gql`
       logo
       integrationAccount {
         id
+        name
+        ...SelectCredentials_IntegrationAccount
       }
     }
   }
+  ${SelectCredentials.fragments.IntegrationAccount}
 `
 
 export const CreateWorkflowModal = ({ promptData, visible, onCreateWorkflow: onWorkflowFork, onClose }: Props) => {
@@ -116,9 +78,38 @@ export const CreateWorkflowModal = ({ promptData, visible, onCreateWorkflow: onW
     [integrationActionsData?.integrationActions?.edges],
   )
 
+  // list of unique integrations that require accounts
+  const integrationsWithAccounts = useMemo(() => {
+    if (!integrationTrigger) {
+      return []
+    }
+    let integrations: { integration: Integration; account: IntegrationAccount }[] = []
+    if (integrationTrigger?.integration?.integrationAccount?.id && !integrationTrigger.skipAuth) {
+      integrations.push({
+        integration: integrationTrigger.integration,
+        account: integrationTrigger.integration.integrationAccount,
+      })
+    }
+    for (const integrationAction of integrationActions) {
+      if (integrationAction?.integration?.integrationAccount?.id && !integrationAction.skipAuth) {
+        if (!integrations.some((a) => a.integration.id === integrationAction.integration.id)) {
+          integrations.push({
+            integration: integrationAction.integration,
+            account: integrationAction.integration.integrationAccount,
+          })
+        }
+      }
+    }
+    return integrations
+  }, [integrationActions, integrationTrigger])
+
+  const noConnectedAccounts = useMemo(
+    () => integrationsWithAccounts.filter((item) => !credentialIds[item.account.id]),
+    [credentialIds, integrationsWithAccounts],
+  )
+
   const handleCreateWorkflow = async () => {
     // check if all required credentials are selected
-    const noConnectedAccounts = integrationsWithAccounts.filter((item) => !credentialIds[item.account.id])
     if (noConnectedAccounts.length) {
       setCreateError(new Error(`Please connect ${noConnectedAccounts.map((item) => item.account.name).join(' and ')}.`))
       return
@@ -162,31 +153,6 @@ export const CreateWorkflowModal = ({ promptData, visible, onCreateWorkflow: onW
     },
     [credentialIds],
   )
-
-  // list of unique integrations that require accounts
-  const integrationsWithAccounts = useMemo(() => {
-    if (!integrationTrigger) {
-      return []
-    }
-    let integrations: { integration: Integration; account: IntegrationAccount }[] = []
-    if (integrationTrigger?.integration?.integrationAccount?.id && !integrationTrigger.skipAuth) {
-      integrations.push({
-        integration: integrationTrigger.integration,
-        account: integrationTrigger.integration.integrationAccount,
-      })
-    }
-    for (const integrationAction of integrationActions) {
-      if (integrationAction?.integration?.integrationAccount?.id && !integrationAction.skipAuth) {
-        if (!integrations.some((a) => a.integration.id === integrationAction.integration.id)) {
-          integrations.push({
-            integration: integrationAction.integration,
-            account: integrationAction.integration.integrationAccount,
-          })
-        }
-      }
-    }
-    return integrations
-  }, [integrationActions, integrationTrigger])
 
   const isLoading = createLoading
 
@@ -236,7 +202,7 @@ export const CreateWorkflowModal = ({ promptData, visible, onCreateWorkflow: onW
           submitButtonText={workflow.isTemplate ? 'Use Template' : 'Fork'}
         />
       )} */}
-      {!isLoading && (
+      {!isLoading && !noConnectedAccounts.length && (
         <Button type="primary" key="deploy" onClick={() => handleCreateWorkflow()} loading={createLoading}>
           Create Workflow
         </Button>
