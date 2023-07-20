@@ -73,7 +73,7 @@ export function SelectWorkflowNode<T extends IntegrationTrigger | IntegrationAct
       title = (
         <>
           <ArrowLeftOutlined onClick={() => onCategorySelected(null)} style={{ marginRight: '8px' }} />
-          {capitalize(nodeType)}s in the category "{categorySelected}"
+          {capitalize(nodeType)}s in the category &quot;{categorySelected}&quot;
         </>
       )
     } else {

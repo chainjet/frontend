@@ -54,7 +54,7 @@
     "lodash.get": "^4.4.2",
     "mixpanel-browser": "2.45.0",
     "ml-matrix": "^6.5.1",
-    "next": "11.1.4",
+    "next": "12.3.4",
     "next-plugin-antd-less": "^1.8.0",
     "nookies": "^2.4.0",
     "pathfinding": "^0.4.18",
